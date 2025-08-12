@@ -17,10 +17,6 @@ const nextConfig = {
         source: '/api/v1/:path*',
         destination: process.env.HUB_API_URL || 'http://localhost:8000/api/v1/:path*',
       },
-      {
-        source: '/ws/:path*',
-        destination: process.env.HUB_WS_URL || 'ws://localhost:8000/ws/:path*',
-      },
     ];
   },
 };
