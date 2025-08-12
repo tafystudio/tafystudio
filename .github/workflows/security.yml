@@ -64,7 +64,7 @@ jobs:
   container-scan:
     name: Container Scan
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     strategy:
       matrix:
         app: [hub-ui, hub-api, tafyd]
@@ -75,7 +75,8 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ github.repository }}/${{ matrix.app }}:main
+          scan-type: 'fs'
+          scan-ref: './apps/${{ matrix.app }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -88,6 +89,7 @@ jobs:
   codeql:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
+    if: github.repository_visibility == 'public'
     permissions:
       actions: read
       contents: read
