@@ -33,3 +33,4 @@ go.work.sum
 .internal/*
 CLAUDE.md
 node_modules
+.env.local
