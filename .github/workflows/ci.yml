@@ -91,11 +91,14 @@ jobs:
       matrix:
         include:
           - app: hub-ui
-            context: ./apps/hub-ui
+            context: .
+            dockerfile: ./apps/hub-ui/Dockerfile
           - app: hub-api
-            context: ./apps/hub-api
+            context: .
+            dockerfile: ./apps/hub-api/Dockerfile
           - app: tafyd
-            context: ./apps/tafyd
+            context: .
+            dockerfile: ./apps/tafyd/Dockerfile
     
     steps:
       - uses: actions/checkout@v4
@@ -129,6 +132,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}

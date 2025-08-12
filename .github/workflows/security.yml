@@ -50,11 +50,16 @@ jobs:
         with:
           python-version: '3.11'
           
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
       - name: Install Python dependencies
         run: |
           cd apps/hub-api
-          pip install -r requirements.txt
-          pip install pip-audit
+          uv pip install --system .
+          uv pip install --system pip-audit
           
       - name: Run pip-audit
         run: |
