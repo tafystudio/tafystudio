@@ -17,33 +17,33 @@ help:
 
 # Install dependencies
 install:
-	npm install
-	cd apps/hub-api && pip install -r requirements.txt
+	pnpm install
+	cd apps/hub-api && uv pip sync requirements.txt
 	cd apps/tafyd && go mod download
 
 # Build all packages
 build:
-	npm run build
+	pnpm run build
 
 # Run development servers
 dev:
-	npm run dev
+	pnpm run dev
 
 # Run tests
 test:
-	npm run test
+	pnpm run test
 
 # Run linters
 lint:
-	npm run lint
+	pnpm run lint
 
 # Format code
 format:
-	npm run format
+	pnpm run format
 
 # Clean build artifacts
 clean:
-	npm run clean
+	pnpm run clean
 	find . -name "dist" -type d -exec rm -rf {} +
 	find . -name ".next" -type d -exec rm -rf {} +
 	find . -name "__pycache__" -type d -exec rm -rf {} +
@@ -88,10 +88,10 @@ cluster-delete:
 # Utility targets
 .PHONY: update-deps security-scan
 update-deps:
-	npm update
-	cd apps/hub-api && pip install --upgrade -r requirements.txt
+	pnpm update -r
+	cd apps/hub-api && uv pip compile requirements.in -o requirements.txt --upgrade
 	cd apps/tafyd && go get -u ./...
 
 security-scan:
-	npm audit
-	cd apps/hub-api && pip-audit
+	pnpm audit
+	cd apps/hub-api && uv pip audit

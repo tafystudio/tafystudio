@@ -7,9 +7,9 @@ This guide helps developers set up their environment for contributing to Tafy St
 ## Prerequisites
 
 ### Required Tools
-- **Node.js** 18+ and npm/pnpm
+- **Node.js** 18+ and pnpm
 - **Go** 1.21+
-- **Python** 3.9+
+- **Python** 3.11+ with uv
 - **Docker** with buildx plugin
 - **Git** 2.30+
 
@@ -18,6 +18,15 @@ This guide helps developers set up their environment for contributing to Tafy St
 - **kubectl** - Kubernetes CLI
 - **helm** - Kubernetes package manager
 - **VS Code** - With recommended extensions
+
+### Installing Package Managers
+```bash
+# Install pnpm
+npm install -g pnpm
+
+# Install uv (Python)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ### Platform-Specific
 
@@ -57,8 +66,8 @@ cd tafystudio
 
 ### 2. Initialize Monorepo
 ```bash
-# Install dependencies (Turborepo is included as a dev dependency)
-npm install
+# Install dependencies with pnpm
+pnpm install
 ```
 
 ### 3. Environment Configuration
@@ -119,19 +128,19 @@ For rapid development, run services outside Kubernetes:
 docker-compose -f docker-compose.dev.yml up -d
 
 # Run all services in development mode (using Turborepo)
-npm run dev
+pnpm run dev
 
 # Or run individual services:
 
 # Terminal 1: Run Hub UI
 cd apps/hub-ui
-npm run dev
+pnpm run dev
 
 # Terminal 2: Run Hub API
 cd apps/hub-api
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip sync requirements.txt
 uvicorn main:app --reload
 
 # Terminal 3: Run Node Agent
@@ -170,13 +179,13 @@ make docker-build-multiarch
 ### Unit Tests
 ```bash
 # Run all tests
-turbo test
+pnpm test
 
 # Run specific package tests
-turbo test --filter=sdk-ts
+pnpm test --filter=sdk-ts
 
 # Run with coverage
-turbo test:coverage
+pnpm test:coverage
 ```
 
 ### Integration Tests

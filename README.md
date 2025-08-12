@@ -55,14 +55,17 @@ open https://tafy.local
 git clone https://github.com/tafystudio/tafystudio.git
 cd tafystudio
 
+# Install pnpm (if not already installed)
+npm install -g pnpm
+
 # Install dependencies
-npm install
+pnpm install
 
 # Start local development services
 docker-compose -f docker-compose.dev.yml up -d
 
 # Run development servers
-npm run dev
+pnpm run dev
 
 # Access the Hub UI
 open http://localhost:3000
