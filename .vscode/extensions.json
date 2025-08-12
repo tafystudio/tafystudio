@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.black-formatter",
+    "golang.go",
+    "editorconfig.editorconfig",
+    "ms-azuretools.vscode-docker",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "redhat.vscode-yaml",
+    "platformio.platformio-ide",
+    "ms-vscode.makefile-tools",
+    "bradlc.vscode-tailwindcss"
+  ]
+}
