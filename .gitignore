@@ -31,6 +31,9 @@ go.work.sum
 # .idea/
 # .vscode/
 .internal/*
+
 CLAUDE.md
+
 node_modules
+
 .env.local

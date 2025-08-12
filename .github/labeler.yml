@@ -1,0 +1,49 @@
+# Add labels to PRs based on changed files
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**'
+
+frontend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'apps/hub-ui/**'
+      - 'packages/sdk-ts/**'
+
+backend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'apps/hub-api/**'
+      - 'packages/sdk-python/**'
+
+agent:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'apps/tafyd/**'
+
+firmware:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'firmware/**'
+
+drivers:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'drivers/**'
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/package.json'
+      - '**/pnpm-lock.yaml'
+      - '**/requirements.txt'
+      - '**/pyproject.toml'
+      - '**/go.mod'
+      - '**/go.sum'

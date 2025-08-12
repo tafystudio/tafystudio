@@ -1,0 +1,80 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: 'Version to deploy (e.g., v1.0.0)'
+        required: true
+        type: string
+
+env:
+  HELM_VERSION: v3.13.0
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+          
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+          
+      # For production deployment, you would configure kubectl here
+      # with credentials from secrets. Example:
+      # - name: Configure kubeconfig
+      #   run: |
+      #     echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+      
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update charts/hub
+          helm dependency update charts/nats
+          helm dependency update charts/node-red
+          
+      - name: Deploy NATS
+        run: |
+          helm upgrade --install nats charts/nats \
+            --namespace tafy-system \
+            --create-namespace \
+            --values charts/nats/values-${{ inputs.environment }}.yaml \
+            --wait
+            
+      - name: Deploy Hub
+        run: |
+          helm upgrade --install hub charts/hub \
+            --namespace tafy-system \
+            --values charts/hub/values-${{ inputs.environment }}.yaml \
+            --set image.tag=${{ inputs.version }} \
+            --wait
+            
+      - name: Deploy Node-RED
+        run: |
+          helm upgrade --install node-red charts/node-red \
+            --namespace tafy-system \
+            --values charts/node-red/values-${{ inputs.environment }}.yaml \
+            --wait
+            
+      - name: Verify deployment
+        run: |
+          kubectl -n tafy-system rollout status deployment/hub-ui
+          kubectl -n tafy-system rollout status deployment/hub-api
+          kubectl -n tafy-system get pods
