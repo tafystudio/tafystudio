@@ -8,6 +8,20 @@ Tafy Studio is a comprehensive framework for building and operating robots. Unli
 
 **Note:** We intentionally use "operation system" rather than "operating system." Tafy Studio orchestrates robot operations across distributed nodes; it is not an OS in the traditional sense.
 
+## Project Status
+
+🚧 **Early Development** - We're building the foundation for the 30-minute quick start experience.
+
+### Current Progress:
+- ✅ Monorepo structure with Turborepo
+- ✅ Hub UI (Next.js) - Basic structure
+- ✅ Hub API (FastAPI) - Core endpoints
+- ✅ Node Agent (Go) - Device discovery
+- ✅ CI/CD Pipeline - Multi-arch builds
+- 🚧 HAL implementation - In progress
+- 🚧 ESP32 firmware - Coming soon
+- 🚧 Node-RED integration - Coming soon
+
 ## Key Features
 
 - **30-Minute Quick Start**: From installation to moving robot in under 30 minutes
@@ -25,12 +39,33 @@ Tafy Studio is a comprehensive framework for building and operating robots. Unli
 
 ## Quick Start
 
+### For Users (Coming Soon)
 ```bash
-# Install Tafy Studio (coming soon)
+# Install Tafy Studio
 curl -fsSL get.tafy.sh | bash
 
 # Access the Hub UI
 open https://tafy.local
+```
+
+### For Developers
+
+```bash
+# Clone the repository
+git clone https://github.com/tafystudio/tafystudio.git
+cd tafystudio
+
+# Install dependencies
+npm install
+
+# Start local development services
+docker-compose -f docker-compose.dev.yml up -d
+
+# Run development servers
+npm run dev
+
+# Access the Hub UI
+open http://localhost:3000
 ```
 
 ## License

@@ -57,22 +57,15 @@ cd tafystudio
 
 ### 2. Initialize Monorepo
 ```bash
-# Install Turborepo
-npm install -g turbo
-
-# Install dependencies
+# Install dependencies (Turborepo is included as a dev dependency)
 npm install
-
-# Setup git hooks
-npm run prepare
 ```
 
 ### 3. Environment Configuration
 ```bash
-# Copy example environment files
-cp .env.example .env
-cp apps/hub-ui/.env.example apps/hub-ui/.env
-cp apps/hub-api/.env.example apps/hub-api/.env
+# Create environment files (if needed)
+echo "NATS_URL=nats://localhost:4222" > apps/hub-api/.env
+echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > apps/hub-ui/.env.local
 ```
 
 ## Development Workflow
@@ -122,23 +115,35 @@ make deploy-dev
 For rapid development, run services outside Kubernetes:
 
 ```bash
-# Terminal 1: Run NATS
-docker run -p 4222:4222 -p 8222:8222 nats:latest
+# Start infrastructure services with Docker Compose
+docker-compose -f docker-compose.dev.yml up -d
+
+# Run all services in development mode (using Turborepo)
+npm run dev
+
+# Or run individual services:
+
+# Terminal 1: Run Hub UI
+cd apps/hub-ui
+npm run dev
 
 # Terminal 2: Run Hub API
 cd apps/hub-api
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --reload
 
-# Terminal 3: Run Hub UI
-cd apps/hub-ui
-npm install
-npm run dev
+# Terminal 3: Run Node Agent
+cd apps/tafyd
+go run . --debug
 
-# Terminal 4: Run Node-RED
-cd apps/node-red
-npm install
-npm start
+# Access services:
+# Hub UI: http://localhost:3000
+# Hub API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+# NATS Monitor: http://localhost:8222
+# Node-RED: http://localhost:1880
 ```
 
 ### Building Components
