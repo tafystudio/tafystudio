@@ -13,13 +13,13 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.cargo/bin:$PATH"
 
 # Copy dependency files first for better caching
-COPY pyproject.toml .
+COPY apps/hub-api/pyproject.toml .
 
 # Install dependencies using uv
-RUN uv pip install --system .
+RUN uv pip install --system -r pyproject.toml
 
 # Copy application code
-COPY . .
+COPY apps/hub-api/ .
 
 # Create non-root user
 RUN useradd -m -u 1000 tafy && chown -R tafy:tafy /app

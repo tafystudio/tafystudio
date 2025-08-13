@@ -7,11 +7,11 @@ WORKDIR /build
 RUN apk add --no-cache git
 
 # Copy go mod files
-COPY go.mod go.sum ./
+COPY apps/tafyd/go.mod apps/tafyd/go.sum ./
 RUN go mod download
 
 # Copy source code
-COPY . .
+COPY apps/tafyd/ .
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tafyd .

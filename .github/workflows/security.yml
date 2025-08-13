@@ -58,7 +58,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           cd apps/hub-api
-          uv pip install --system .
+          uv pip install --system -r pyproject.toml
           uv pip install --system pip-audit
           
       - name: Run pip-audit
