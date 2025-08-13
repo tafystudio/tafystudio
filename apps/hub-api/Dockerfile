@@ -16,7 +16,7 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY apps/hub-api/pyproject.toml .
 
 # Install dependencies using uv
-RUN uv pip install --system -r pyproject.toml
+RUN uv pip install --system .
 
 # Copy application code
 COPY apps/hub-api/ .
