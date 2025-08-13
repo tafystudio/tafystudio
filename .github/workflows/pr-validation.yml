@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Check for large files
-        uses: actionsdesk/lfs-warning@v3.2
+        uses: actionsdesk/lfs-warning@v3.3
         with:
           filesizelimit: '10MB'
           
