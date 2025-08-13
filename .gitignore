@@ -35,5 +35,6 @@ go.work.sum
 CLAUDE.md
 
 node_modules
+.turbo
 
 .env.local

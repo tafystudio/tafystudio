@@ -2,7 +2,6 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  swcMinify: true,
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
