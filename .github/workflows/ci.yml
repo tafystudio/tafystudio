@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write  # Needed for OIDC with cosign
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
