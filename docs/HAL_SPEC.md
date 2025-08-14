@@ -2,7 +2,8 @@
 
 ## Overview
 
-The Hardware Abstraction Layer (HAL) provides a uniform interface for all hardware in Tafy Studio. This specification defines message formats, naming conventions, and behavior contracts that all drivers must implement.
+The Hardware Abstraction Layer (HAL) provides a uniform interface for all hardware in Tafy Studio.
+This specification defines message formats, naming conventions, and behavior contracts that all drivers must implement.
 
 ## Core Principles
 
@@ -29,6 +30,7 @@ Every HAL message is wrapped in a standard envelope:
 ```
 
 Fields:
+
 - `hal_major`: Major version of HAL (breaking changes)
 - `hal_minor`: Minor version of HAL (additions only)
 - `schema`: Full schema identifier for payload
@@ -41,11 +43,12 @@ Fields:
 
 NATS subjects follow a hierarchical pattern:
 
-```
+```plaintext
 hal.v{major}.{domain}.{type}.{action}
 ```
 
 Examples:
+
 - `hal.v1.motor.differential.cmd` - Differential motor commands
 - `hal.v1.sensor.range.data` - Range sensor readings
 - `hal.v1.camera.config.set` - Camera configuration
@@ -55,7 +58,9 @@ Examples:
 ### Motor Control (`motor`)
 
 #### Differential Drive
+
 Commands to `hal.v1.motor.differential.cmd`:
+
 ```json
 {
   "linear_vel_m_per_s": 0.5,
@@ -66,6 +71,7 @@ Commands to `hal.v1.motor.differential.cmd`:
 ```
 
 State on `hal.v1.motor.differential.state`:
+
 ```json
 {
   "left_vel_m_per_s": 0.48,
@@ -78,7 +84,9 @@ State on `hal.v1.motor.differential.state`:
 ```
 
 #### Servo Control
+
 Commands to `hal.v1.motor.servo.cmd`:
+
 ```json
 {
   "channel": 0,
@@ -90,7 +98,9 @@ Commands to `hal.v1.motor.servo.cmd`:
 ### Sensors (`sensor`)
 
 #### Range Sensors
+
 Data on `hal.v1.sensor.range.data`:
+
 ```json
 {
   "distance_m": 1.23,
@@ -102,7 +112,9 @@ Data on `hal.v1.sensor.range.data`:
 ```
 
 #### IMU
+
 Data on `hal.v1.sensor.imu.data`:
+
 ```json
 {
   "accel_m_per_s2": {"x": 0.1, "y": 0.0, "z": 9.81},
@@ -116,7 +128,9 @@ Data on `hal.v1.sensor.imu.data`:
 ### Vision (`vision`)
 
 #### Camera Frames
+
 Request on `hal.v1.camera.frame.req`:
+
 ```json
 {
   "format": "jpeg",
@@ -127,6 +141,7 @@ Request on `hal.v1.camera.frame.req`:
 ```
 
 Response on `hal.v1.camera.frame.resp`:
+
 ```json
 {
   "format": "jpeg",
@@ -140,7 +155,9 @@ Response on `hal.v1.camera.frame.resp`:
 ### System (`system`)
 
 #### Health Check
+
 Request on `hal.v1.system.health.req`:
+
 ```json
 {
   "include_diagnostics": true
@@ -148,6 +165,7 @@ Request on `hal.v1.system.health.req`:
 ```
 
 Response on `hal.v1.system.health.resp`:
+
 ```json
 {
   "status": "healthy",
@@ -182,21 +200,27 @@ Format: `{domain}.{type}:v{version}[:metadata]`
 ## Command Patterns
 
 ### Request/Reply
+
 For commands expecting responses:
-```
+
+```plaintext
 Client: NATS.Request("hal.v1.motor.info.get", timeout: 5s)
 Driver: NATS.Reply(with device info)
 ```
 
 ### Fire and Forget
+
 For commands without confirmation:
-```
+
+```plaintext
 Client: NATS.Publish("hal.v1.motor.differential.cmd", command)
 ```
 
 ### Streaming
+
 For continuous data:
-```
+
+```plaintext
 Driver: NATS.Publish("hal.v1.sensor.imu.data", data) // 100Hz
 Clients: NATS.Subscribe("hal.v1.sensor.imu.data")
 ```
@@ -219,6 +243,7 @@ Errors are returned in a standard format:
 ```
 
 Standard error codes:
+
 - `INVALID_PARAMETER` - Parameter validation failed
 - `RANGE_EXCEEDED` - Value outside acceptable range
 - `NOT_IMPLEMENTED` - Feature not available
@@ -228,13 +253,16 @@ Standard error codes:
 ## Timing and Quality of Service
 
 ### Latency Classes
+
 - **Real-time**: <1ms (encoder feedback)
 - **Low-latency**: <10ms (motor commands)
 - **Interactive**: <100ms (camera frames)
 - **Background**: >100ms (firmware updates)
 
 ### Message Priority
+
 Set via NATS headers:
+
 - `Priority: high` - Safety-critical (e-stop, collision)
 - `Priority: normal` - Standard operations
 - `Priority: low` - Telemetry, logging
@@ -242,18 +270,22 @@ Set via NATS headers:
 ## Versioning and Migration
 
 ### Version Rules
+
 - Major version change = breaking change
 - Minor version change = additions only
 - Patch version change = clarifications
 
 ### Migration Support
+
 During transitions, drivers may:
+
 1. Publish to both old and new subjects
 2. Accept commands on both versions
 3. Include adapters for translation
 
 Example migration:
-```
+
+```plaintext
 # v1 -> v2 migration (6 months)
 hal.v1.motor.cmd -> hal.v2.motor.differential.cmd
 Driver publishes to both, gradually deprecate v1
@@ -262,6 +294,7 @@ Driver publishes to both, gradually deprecate v1
 ## Best Practices
 
 ### For Driver Authors
+
 1. Validate all inputs, provide clear errors
 2. Include units in every numeric field name
 3. Publish state changes immediately
@@ -269,6 +302,7 @@ Driver publishes to both, gradually deprecate v1
 5. Implement health checks
 
 ### For Client Authors
+
 1. Subscribe before sending commands
 2. Handle missing devices gracefully
 3. Respect device capabilities
@@ -276,6 +310,7 @@ Driver publishes to both, gradually deprecate v1
 5. Log errors with context
 
 ### Performance Guidelines
+
 - State updates: 10-100Hz depending on dynamics
 - Command latency: <10ms processing time
 - Startup time: <1s from power to capability announcement
@@ -337,6 +372,7 @@ tafy test hal --all
 ```
 
 Tests verify:
+
 - Message format compliance
 - Timing requirements
 - Error handling

@@ -34,6 +34,7 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 When deploying Tafy Studio:
 
 ### Network Security
+
 - Run in isolated networks when possible
 - Use TLS for all external communications
 - Configure firewall rules for required ports only:
@@ -42,16 +43,19 @@ When deploying Tafy Studio:
   - 6443 (k3s API, internal only)
 
 ### Authentication
+
 - Enable OIDC authentication in production
 - Use strong passwords for local accounts
 - Rotate device credentials regularly
 
 ### Device Security
+
 - Flash devices over secure connections
 - Use device-specific credentials (NKey/JWT)
 - Enable TLS for ESP32 ↔ NATS communication
 
 ### Data Protection
+
 - Enable encryption at rest for persistent volumes
 - Use sealed secrets for sensitive configuration
 - Limit telemetry retention (24-72 hours default)
@@ -59,12 +63,15 @@ When deploying Tafy Studio:
 ## Known Security Considerations
 
 ### Development Dependencies
+
 - `ecdsa` package: Known vulnerability GHSA-wj6h-64fc-37mp in development dependencies only
   - Not used in production code
   - Ignored in security scans with `--ignore-vuln GHSA-wj6h-64fc-37mp`
 
 ### Third-Party Components
+
 We regularly update dependencies and monitor for vulnerabilities in:
+
 - Node.js packages (via `pnpm audit`)
 - Python packages (via `pip-audit`)
 - Go modules (via `govulncheck`)
@@ -73,12 +80,14 @@ We regularly update dependencies and monitor for vulnerabilities in:
 ## Security Features Roadmap
 
 ### Available Now
+
 - OIDC authentication support
 - TLS encryption for NATS
 - Container image signing with cosign
 - Basic RBAC with viewer/operator/admin roles
 
 ### Planned (Post-MVP)
+
 - mTLS with Linkerd service mesh
 - Network policies with Cilium
 - Hardware security module (HSM) support
@@ -87,7 +96,7 @@ We regularly update dependencies and monitor for vulnerabilities in:
 
 ## Compliance
 
-Tafy Studio is designed with security in mind but has not yet undergone formal security audits. 
+Tafy Studio is designed with security in mind but has not yet undergone formal security audits.
 
 For regulated environments, please contact us to discuss specific compliance requirements.
 

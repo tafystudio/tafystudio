@@ -31,24 +31,28 @@ make test-watch
 ## Testing Stack
 
 ### Frontend (React/TypeScript)
+
 - **Framework**: Jest
 - **Testing Library**: React Testing Library
 - **Mocking**: MSW (Mock Service Worker)
 - **Coverage**: Built-in Jest coverage
 
 ### Backend (Python/FastAPI)
+
 - **Framework**: pytest
 - **Async Testing**: pytest-asyncio
 - **HTTP Testing**: FastAPI TestClient
 - **Coverage**: pytest-cov
 
 ### Node Agent (Go)
+
 - **Framework**: Standard library testing
 - **Assertions**: testify (optional)
 - **Mocking**: gomock or interfaces
 - **Coverage**: go test -cover
 
 ### Integration Testing
+
 - **Framework**: Jest with custom utilities
 - **Services**: Docker Compose
 - **NATS Testing**: Real NATS server
@@ -134,7 +138,7 @@ func TestNodeDiscovery(t *testing.T) {
 }
 ```
 
-## Integration Testing
+## Integration Test Examples
 
 ### NATS Communication
 
@@ -214,7 +218,8 @@ async def test_node_registration_flow():
 ## Test Organization
 
 ### Directory Structure
-```
+
+```plaintext
 apps/
   hub-ui/
     __tests__/          # Jest tests
@@ -240,6 +245,7 @@ tests/
 ```
 
 ### Naming Conventions
+
 - **Jest**: `*.test.{ts,tsx,js,jsx}` or `*.spec.{ts,tsx,js,jsx}`
 - **pytest**: `test_*.py` or `*_test.py`
 - **Go**: `*_test.go`
@@ -247,6 +253,7 @@ tests/
 ## Mocking Strategies
 
 ### API Mocking (MSW)
+
 ```typescript
 // apps/hub-ui/__tests__/mocks/handlers.ts
 import { rest } from 'msw';
@@ -265,6 +272,7 @@ export const handlers = [
 ```
 
 ### NATS Mocking
+
 ```python
 # apps/hub-api/tests/mocks/nats_mock.py
 from unittest.mock import AsyncMock, MagicMock
@@ -280,12 +288,14 @@ def create_nats_mock():
 ## Coverage Requirements
 
 ### Minimum Coverage Targets
+
 - **Critical Paths**: 80%+
 - **Business Logic**: 70%+
 - **Utilities**: 60%+
 - **UI Components**: 50%+
 
 ### Running Coverage Reports
+
 ```bash
 # All components
 make test-coverage
@@ -299,13 +309,16 @@ open apps/tafyd/coverage.html
 ## CI/CD Testing
 
 ### GitHub Actions Workflow
+
 Tests run automatically on:
+
 - Push to main/develop branches
 - Pull requests
 - Multiple OS versions (Ubuntu, macOS)
 - Multiple language versions
 
 ### Test Matrix
+
 ```yaml
 strategy:
   matrix:
@@ -318,6 +331,7 @@ strategy:
 ## Performance Testing
 
 ### Load Testing
+
 ```bash
 # Run load tests against API
 cd tests/performance
@@ -325,6 +339,7 @@ k6 run load-test.js
 ```
 
 ### Benchmark Tests
+
 ```go
 // apps/tafyd/hal/benchmark_test.go
 func BenchmarkMessageParsing(b *testing.B) {
@@ -341,7 +356,9 @@ func BenchmarkMessageParsing(b *testing.B) {
 ## Debugging Tests
 
 ### VS Code Test Debugging
+
 Launch configurations are provided for:
+
 - Jest tests (Node.js debugging)
 - pytest tests (Python debugging)
 - Go tests (Delve debugging)
@@ -349,18 +366,21 @@ Launch configurations are provided for:
 ### Troubleshooting Common Issues
 
 #### Port Conflicts
+
 ```bash
 # Kill process using port
 lsof -ti:4222 | xargs kill -9
 ```
 
 #### Docker Services Not Ready
+
 ```javascript
 // Wait for services to be ready
 await waitForNATS('localhost:4222', { timeout: 30000 });
 ```
 
 #### Flaky Tests
+
 - Use proper wait strategies
 - Avoid hard-coded timeouts
 - Mock external dependencies
@@ -369,6 +389,7 @@ await waitForNATS('localhost:4222', { timeout: 30000 });
 ## Best Practices
 
 ### Do's
+
 - ✅ Write tests before fixing bugs
 - ✅ Keep tests fast and focused
 - ✅ Use descriptive test names
@@ -376,6 +397,7 @@ await waitForNATS('localhost:4222', { timeout: 30000 });
 - ✅ Clean up resources in afterEach/afterAll
 
 ### Don'ts
+
 - ❌ Don't test framework code
 - ❌ Don't use production databases
 - ❌ Don't rely on test execution order
@@ -385,14 +407,17 @@ await waitForNATS('localhost:4222', { timeout: 30000 });
 ## Adding New Tests
 
 ### 1. Choose Test Type
+
 - **Unit**: Testing single functions/components
 - **Integration**: Testing service interactions
 - **E2E**: Testing complete user workflows
 
 ### 2. Write Test
+
 Follow the patterns shown above for your language/framework
 
 ### 3. Run Locally
+
 ```bash
 # Run your new test
 make test
@@ -402,6 +427,7 @@ make test-watch
 ```
 
 ### 4. Verify CI
+
 Push to a branch and ensure tests pass in GitHub Actions
 
 ## Resources

@@ -9,7 +9,8 @@ A Robot Distributed Operation System (RDOS) that makes robotics accessible to ev
 
 ## What is Tafy Studio?
 
-Tafy Studio is a comprehensive framework for building and operating robots. Unlike traditional approaches that treat robots as single computers with peripherals, Tafy Studio embraces the distributed nature of modern robotics—where multiple compute nodes work together as a cohesive system.
+Tafy Studio is a comprehensive framework for building and operating robots. Unlike traditional approaches that treat robots as single computers with peripherals,
+Tafy Studio embraces the distributed nature of modern robotics—where multiple compute nodes work together as a cohesive system.
 
 **Note:** We intentionally use "operation system" rather than "operating system." Tafy Studio orchestrates robot operations across distributed nodes; it is not an OS in the traditional sense.
 
@@ -17,7 +18,8 @@ Tafy Studio is a comprehensive framework for building and operating robots. Unli
 
 🚧 **Early Development** - We're building the foundation for the 30-minute quick start experience.
 
-### Current Progress:
+### Current Progress
+
 - ✅ Monorepo structure with Turborepo
 - ✅ Hub UI (Next.js) - Basic structure
 - ✅ Hub API (FastAPI) - Core endpoints
@@ -47,6 +49,7 @@ Tafy Studio is a comprehensive framework for building and operating robots. Unli
 ## Quick Start
 
 ### For Users (Coming Soon)
+
 ```bash
 # Install Tafy Studio
 curl -fsSL get.tafy.sh | bash

@@ -20,6 +20,7 @@ curl -fsSL https://get.tafy.sh | bash
 ```
 
 This will:
+
 1. Install the Tafy CLI tool
 2. Set up required dependencies
 3. Configure your system for robot development
@@ -34,6 +35,7 @@ cd my-first-robot
 ```
 
 This creates a new robot project with:
+
 - Pre-configured Node-RED flows
 - Example hardware configurations
 - Basic teleoperation setup
@@ -59,13 +61,15 @@ tafy hub start
 ```
 
 This starts:
-- The web UI at http://localhost:3000
-- Node-RED at http://localhost:1880
+
+- The web UI at <http://localhost:3000>
+- Node-RED at <http://localhost:1880>
 - NATS messaging at localhost:4222
 
 ### Step 4: Connect Your Robot
 
 Power on your robot hardware. It will automatically:
+
 1. Connect to your network
 2. Discover the hub
 3. Register its capabilities
@@ -74,6 +78,7 @@ Power on your robot hardware. It will automatically:
 ### Step 5: Test Movement
 
 Open the web UI and:
+
 1. Click on your robot in the device list
 2. Select "Teleoperation" mode
 3. Use WASD keys or gamepad to control

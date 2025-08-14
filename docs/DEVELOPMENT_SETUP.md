@@ -7,6 +7,7 @@ This guide helps developers set up their environment for contributing to Tafy St
 ## Prerequisites
 
 ### Required Tools
+
 - **Node.js** 20+ and pnpm 9+
 - **Go** 1.23+
 - **Python** 3.11+ with uv
@@ -14,12 +15,14 @@ This guide helps developers set up their environment for contributing to Tafy St
 - **Git** 2.30+
 
 ### Recommended Tools
+
 - **k3d** - Local Kubernetes for testing
 - **kubectl** - Kubernetes CLI
 - **helm** - Kubernetes package manager
 - **VS Code** - With recommended extensions
 
 ### Installing Package Managers
+
 ```bash
 # Install all required tools
 make install-tools
@@ -35,6 +38,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ### Platform-Specific
 
 #### macOS
+
 ```bash
 # Install Homebrew if needed
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -45,6 +49,7 @@ brew install --cask docker visual-studio-code
 ```
 
 #### Linux (Ubuntu/Debian)
+
 ```bash
 # Add repositories
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -63,12 +68,14 @@ curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 ## Repository Setup
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/tafystudio/tafystudio.git
 cd tafystudio
 ```
 
 ### 2. Initialize Monorepo
+
 ```bash
 # Install all dependencies
 make install
@@ -78,6 +85,7 @@ pnpm install
 ```
 
 ### 3. Environment Configuration
+
 ```bash
 # Create environment files (if needed)
 echo "NATS_URL=nats://localhost:4222" > apps/hub-api/.env
@@ -172,6 +180,7 @@ make docker-push
 ## Testing
 
 ### Test Automation
+
 We use automated testing across all components with Jest (React), pytest (Python), and standard Go testing.
 
 ```bash
@@ -195,6 +204,7 @@ make docker-test
 ```
 
 ### Component-Specific Testing
+
 ```bash
 # Hub UI (Jest)
 cd apps/hub-ui
@@ -218,7 +228,9 @@ go test -cover ./...   # With coverage
 ```
 
 ### CI/CD Test Pipeline
+
 Tests automatically run on GitHub Actions for:
+
 - Multiple Node.js versions (20, 22)
 - Multiple Python versions (3.11, 3.12)
 - Go 1.23
@@ -228,6 +240,7 @@ Tests automatically run on GitHub Actions for:
 ## Code Style
 
 ### Linting and Code Quality
+
 ```bash
 # Run all linters
 make lint
@@ -243,12 +256,15 @@ make security-scan
 ```
 
 ### Formatting
+
 We use:
+
 - **Prettier** for TypeScript/JavaScript
 - **Black** for Python
 - **gofmt** for Go
 
 ### Frontend Notes
+
 - **Tailwind CSS v4**: We use Tailwind CSS v4 which requires the `@tailwindcss/postcss` plugin. This is already configured in the hub-ui project.
 
 ```bash
@@ -259,6 +275,7 @@ make install-hooks
 ## Working with Different Components
 
 ### Hub UI (Next.js)
+
 ```bash
 cd apps/hub-ui
 npm run dev           # Start dev server
@@ -267,6 +284,7 @@ npm run storybook     # Component development
 ```
 
 ### Hub API (FastAPI)
+
 ```bash
 cd apps/hub-api
 python -m venv venv
@@ -276,6 +294,7 @@ uvicorn main:app --reload
 ```
 
 ### Node Agent (Go)
+
 ```bash
 cd apps/tafyd
 go mod download
@@ -284,6 +303,7 @@ go build             # Build binary
 ```
 
 ### Firmware (PlatformIO)
+
 ```bash
 cd firmware/esp32
 pio run              # Build all environments
@@ -293,6 +313,7 @@ pio device monitor   # Serial monitor
 ```
 
 ### Node-RED Nodes
+
 ```bash
 cd packages/node-red-contrib-tafy
 npm link             # Link for local development
@@ -303,13 +324,16 @@ npm link @tafy/node-red-contrib-tafy
 ## Debugging
 
 ### VS Code Launch Configurations
+
 The repository includes launch configurations for:
+
 - Hub UI (Next.js debugging)
 - Hub API (Python debugging)
 - Node Agent (Go debugging with Delve)
 - Jest tests
 
 ### Remote Debugging
+
 For debugging on actual hardware:
 
 ```bash
@@ -323,6 +347,7 @@ kubectl port-forward pod/hub-api-xxx 5678:5678
 ### Common Issues
 
 #### Port Conflicts
+
 ```bash
 # Find what's using a port
 lsof -i :4222  # macOS/Linux
@@ -333,6 +358,7 @@ kill -9 <PID>
 ```
 
 #### Docker Build Issues
+
 ```bash
 # Clean Docker cache
 docker system prune -a
@@ -345,6 +371,7 @@ docker buildx ls
 ```
 
 #### NATS Connection Issues
+
 ```bash
 # Test NATS connection
 nats-cli ping
@@ -356,6 +383,7 @@ nats-cli sub ">"
 ## Making Changes
 
 ### Feature Development
+
 1. Create feature branch: `git checkout -b feature/your-feature`
 2. Make changes following code style
 3. Write/update tests
@@ -365,7 +393,9 @@ nats-cli sub ">"
 7. Push and create PR
 
 ### Commit Convention
+
 We use conventional commits:
+
 - `feat:` New feature
 - `fix:` Bug fix
 - `docs:` Documentation only
@@ -374,6 +404,7 @@ We use conventional commits:
 - `chore:` Build process or auxiliary tool changes
 
 ### Pull Request Process
+
 1. PR title follows conventional commit format
 2. Description explains what and why
 3. All CI checks pass
@@ -383,6 +414,7 @@ We use conventional commits:
 ## Performance Profiling
 
 ### Go Services
+
 ```bash
 # CPU profiling
 go test -cpuprofile=cpu.prof -bench=.
@@ -394,6 +426,7 @@ go tool pprof mem.prof
 ```
 
 ### Node.js Services
+
 ```bash
 # Start with profiling
 node --inspect apps/hub-api/dist/index.js
@@ -405,6 +438,7 @@ node --inspect apps/hub-api/dist/index.js
 ## Release Process
 
 ### Version Bumps
+
 ```bash
 # Bump version (follows semver)
 npm run version:patch  # 1.0.0 -> 1.0.1
@@ -413,6 +447,7 @@ npm run version:major  # 1.0.0 -> 2.0.0
 ```
 
 ### Building Release Artifacts
+
 ```bash
 # Build all release artifacts
 make release
@@ -427,6 +462,7 @@ make sbom
 ## Useful Commands
 
 ### Development
+
 ```bash
 # Check if all tools are installed
 make check-tools
@@ -439,6 +475,7 @@ make logs
 ```
 
 ### Cleaning
+
 ```bash
 # Clean build artifacts
 make clean
@@ -448,6 +485,7 @@ make clean-deep
 ```
 
 ### CI/CD Helpers
+
 ```bash
 # Commands used by GitHub Actions
 make ci-lint      # Run linters
@@ -456,6 +494,7 @@ make ci-build     # Build all packages
 ```
 
 ### Kubernetes Operations
+
 ```bash
 # Deploy to local cluster
 make deploy-dev
@@ -468,6 +507,7 @@ make port-forward
 ```
 
 ### Complete Makefile Reference
+
 Run `make help` to see all available commands with descriptions.
 
 ## Getting Help
