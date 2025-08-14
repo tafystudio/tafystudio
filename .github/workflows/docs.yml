@@ -1,0 +1,276 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+        
+      - name: Lint Markdown files
+        run: |
+          markdownlint '**/*.md' \
+            --ignore node_modules \
+            --ignore .venv \
+            --ignore '**/node_modules/**' \
+            --ignore '**/dist/**' \
+            --ignore '**/.next/**'
+
+  check-links:
+    name: Check Links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: |
+            --verbose 
+            --no-progress 
+            --accept 200,204,206 
+            --timeout 20 
+            --max-retries 3 
+            --exclude-all-private 
+            --exclude 'localhost' 
+            --exclude '127.0.0.1' 
+            --exclude 'example.com' 
+            --exclude 'tafy.local' 
+            --exclude-path .venv 
+            --exclude-path node_modules 
+            --exclude-path .next 
+            --exclude-path dist 
+            docs/**/*.md README.md
+          fail: true
+
+  check-spelling:
+    name: Check Spelling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check spelling
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          files: |
+            **/*.md
+            **/*.ts
+            **/*.tsx
+            **/*.js
+            **/*.jsx
+            **/*.py
+            **/*.go
+          exclude: |
+            node_modules/**
+            .venv/**
+            dist/**
+            .next/**
+            **/node_modules/**
+            **/.venv/**
+            **/dist/**
+            **/.next/**
+            pnpm-lock.yaml
+            uv.lock
+            go.sum
+
+  validate-structure:
+    name: Validate Documentation Structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check required documentation files
+        run: |
+          echo "Checking for required documentation files..."
+          required_files=(
+            "README.md"
+            "docs/VISION.md"
+            "docs/ARCHITECTURE.md"
+            "docs/CONCEPTS.md"
+            "docs/DEVELOPMENT_SETUP.md"
+            "docs/TESTING.md"
+            "docs/SECURITY.md"
+          )
+          
+          missing_files=()
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              missing_files+=("$file")
+            fi
+          done
+          
+          if [ ${#missing_files[@]} -ne 0 ]; then
+            echo "❌ Missing required documentation files:"
+            printf '%s\n' "${missing_files[@]}"
+            exit 1
+          else
+            echo "✅ All required documentation files present"
+          fi
+      
+      - name: Check documentation completeness
+        run: |
+          echo "Checking for TODO items in documentation..."
+          if grep -r "TODO\|FIXME\|XXX" docs/ README.md --include="*.md"; then
+            echo "⚠️  Found TODO items in documentation - these should be addressed"
+            # Don't fail the build, just warn
+          else
+            echo "✅ No TODO items found in documentation"
+          fi
+
+  build-docs-site:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint-markdown, check-links, validate-structure]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          
+      - name: Install dependencies
+        run: |
+          pnpm add -D typedoc
+          
+      - name: Generate API documentation
+        run: |
+          echo "Generating API documentation..."
+          mkdir -p docs-build/api
+          
+          # TypeScript/JavaScript API docs
+          if [ -d "apps/hub-ui" ]; then
+            pnpm exec typedoc --out docs-build/api/typescript apps/hub-ui/app
+          fi
+          
+          # Python API docs
+          if [ -d "apps/hub-api" ]; then
+            cd apps/hub-api
+            pip install pdoc3
+            pdoc --html --output-dir ../../docs-build/api/python app
+            cd ../..
+          fi
+          
+          # Go API docs
+          echo "Go documentation available at https://pkg.go.dev/github.com/tafystudio/tafystudio" > docs-build/api/go.md
+      
+      - name: Prepare documentation for deployment
+        run: |
+          # Create a docs-build directory with all documentation
+          mkdir -p docs-build
+          cp -r docs/* docs-build/
+          cp README.md docs-build/
+          
+          # Create a documentation index
+          cat > docs-build/index.md << 'EOF'
+          # Tafy Studio Documentation
+          
+          Welcome to the Tafy Studio documentation!
+          
+          ## Getting Started
+          - [Project Overview](./README.md) - Introduction to Tafy Studio
+          - [Vision](./VISION.md) - Project philosophy and goals
+          - [Architecture](./ARCHITECTURE.md) - Technical design and structure
+          - [Concepts](./CONCEPTS.md) - Key terminology explained
+          - [Development Setup](./DEVELOPMENT_SETUP.md) - Get started contributing
+          
+          ## Development
+          - [Testing Guide](./TESTING.md) - Testing strategy and practices
+          - [Security Policy](./SECURITY.md) - Security practices and vulnerability reporting
+          - [HAL Specification](./HAL_SPEC.md) - Hardware Abstraction Layer details
+          
+          ## API Documentation
+          - [TypeScript API](./api/typescript/index.html) - Hub UI API documentation
+          - [Python API](./api/python/index.html) - Hub API documentation
+          - [Go API](https://pkg.go.dev/github.com/tafystudio/tafystudio/apps/tafyd) - tafyd API documentation
+          
+          ## Resources
+          - [GitHub Repository](https://github.com/tafystudio/tafystudio)
+          - [Issue Tracker](https://github.com/tafystudio/tafystudio/issues)
+          - [Discussions](https://github.com/tafystudio/tafystudio/discussions)
+          
+          ---
+          
+          Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          EOF
+      
+      - name: Deploy to GitHub Pages repository
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+          external_repository: tafystudio/tafystudio.github.io
+          publish_dir: ./docs-build
+          destination_dir: docs
+          commit_message: "docs: update documentation from main repository"
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+  summary:
+    name: Documentation Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [lint-markdown, check-links, check-spelling, validate-structure]
+    steps:
+      - name: Summary
+        run: |
+          echo "## Documentation Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.lint-markdown.result }}" == "success" ]; then
+            echo "✅ Markdown linting passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Markdown linting failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.check-links.result }}" == "success" ]; then
+            echo "✅ Link checking passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Link checking failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.check-spelling.result }}" == "success" ]; then
+            echo "✅ Spell checking passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Spell checking failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.validate-structure.result }}" == "success" ]; then
+            echo "✅ Documentation structure validated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Documentation structure validation failed" >> $GITHUB_STEP_SUMMARY
+          fi

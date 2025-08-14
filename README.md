@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/tafystudio/tafystudio/actions/workflows/ci.yml/badge.svg)](https://github.com/tafystudio/tafystudio/actions/workflows/ci.yml)
 [![Tests](https://github.com/tafystudio/tafystudio/actions/workflows/test.yml/badge.svg)](https://github.com/tafystudio/tafystudio/actions/workflows/test.yml)
+[![Docs](https://github.com/tafystudio/tafystudio/actions/workflows/docs.yml/badge.svg)](https://github.com/tafystudio/tafystudio/actions/workflows/docs.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 A Robot Distributed Operation System (RDOS) that makes robotics accessible to everyone.
