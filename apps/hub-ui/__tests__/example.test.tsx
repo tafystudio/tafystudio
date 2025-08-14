@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react';
 
 describe('Example Test', () => {
   it('should pass a basic test', () => {
-    expect(true).toBe(true)
-  })
+    expect(true).toBe(true);
+  });
 
   it('should render text', () => {
-    render(<div>Hello Test</div>)
-    expect(screen.getByText('Hello Test')).toBeInTheDocument()
-  })
-})
+    render(<div>Hello Test</div>);
+    expect(screen.getByText('Hello Test')).toBeInTheDocument();
+  });
+});

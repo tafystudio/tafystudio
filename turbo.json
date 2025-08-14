@@ -41,6 +41,9 @@
     "format": {
       "inputs": ["$TURBO_DEFAULT$", ".prettierrc*"]
     },
+    "format:check": {
+      "inputs": ["$TURBO_DEFAULT$", ".prettierrc*"]
+    },
     "clean": {
       "cache": false
     }

@@ -1,4 +1,4 @@
-.PHONY: help install build dev test lint format clean docker-build docker-push deploy-dev
+.PHONY: help install build dev test lint format clean docker-build docker-push deploy-dev pre-push
 .DEFAULT_GOAL := help
 
 # Color output
@@ -70,6 +70,11 @@ help:
 	@echo "  clean                 - Clean all build artifacts"
 	@echo "  clean-deep            - Deep clean including node_modules"
 	@echo "  logs                  - Show logs from all services"
+	@echo ""
+	@echo "$(YELLOW)Pre-Push Validation:$(NC)"
+	@echo "  pre-push              - Run all checks before pushing"
+	@echo "  pre-push-quick        - Quick validation (lint only)"
+	@echo "  pre-push-full         - Full validation with integration tests"
 
 # Check if required tools are installed
 check-tools:
@@ -344,9 +349,68 @@ docs-serve: ## Serve documentation locally
 	@echo "$(GREEN)Documentation available at http://localhost:8080$(NC)"
 	cd docs && python3 -m http.server 8080
 
+# Pre-push validation
+pre-push: ## Run all checks before pushing (recommended before git push)
+	@echo "$(YELLOW)Running pre-push validation...$(NC)"
+	@echo ""
+	@echo "$(YELLOW)1/6 Checking code formatting...$(NC)"
+	@make format || { echo "$(RED)Formatting issues found!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Code formatting passed$(NC)"
+	@echo ""
+	@echo "$(YELLOW)2/6 Running linters...$(NC)"
+	@make lint || { echo "$(RED)Linting failed!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Linting passed$(NC)"
+	@echo ""
+	@echo "$(YELLOW)3/6 Running type checks...$(NC)"
+	@make typecheck || { echo "$(RED)Type checking failed!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Type checking passed$(NC)"
+	@echo ""
+	@echo "$(YELLOW)4/6 Checking documentation...$(NC)"
+	@make docs-lint || { echo "$(RED)Documentation linting failed!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Documentation passed$(NC)"
+	@echo ""
+	@echo "$(YELLOW)5/6 Running unit tests...$(NC)"
+	@make test-unit || { echo "$(RED)Unit tests failed!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Unit tests passed$(NC)"
+	@echo ""
+	@echo "$(YELLOW)6/6 Building project...$(NC)"
+	@make build || { echo "$(RED)Build failed!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Build passed$(NC)"
+	@echo ""
+	@echo "$(GREEN)🎉 All pre-push checks passed! Safe to push.$(NC)"
+
+pre-push-quick: ## Quick pre-push validation (lint and format only)
+	@echo "$(YELLOW)Running quick pre-push validation...$(NC)"
+	@make format
+	@make lint
+	@make docs-lint
+	@echo "$(GREEN)✓ Quick validation passed!$(NC)"
+
+pre-push-full: ## Full pre-push validation including integration tests
+	@echo "$(YELLOW)Running full pre-push validation...$(NC)"
+	@make pre-push
+	@echo ""
+	@echo "$(YELLOW)Running integration tests...$(NC)"
+	@make test-integration || { echo "$(RED)Integration tests failed!$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Integration tests passed$(NC)"
+	@echo ""
+	@echo "$(GREEN)🎉 Full validation passed! Safe to push.$(NC)"
+
 # Git hooks
-install-hooks:
+install-hooks: ## Install git hooks for automated checks
 	@echo "$(YELLOW)Installing git hooks...$(NC)"
-	echo '#!/bin/sh\nmake lint' > .git/hooks/pre-commit
+	@echo '#!/bin/sh' > .git/hooks/pre-commit
+	@echo '# Pre-commit hook - runs quick checks' >> .git/hooks/pre-commit
+	@echo 'echo "Running pre-commit checks..."' >> .git/hooks/pre-commit
+	@echo 'make format' >> .git/hooks/pre-commit
+	@echo 'make lint' >> .git/hooks/pre-commit
+	@echo 'make docs-lint' >> .git/hooks/pre-commit
 	chmod +x .git/hooks/pre-commit
+	@echo '#!/bin/sh' > .git/hooks/pre-push
+	@echo '# Pre-push hook - runs comprehensive checks' >> .git/hooks/pre-push
+	@echo 'echo "Running pre-push validation..."' >> .git/hooks/pre-push
+	@echo 'make pre-push' >> .git/hooks/pre-push
+	chmod +x .git/hooks/pre-push
 	@echo "$(GREEN)Git hooks installed!$(NC)"
+	@echo "  - pre-commit: Runs formatting and linting"
+	@echo "  - pre-push: Runs full validation suite"

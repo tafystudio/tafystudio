@@ -9,7 +9,7 @@ export default function Home() {
           <p className="text-xl text-tafy-700 mb-8">
             Robot Distributed Operation System
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-2xl font-semibold text-tafy-800 mb-2">
@@ -19,7 +19,7 @@ export default function Home() {
                 Discover and manage connected robots and sensors
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-2xl font-semibold text-tafy-800 mb-2">
                 📊 Flows
@@ -28,7 +28,7 @@ export default function Home() {
                 Create and deploy visual robot behaviors
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-2xl font-semibold text-tafy-800 mb-2">
                 🔧 System
@@ -38,10 +38,11 @@ export default function Home() {
               </p>
             </div>
           </div>
-          
+
           <div className="mt-16">
             <p className="text-sm text-gray-500">
-              Time to First Motion: <span className="font-bold text-tafy-600">{"<"} 30 minutes</span>
+              Time to First Motion:{' '}
+              <span className="font-bold text-tafy-600">{'<'} 30 minutes</span>
             </p>
           </div>
         </div>
