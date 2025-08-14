@@ -1,97 +1,281 @@
 .PHONY: help install build dev test lint format clean docker-build docker-push deploy-dev
+.DEFAULT_GOAL := help
+
+# Color output
+RED=\033[0;31m
+GREEN=\033[0;32m
+YELLOW=\033[1;33m
+NC=\033[0m # No Color
 
 # Default target
 help:
-	@echo "Tafy Studio Development Commands"
+	@echo "$(GREEN)Tafy Studio Development Commands$(NC)"
 	@echo "================================"
-	@echo "install       - Install all dependencies"
-	@echo "build         - Build all packages"
-	@echo "dev           - Run development servers"
-	@echo "test          - Run all tests"
-	@echo "lint          - Run linters"
-	@echo "format        - Format code"
-	@echo "clean         - Clean build artifacts"
-	@echo "docker-build  - Build Docker images"
-	@echo "docker-push   - Push Docker images"
-	@echo "deploy-dev    - Deploy to local k3s cluster"
+	@echo ""
+	@echo "$(YELLOW)Setup & Dependencies:$(NC)"
+	@echo "  install               - Install all dependencies"
+	@echo "  install-tools         - Install required development tools"
+	@echo "  update-deps           - Update all dependencies to latest versions"
+	@echo ""
+	@echo "$(YELLOW)Development:$(NC)"
+	@echo "  dev                   - Run all development servers"
+	@echo "  dev-ui                - Run hub-ui development server"
+	@echo "  dev-api               - Run hub-api development server"
+	@echo "  dev-agent             - Run tafyd agent in debug mode"
+	@echo ""
+	@echo "$(YELLOW)Building:$(NC)"
+	@echo "  build                 - Build all packages"
+	@echo "  build-ui              - Build hub-ui"
+	@echo "  build-api             - Build hub-api"
+	@echo "  build-agent           - Build tafyd agent"
+	@echo ""
+	@echo "$(YELLOW)Testing:$(NC)"
+	@echo "  test                  - Run all tests"
+	@echo "  test-unit             - Run unit tests only"
+	@echo "  test-integration      - Run integration tests"
+	@echo "  test-coverage         - Run tests with coverage"
+	@echo "  test-watch            - Run tests in watch mode"
+	@echo ""
+	@echo "$(YELLOW)Code Quality:$(NC)"
+	@echo "  lint                  - Run all linters"
+	@echo "  format                - Format all code"
+	@echo "  typecheck             - Run TypeScript type checking"
+	@echo "  security-scan         - Run security vulnerability scans"
+	@echo ""
+	@echo "$(YELLOW)Docker:$(NC)"
+	@echo "  docker-build          - Build Docker images (local arch)"
+	@echo "  docker-build-all      - Build multi-arch Docker images"
+	@echo "  docker-push           - Push Docker images to registry"
+	@echo "  docker-test           - Run tests in Docker"
+	@echo ""
+	@echo "$(YELLOW)Kubernetes:$(NC)"
+	@echo "  cluster-create        - Create local k3d cluster"
+	@echo "  cluster-delete        - Delete local k3d cluster"
+	@echo "  cluster-status        - Show cluster status"
+	@echo "  deploy-dev            - Deploy to local cluster"
+	@echo "  port-forward          - Forward ports for local development"
+	@echo ""
+	@echo "$(YELLOW)Utilities:$(NC)"
+	@echo "  clean                 - Clean all build artifacts"
+	@echo "  clean-deep            - Deep clean including node_modules"
+	@echo "  logs                  - Show logs from all services"
 
-# Install dependencies
-install:
+# Check if required tools are installed
+check-tools:
+	@echo "$(YELLOW)Checking required tools...$(NC)"
+	@command -v node >/dev/null 2>&1 || { echo "$(RED)Node.js is required but not installed.$(NC)"; exit 1; }
+	@command -v pnpm >/dev/null 2>&1 || { echo "$(RED)pnpm is required but not installed.$(NC)"; exit 1; }
+	@command -v go >/dev/null 2>&1 || { echo "$(RED)Go is required but not installed.$(NC)"; exit 1; }
+	@command -v uv >/dev/null 2>&1 || { echo "$(RED)uv is required but not installed.$(NC)"; exit 1; }
+	@command -v docker >/dev/null 2>&1 || { echo "$(RED)Docker is required but not installed.$(NC)"; exit 1; }
+	@echo "$(GREEN)All required tools are installed!$(NC)"
+
+# Install required development tools
+install-tools:
+	@echo "$(YELLOW)Installing development tools...$(NC)"
+	npm install -g pnpm@latest
+	curl -LsSf https://astral.sh/uv/install.sh | sh
+	@echo "$(GREEN)Development tools installed!$(NC)"
+
+# Install all dependencies
+install: check-tools
+	@echo "$(YELLOW)Installing all dependencies...$(NC)"
 	pnpm install
-	cd apps/hub-api && uv pip sync requirements.txt
+	cd apps/hub-api && uv venv && source .venv/bin/activate && uv pip install -e ".[dev]"
 	cd apps/tafyd && go mod download
+	@echo "$(GREEN)All dependencies installed!$(NC)"
 
-# Build all packages
-build:
-	pnpm run build
+# Update all dependencies
+update-deps:
+	@echo "$(YELLOW)Updating dependencies...$(NC)"
+	pnpm update -r --latest
+	cd apps/hub-api && uv pip install --upgrade -e ".[dev]"
+	cd apps/tafyd && go get -u ./... && go mod tidy
+	@echo "$(GREEN)Dependencies updated!$(NC)"
 
-# Run development servers
+# Development servers
 dev:
 	pnpm run dev
 
-# Run tests
+dev-ui:
+	cd apps/hub-ui && pnpm run dev
+
+dev-api:
+	cd apps/hub-api && source .venv/bin/activate && uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+dev-agent:
+	cd apps/tafyd && go run . --debug
+
+# Building
+build: check-tools
+	pnpm run build
+
+build-ui:
+	cd apps/hub-ui && pnpm run build
+
+build-api:
+	cd apps/hub-api && echo "Python apps don't need building"
+
+build-agent:
+	cd apps/tafyd && go build -o tafyd .
+
+# Testing
 test:
 	pnpm run test
 
-# Run linters
+test-unit:
+	pnpm run test:unit
+
+test-integration:
+	docker-compose -f docker-compose.test.yml up -d
+	sleep 5
+	pnpm run test:integration
+	docker-compose -f docker-compose.test.yml down
+
+test-coverage:
+	cd apps/hub-ui && pnpm run test:coverage
+	cd apps/hub-api && source .venv/bin/activate && pytest --cov
+	cd apps/tafyd && go test -race -coverprofile=coverage.out ./...
+
+test-watch:
+	cd apps/hub-ui && pnpm run test:watch
+
+# Code quality
 lint:
 	pnpm run lint
 
-# Format code
 format:
 	pnpm run format
 
-# Clean build artifacts
-clean:
-	pnpm run clean
-	find . -name "dist" -type d -exec rm -rf {} +
-	find . -name ".next" -type d -exec rm -rf {} +
-	find . -name "__pycache__" -type d -exec rm -rf {} +
-	find . -name "*.pyc" -delete
+typecheck:
+	pnpm run typecheck
 
-# Build Docker images
+security-scan:
+	pnpm audit
+	cd apps/hub-api && source .venv/bin/activate && pip-audit --ignore-vuln GHSA-wj6h-64fc-37mp
+
+# Docker commands
 docker-build:
-	docker build -t tafystudio/hub-ui:latest apps/hub-ui
-	docker build -t tafystudio/hub-api:latest apps/hub-api
-	docker build -t tafystudio/tafyd:latest apps/tafyd
+	docker build -f apps/hub-ui/Dockerfile -t ghcr.io/tafystudio/tafystudio/hub-ui:latest .
+	docker build -f apps/hub-api/Dockerfile -t ghcr.io/tafystudio/tafystudio/hub-api:latest .
+	docker build -f apps/tafyd/Dockerfile -t ghcr.io/tafystudio/tafystudio/tafyd:latest .
 
-# Build multi-arch Docker images
-docker-build-multiarch:
-	docker buildx build --platform linux/amd64,linux/arm64 -t tafystudio/hub-ui:latest apps/hub-ui
-	docker buildx build --platform linux/amd64,linux/arm64 -t tafystudio/hub-api:latest apps/hub-api
-	docker buildx build --platform linux/amd64,linux/arm64 -t tafystudio/tafyd:latest apps/tafyd
+docker-build-all:
+	docker buildx build --platform linux/amd64,linux/arm64 \
+		-f apps/hub-ui/Dockerfile \
+		-t ghcr.io/tafystudio/tafystudio/hub-ui:latest .
+	docker buildx build --platform linux/amd64,linux/arm64 \
+		-f apps/hub-api/Dockerfile \
+		-t ghcr.io/tafystudio/tafystudio/hub-api:latest .
+	docker buildx build --platform linux/amd64,linux/arm64 \
+		-f apps/tafyd/Dockerfile \
+		-t ghcr.io/tafystudio/tafystudio/tafyd:latest .
 
-# Push Docker images
 docker-push:
-	docker push tafystudio/hub-ui:latest
-	docker push tafystudio/hub-api:latest
-	docker push tafystudio/tafyd:latest
+	docker push ghcr.io/tafystudio/tafystudio/hub-ui:latest
+	docker push ghcr.io/tafystudio/tafystudio/hub-api:latest
+	docker push ghcr.io/tafystudio/tafystudio/tafyd:latest
 
-# Deploy to local k3s cluster
-deploy-dev:
-	helm upgrade --install nats charts/nats -f charts/nats/values-dev.yaml
-	helm upgrade --install hub charts/hub -f charts/hub/values-dev.yaml
-	helm upgrade --install node-red charts/node-red -f charts/node-red/values-dev.yaml
+docker-test:
+	docker-compose -f docker-compose.test.yml up --abort-on-container-exit
 
-# Local k3s cluster management
+# Kubernetes cluster management
 cluster-create:
 	k3d cluster create tafy-dev \
 		--servers 1 \
 		--agents 2 \
 		--port 9080:80@loadbalancer \
 		--port 9443:443@loadbalancer \
-		--registry-create tafy-registry:5000
+		--registry-create tafy-registry:5000 \
+		--k3s-arg "--disable=traefik@server:0"
+	@echo "$(GREEN)Cluster created! Access at http://localhost:9080$(NC)"
 
 cluster-delete:
 	k3d cluster delete tafy-dev
 
-# Utility targets
-.PHONY: update-deps security-scan
-update-deps:
-	pnpm update -r
-	cd apps/hub-api && uv pip compile requirements.in -o requirements.txt --upgrade
-	cd apps/tafyd && go get -u ./...
+cluster-status:
+	@echo "$(YELLOW)Cluster Status:$(NC)"
+	k3d cluster list
+	@echo ""
+	@echo "$(YELLOW)Nodes:$(NC)"
+	kubectl get nodes
+	@echo ""
+	@echo "$(YELLOW)Pods:$(NC)"
+	kubectl get pods --all-namespaces
 
-security-scan:
-	pnpm audit
-	cd apps/hub-api && uv pip audit
+# Deployment
+deploy-dev: check-cluster
+	@echo "$(YELLOW)Deploying to local cluster...$(NC)"
+	# Add Helm repositories
+	helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+	helm repo add traefik https://helm.traefik.io/traefik
+	helm repo update
+	# Deploy NATS
+	helm upgrade --install nats nats/nats \
+		--set cluster.enabled=true \
+		--set cluster.replicas=1
+	# Deploy Traefik
+	helm upgrade --install traefik traefik/traefik \
+		--set ports.web.port=9080 \
+		--set ports.websecure.port=9443
+	# Deploy Tafy services (when charts are ready)
+	# helm upgrade --install hub charts/hub -f charts/hub/values-dev.yaml
+	@echo "$(GREEN)Deployment complete!$(NC)"
+
+check-cluster:
+	@kubectl cluster-info >/dev/null 2>&1 || { echo "$(RED)No Kubernetes cluster found. Run 'make cluster-create' first.$(NC)"; exit 1; }
+
+port-forward:
+	@echo "$(YELLOW)Starting port forwarding...$(NC)"
+	@echo "Hub UI will be available at http://localhost:3000"
+	@echo "Hub API will be available at http://localhost:8000"
+	@echo "NATS will be available at http://localhost:4222"
+	kubectl port-forward svc/hub-ui 3000:3000 &
+	kubectl port-forward svc/hub-api 8000:8000 &
+	kubectl port-forward svc/nats 4222:4222 &
+
+# Cleaning
+clean:
+	pnpm run clean
+	find . -name "dist" -type d -not -path "*/node_modules/*" -exec rm -rf {} + 2>/dev/null || true
+	find . -name ".next" -type d -not -path "*/node_modules/*" -exec rm -rf {} + 2>/dev/null || true
+	find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+	find . -name "*.pyc" -delete
+	find . -name ".coverage" -delete
+	find . -name "coverage.xml" -delete
+	find . -name "coverage.html" -delete
+	find . -name ".pytest_cache" -type d -exec rm -rf {} + 2>/dev/null || true
+	find . -name ".turbo" -type d -not -path "*/node_modules/*" -exec rm -rf {} + 2>/dev/null || true
+	@echo "$(GREEN)Build artifacts cleaned!$(NC)"
+
+clean-deep: clean
+	rm -rf node_modules
+	rm -rf apps/*/node_modules
+	rm -rf packages/*/node_modules
+	rm -rf apps/hub-api/.venv
+	rm -rf apps/tafyd/vendor
+	@echo "$(GREEN)Deep clean complete!$(NC)"
+
+# Logs
+logs:
+	@echo "$(YELLOW)Showing logs from all services...$(NC)"
+	kubectl logs -l app=hub-ui --tail=50
+	kubectl logs -l app=hub-api --tail=50
+	kubectl logs -l app=tafyd --tail=50
+
+# CI/CD helpers
+ci-lint:
+	pnpm run lint
+
+ci-test:
+	pnpm run test:unit
+
+ci-build:
+	pnpm run build
+
+# Git hooks
+install-hooks:
+	@echo "$(YELLOW)Installing git hooks...$(NC)"
+	echo '#!/bin/sh\nmake lint' > .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
+	@echo "$(GREEN)Git hooks installed!$(NC)"

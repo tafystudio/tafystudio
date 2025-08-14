@@ -21,6 +21,10 @@ This guide helps developers set up their environment for contributing to Tafy St
 
 ### Installing Package Managers
 ```bash
+# Install all required tools
+make install-tools
+
+# Or manually:
 # Install pnpm
 npm install -g pnpm
 
@@ -66,7 +70,10 @@ cd tafystudio
 
 ### 2. Initialize Monorepo
 ```bash
-# Install dependencies with pnpm
+# Install all dependencies
+make install
+
+# Or manually:
 pnpm install
 ```
 
@@ -85,16 +92,13 @@ Start a local k3s cluster for development:
 
 ```bash
 # Create cluster with registry
-k3d cluster create tafy-dev \
-  --servers 1 \
-  --agents 2 \
-  --port 9080:80@loadbalancer \
-  --port 9443:443@loadbalancer \
-  --registry-create tafy-registry:5000 \
-  --k3s-arg "--disable=traefik@server:0"
+make cluster-create
 
-# Verify cluster
-kubectl get nodes
+# Check cluster status
+make cluster-status
+
+# Delete cluster when done
+make cluster-delete
 ```
 
 ### Deploy Core Services
@@ -127,25 +131,16 @@ For rapid development, run services outside Kubernetes:
 # Start infrastructure services with Docker Compose
 docker-compose -f docker-compose.dev.yml up -d
 
-# Run all services in development mode (using Turborepo)
-pnpm run dev
+# Run all services in development mode
+make dev
 
 # Or run individual services:
+make dev-ui      # Run Hub UI
+make dev-api     # Run Hub API  
+make dev-agent   # Run tafyd agent
 
-# Terminal 1: Run Hub UI
-cd apps/hub-ui
-pnpm run dev
-
-# Terminal 2: Run Hub API
-cd apps/hub-api
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e .
-uvicorn main:app --reload
-
-# Terminal 3: Run Node Agent
-cd apps/tafyd
-go run . --debug
+# Forward ports from Kubernetes cluster
+make port-forward
 
 # Access services:
 # Hub UI: http://localhost:3000
@@ -159,64 +154,92 @@ go run . --debug
 
 ```bash
 # Build everything
-turbo build
+make build
 
-# Build specific app
-turbo build --filter=hub-ui
-
-# Build with watching
-turbo dev
+# Build specific components
+make build-ui      # Build hub-ui
+make build-api     # Build hub-api
+make build-agent   # Build tafyd agent
 
 # Build Docker images
-make docker-build
+make docker-build      # Local architecture only
+make docker-build-all  # Multi-arch (amd64, arm64)
 
-# Build for multiple architectures
-make docker-build-multiarch
+# Push images to registry
+make docker-push
 ```
 
 ## Testing
 
-### Unit Tests
+### Test Automation
+We use automated testing across all components with Jest (React), pytest (Python), and standard Go testing.
+
 ```bash
 # Run all tests
-pnpm test
+make test
 
-# Run specific package tests
-pnpm test --filter=sdk-ts
+# Run unit tests only  
+make test-unit
 
-# Run with coverage
-pnpm test:coverage
-```
-
-### Integration Tests
-```bash
-# Run integration tests (requires local cluster)
+# Run integration tests
 make test-integration
 
-# Run HAL compliance tests
-cd tests/hal-compliance
-go test ./...
+# Run tests with coverage
+make test-coverage
+
+# Run tests in watch mode
+make test-watch
+
+# Run tests in Docker
+make docker-test
 ```
 
-### E2E Tests
+### Component-Specific Testing
 ```bash
-# Run end-to-end tests
-cd tests/e2e
-npm run test:e2e
+# Hub UI (Jest)
+cd apps/hub-ui
+pnpm test              # Run tests
+pnpm test:watch        # Watch mode
+pnpm test:coverage     # With coverage
+
+# Hub API (pytest)
+cd apps/hub-api
+source .venv/bin/activate
+pytest                 # Run tests
+pytest -v              # Verbose
+pytest --cov           # With coverage
+
+# tafyd (Go test)
+cd apps/tafyd
+go test ./...          # Run all tests
+go test -v ./...       # Verbose
+go test -race ./...    # Race detection
+go test -cover ./...   # With coverage
 ```
+
+### CI/CD Test Pipeline
+Tests automatically run on GitHub Actions for:
+- Multiple Node.js versions (20, 22)
+- Multiple Python versions (3.11, 3.12)
+- Go 1.23
+- Integration tests with Docker Compose
+- Coverage reporting to Codecov
 
 ## Code Style
 
-### Linting
+### Linting and Code Quality
 ```bash
 # Run all linters
-turbo lint
+make lint
 
-# Fix auto-fixable issues
-turbo lint:fix
+# Format all code
+make format
 
-# Type checking
-turbo typecheck
+# Run TypeScript type checking
+make typecheck
+
+# Run security vulnerability scans
+make security-scan
 ```
 
 ### Formatting
@@ -229,11 +252,8 @@ We use:
 - **Tailwind CSS v4**: We use Tailwind CSS v4 which requires the `@tailwindcss/postcss` plugin. This is already configured in the hub-ui project.
 
 ```bash
-# Format all code
-turbo format
-
-# Check formatting
-turbo format:check
+# Install git pre-commit hooks
+make install-hooks
 ```
 
 ## Working with Different Components
@@ -406,26 +426,49 @@ make sbom
 
 ## Useful Commands
 
+### Development
 ```bash
-# Watch logs from all services
-kubectl logs -f -l app=tafy --all-containers
+# Check if all tools are installed
+make check-tools
 
-# SSH into k3d node
-docker exec -it k3d-tafy-dev-agent-0 sh
-
-# Clean everything
-make clean
-k3d cluster delete tafy-dev
-
-# Update all dependencies
+# Update all dependencies to latest
 make update-deps
 
-# Generate API clients from OpenAPI
-make generate-api-clients
-
-# Run security scan
-make security-scan
+# View logs from Kubernetes services
+make logs
 ```
+
+### Cleaning
+```bash
+# Clean build artifacts
+make clean
+
+# Deep clean (includes node_modules)
+make clean-deep
+```
+
+### CI/CD Helpers
+```bash
+# Commands used by GitHub Actions
+make ci-lint      # Run linters
+make ci-test      # Run unit tests
+make ci-build     # Build all packages
+```
+
+### Kubernetes Operations
+```bash
+# Deploy to local cluster
+make deploy-dev
+
+# Check cluster status
+make cluster-status
+
+# Forward ports for local access
+make port-forward
+```
+
+### Complete Makefile Reference
+Run `make help` to see all available commands with descriptions.
 
 ## Getting Help
 

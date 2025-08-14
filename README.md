@@ -40,6 +40,8 @@ Tafy Studio is a comprehensive framework for building and operating robots. Unli
 - [Architecture](docs/ARCHITECTURE.md) - Technical design and structure
 - [Concepts](docs/CONCEPTS.md) - Key terminology explained
 - [Development Setup](docs/DEVELOPMENT_SETUP.md) - Get started contributing
+- [Testing Guide](docs/TESTING.md) - Testing strategy and practices
+- [Security Policy](docs/SECURITY.md) - Security practices and vulnerability reporting
 
 ## Quick Start
 
@@ -59,20 +61,26 @@ open https://tafy.local
 git clone https://github.com/tafystudio/tafystudio.git
 cd tafystudio
 
-# Install pnpm (if not already installed)
-npm install -g pnpm
+# Install required tools
+make install-tools
 
 # Install dependencies
-pnpm install
+make install
 
 # Start local development services
 docker-compose -f docker-compose.dev.yml up -d
 
 # Run development servers
-pnpm run dev
+make dev
+
+# Run tests
+make test
 
 # Access the Hub UI
 open http://localhost:3000
+
+# See all available commands
+make help
 ```
 
 ## License
