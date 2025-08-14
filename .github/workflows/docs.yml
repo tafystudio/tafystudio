@@ -237,8 +237,8 @@ jobs:
           publish_dir: ./docs-build
           destination_dir: docs
           commit_message: "docs: update documentation from main repository"
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+          user_name: 'Tafy Studio Bot'
+          user_email: 'bot@tafy.studio'
 
   summary:
     name: Documentation Summary

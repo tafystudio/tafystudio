@@ -16,7 +16,7 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 ### How to Report
 
 1. **DO NOT** create a public GitHub issue for security vulnerabilities
-2. Email security@tafystudio.com with:
+2. Email [security@tafy.studio](mailto:security@tafy.studio) with:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact
@@ -93,6 +93,6 @@ For regulated environments, please contact us to discuss specific compliance req
 
 ## Contact
 
-- Security issues: security@tafystudio.com
+- Security issues: [security@tafy.studio](mailto:security@tafy.studio)
 - General questions: GitHub Discussions
 - Commercial support: Available for enterprise deployments
