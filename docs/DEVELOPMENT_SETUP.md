@@ -7,8 +7,8 @@ This guide helps developers set up their environment for contributing to Tafy St
 ## Prerequisites
 
 ### Required Tools
-- **Node.js** 18+ and pnpm
-- **Go** 1.21+
+- **Node.js** 20+ and pnpm 9+
+- **Go** 1.23+
 - **Python** 3.11+ with uv
 - **Docker** with buildx plugin
 - **Git** 2.30+
@@ -140,7 +140,7 @@ pnpm run dev
 cd apps/hub-api
 uv venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip sync requirements.txt
+uv pip install -e .
 uvicorn main:app --reload
 
 # Terminal 3: Run Node Agent
@@ -224,6 +224,9 @@ We use:
 - **Prettier** for TypeScript/JavaScript
 - **Black** for Python
 - **gofmt** for Go
+
+### Frontend Notes
+- **Tailwind CSS v4**: We use Tailwind CSS v4 which requires the `@tailwindcss/postcss` plugin. This is already configured in the hub-ui project.
 
 ```bash
 # Format all code
