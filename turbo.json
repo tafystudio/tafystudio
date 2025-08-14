@@ -17,7 +17,22 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "inputs": ["$TURBO_DEFAULT$", "jest.config.*", "vitest.config.*"]
+      "inputs": ["$TURBO_DEFAULT$", "jest.config.*", "vitest.config.*", "pytest.ini", "**/__tests__/**", "**/tests/**"]
+    },
+    "test:unit": {
+      "inputs": ["$TURBO_DEFAULT$", "jest.config.*", "vitest.config.*", "pytest.ini", "**/__tests__/**", "**/tests/**"],
+      "outputs": ["coverage/**"],
+      "cache": false
+    },
+    "test:integration": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$", "jest.config.*", "**/integration/**"],
+      "cache": false
+    },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$", "**/e2e/**"],
+      "cache": false
     },
     "typecheck": {
       "dependsOn": ["^build"],
