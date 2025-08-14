@@ -5,6 +5,8 @@ FastAPI backend for the Robot Distributed Operation System
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from contextlib import asynccontextmanager
 import structlog
 
@@ -12,6 +14,15 @@ from app.core.config import settings
 from app.api.v1.api import api_router
 from app.core.nats import nats_client
 from app.core.logging import configure_logging
+from app.middleware.logging import LoggingMiddleware
+from app.services.nats_service import nats_service
+from app.core.exceptions import (
+    TafyException,
+    tafy_exception_handler,
+    validation_exception_handler,
+    http_exception_handler,
+    general_exception_handler,
+)
 
 # Configure structured logging
 configure_logging()
@@ -28,6 +39,9 @@ async def lifespan(app: FastAPI):
     await nats_client.connect()
     logger.info("Connected to NATS", url=settings.NATS_URL)
     
+    # Set up NATS subscriptions
+    await nats_service.setup_standard_subscriptions()
+    
     yield
     
     # Shutdown
@@ -42,6 +56,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Add middleware
+app.add_middleware(LoggingMiddleware)
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -50,6 +67,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add exception handlers
+app.add_exception_handler(TafyException, tafy_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 # Include API router
 app.include_router(api_router, prefix=settings.API_V1_STR)

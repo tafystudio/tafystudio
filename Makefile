@@ -36,6 +36,11 @@ help:
 	@echo "  test-coverage         - Run tests with coverage"
 	@echo "  test-watch            - Run tests in watch mode"
 	@echo ""
+	@echo "$(YELLOW)Hub API:$(NC)"
+	@echo "  hub-api-init-db       - Initialize Hub API database"
+	@echo "  hub-api-migrate       - Run database migrations"
+	@echo "  hub-api-shell         - Start interactive Python shell"
+	@echo ""
 	@echo "$(YELLOW)Code Quality:$(NC)"
 	@echo "  lint                  - Run all linters"
 	@echo "  format                - Format all code"
@@ -101,7 +106,7 @@ dev-ui:
 	cd apps/hub-ui && pnpm run dev
 
 dev-api:
-	cd apps/hub-api && source .venv/bin/activate && uvicorn main:app --reload --host 0.0.0.0 --port 8000
+	cd apps/hub-api && uv run uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 dev-agent:
 	cd apps/tafyd && go run . --debug
@@ -134,11 +139,24 @@ test-integration:
 
 test-coverage:
 	cd apps/hub-ui && pnpm run test:coverage
-	cd apps/hub-api && source .venv/bin/activate && pytest --cov
+	cd apps/hub-api && uv run pytest --cov
 	cd apps/tafyd && go test -race -coverprofile=coverage.out ./...
 
 test-watch:
 	cd apps/hub-ui && pnpm run test:watch
+
+# Hub API specific commands
+hub-api-init-db: ## Initialize Hub API database
+	@echo "$(GREEN)Initializing database...$(NC)"
+	cd apps/hub-api && uv run python -m app.db.init_db
+
+hub-api-migrate: ## Run database migrations
+	@echo "$(GREEN)Running database migrations...$(NC)"
+	cd apps/hub-api && uv run alembic upgrade head
+
+hub-api-shell: ## Start interactive Python shell with app context
+	@echo "$(GREEN)Starting interactive shell...$(NC)"
+	cd apps/hub-api && uv run python -i -c "from app.core.config import settings; from app.services import *; print('Hub API shell ready')"
 
 # Code quality
 lint:

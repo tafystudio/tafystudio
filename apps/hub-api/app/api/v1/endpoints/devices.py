@@ -2,60 +2,63 @@
 Device management endpoints
 """
 
-from fastapi import APIRouter, HTTPException
-from typing import List, Dict, Any
+from typing import List, Optional, Dict, Any
+from fastapi import APIRouter, HTTPException, Query, Body
 import structlog
+
+from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceResponse, DeviceList, DeviceStatus
+from app.services.device_service import device_service
 
 router = APIRouter()
 logger = structlog.get_logger()
 
 
-@router.get("/", response_model=List[Dict[str, Any]])
-async def list_devices():
+@router.get("/", response_model=DeviceList)
+async def list_devices(
+    status: Optional[DeviceStatus] = Query(None, description="Filter by device status")
+):
     """List all discovered devices"""
-    # TODO: Implement device listing from NATS KV or database
-    return [
-        {
-            "id": "esp32-demo-001",
-            "name": "Demo Robot",
-            "type": "differential_drive",
-            "capabilities": ["motor.differential:v1.0", "sensor.range.tof:v1.0"],
-            "status": "online",
-            "last_seen": "2024-03-14T10:30:00Z",
-        }
-    ]
+    devices = await device_service.list_devices(status=status)
+    return DeviceList(devices=devices, total=len(devices))
 
 
-@router.get("/{device_id}")
+@router.get("/{device_id}", response_model=DeviceResponse)
 async def get_device(device_id: str):
     """Get device details"""
-    # TODO: Implement device retrieval
-    return {
-        "id": device_id,
-        "name": "Demo Robot",
-        "type": "differential_drive",
-        "capabilities": ["motor.differential:v1.0", "sensor.range.tof:v1.0"],
-        "status": "online",
-        "last_seen": "2024-03-14T10:30:00Z",
-        "telemetry": {
-            "battery_volts": 12.1,
-            "uptime_seconds": 3600,
-            "cpu_percent": 23.5,
-        }
-    }
+    device = await device_service.get_device(device_id)
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return device
 
 
-@router.post("/{device_id}/claim")
+@router.post("/", response_model=DeviceResponse)
+async def create_device(device_data: DeviceCreate):
+    """Register a new device"""
+    return await device_service.create_device(device_data)
+
+
+@router.patch("/{device_id}", response_model=DeviceResponse)
+async def update_device(device_id: str, update_data: DeviceUpdate):
+    """Update device information"""
+    device = await device_service.update_device(device_id, update_data)
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return device
+
+
+@router.post("/{device_id}/claim", response_model=DeviceResponse)
 async def claim_device(device_id: str):
-    """Claim an unclaimed device"""
-    logger.info("Claiming device", device_id=device_id)
-    # TODO: Implement device claiming
-    return {"status": "claimed", "device_id": device_id}
+    """Claim a device for this hub"""
+    device = await device_service.claim_device(device_id)
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return device
 
 
 @router.post("/{device_id}/command")
-async def send_command(device_id: str, command: Dict[str, Any]):
+async def send_command(device_id: str, command: Dict[str, Any] = Body(...)):
     """Send command to device"""
-    logger.info("Sending command to device", device_id=device_id, command=command)
-    # TODO: Implement command sending via NATS
-    return {"status": "sent", "device_id": device_id}
+    success = await device_service.send_command(device_id, command)
+    if not success:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return {"status": "sent", "device_id": device_id, "command": command}
