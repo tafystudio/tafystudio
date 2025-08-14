@@ -3,8 +3,30 @@ name: CI
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'turbo.json'
+      - 'Dockerfile*'
+      - '**/*.Dockerfile'
+      - '.github/workflows/ci.yml'
+      - '!apps/**/*.md'
+      - '!packages/**/*.md'
   pull_request:
     branches: [main]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'turbo.json'
+      - 'Dockerfile*'
+      - '**/*.Dockerfile'
+      - '.github/workflows/ci.yml'
+      - '!apps/**/*.md'
+      - '!packages/**/*.md'
 
 permissions:
   contents: read
