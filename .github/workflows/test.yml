@@ -83,9 +83,8 @@ jobs:
         run: |
           cd apps/hub-api
           uv venv
-          source .venv/bin/activate
           uv pip install -e ".[dev]"
-          pytest -v --cov=. --cov-report=xml
+          uv run pytest -v --cov=. --cov-report=xml
           
       - name: Upload Python coverage
         if: matrix.python-version == '3.11'
@@ -153,7 +152,7 @@ jobs:
         
       - name: Start services
         run: |
-          docker-compose -f docker-compose.test.yml up -d
+          docker compose -f docker-compose.test.yml up -d
           sleep 10
           
       - name: Run integration tests
@@ -161,4 +160,4 @@ jobs:
         
       - name: Stop services
         if: always()
-        run: docker-compose -f docker-compose.test.yml down
+        run: docker compose -f docker-compose.test.yml down

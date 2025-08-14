@@ -21,15 +21,29 @@ describe('NATS Connectivity', () => {
     const subject = 'test.integration';
     const testMessage = { test: 'data', timestamp: Date.now() };
 
-    // Create subscription
-    const sub = nc.subscribe(subject);
+    // Create a promise to wait for the message
+    const messageReceived = new Promise((resolve) => {
+      // Subscribe with a callback
+      nc.subscribe(subject, {
+        callback: (err, msg) => {
+          if (err) {
+            resolve(err);
+          } else {
+            const received = JSON.parse(msg.data.toString());
+            resolve(received);
+          }
+        },
+        max: 1
+      });
+    });
     
-    // Publish message
-    nc.publish(subject, JSON.stringify(testMessage));
+    // Publish message after subscription is set up
+    setTimeout(() => {
+      nc.publish(subject, JSON.stringify(testMessage));
+    }, 100);
 
     // Wait for message
-    const msg = await sub.next();
-    const received = JSON.parse(msg.data);
+    const received = await messageReceived;
     
     expect(received).toEqual(testMessage);
   });

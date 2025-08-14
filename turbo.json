@@ -25,8 +25,8 @@
       "cache": false
     },
     "test:integration": {
-      "dependsOn": ["build"],
-      "inputs": ["$TURBO_DEFAULT$", "jest.config.*", "**/integration/**"],
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "jest.config.*", "**/integration/**", "docker-compose.test.yml"],
       "cache": false
     },
     "test:e2e": {
