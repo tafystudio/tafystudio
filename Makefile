@@ -36,6 +36,12 @@ help:
 	@echo "  test-coverage         - Run tests with coverage"
 	@echo "  test-watch            - Run tests in watch mode"
 	@echo ""
+	@echo "$(YELLOW)Documentation:$(NC)"
+	@echo "  docs-lint             - Lint markdown documentation"
+	@echo "  docs-fix              - Fix markdown linting issues"
+	@echo "  docs-links            - Check documentation links"
+	@echo "  docs-serve            - Serve documentation locally"
+	@echo ""
 	@echo "$(YELLOW)Hub API:$(NC)"
 	@echo "  hub-api-init-db       - Initialize Hub API database"
 	@echo "  hub-api-migrate       - Run database migrations"
@@ -290,6 +296,53 @@ ci-test:
 
 ci-build:
 	pnpm run build
+
+# Documentation commands
+docs-lint: ## Lint markdown documentation
+	@echo "$(YELLOW)Linting documentation...$(NC)"
+	@command -v markdownlint >/dev/null 2>&1 || npm install -g markdownlint-cli
+	markdownlint '**/*.md' \
+		--ignore node_modules \
+		--ignore .venv \
+		--ignore '**/node_modules/**' \
+		--ignore '**/dist/**' \
+		--ignore '**/.next/**'
+
+docs-fix: ## Fix markdown linting issues
+	@echo "$(YELLOW)Fixing documentation linting issues...$(NC)"
+	@command -v markdownlint >/dev/null 2>&1 || npm install -g markdownlint-cli
+	markdownlint '**/*.md' --fix \
+		--ignore node_modules \
+		--ignore .venv \
+		--ignore '**/node_modules/**' \
+		--ignore '**/dist/**' \
+		--ignore '**/.next/**'
+	@echo "$(GREEN)Documentation linting issues fixed!$(NC)"
+
+docs-links: ## Check documentation links
+	@echo "$(YELLOW)Checking documentation links...$(NC)"
+	@command -v lychee >/dev/null 2>&1 || { echo "$(RED)lychee is required. Install from https://github.com/lycheeverse/lychee$(NC)"; exit 1; }
+	lychee --verbose \
+		--no-progress \
+		--accept 200,204,206 \
+		--timeout 20 \
+		--max-retries 3 \
+		--exclude-all-private \
+		--exclude 'localhost' \
+		--exclude '127.0.0.1' \
+		--exclude 'example.com' \
+		--exclude 'tafy.local' \
+		--exclude-path .venv \
+		--exclude-path node_modules \
+		--exclude-path .next \
+		--exclude-path dist \
+		docs/**/*.md README.md
+
+docs-serve: ## Serve documentation locally
+	@echo "$(YELLOW)Starting documentation server...$(NC)"
+	@command -v python3 >/dev/null 2>&1 || { echo "$(RED)Python 3 is required$(NC)"; exit 1; }
+	@echo "$(GREEN)Documentation available at http://localhost:8080$(NC)"
+	cd docs && python3 -m http.server 8080
 
 # Git hooks
 install-hooks:
