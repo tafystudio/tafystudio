@@ -34,7 +34,7 @@ const mockDevices: Device[] = [
 ];
 
 export default function DevicesPage() {
-  const [devices, setDevices] = useState<Device[]>(mockDevices);
+  const [devices] = useState<Device[]>(mockDevices);
 
   return (
     <div className="container mx-auto px-4 py-8">

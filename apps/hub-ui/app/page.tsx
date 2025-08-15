@@ -1,8 +1,12 @@
+'use client';
+
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   return (
     <div className="bg-gradient-to-b from-tafy-50 to-white">
       <div className="container mx-auto px-4 py-16">
@@ -64,7 +68,7 @@ export default function Home() {
             title="Devices"
             icon="🤖"
             className="hover:border-tafy-200 border-2 border-transparent"
-            onClick={() => (window.location.href = '/devices')}
+            onClick={() => router.push('/devices')}
           >
             <p className="text-gray-600 mb-4">
               Discover and manage connected robots and sensors
@@ -78,7 +82,7 @@ export default function Home() {
             title="Flows"
             icon="📊"
             className="hover:border-tafy-200 border-2 border-transparent"
-            onClick={() => (window.location.href = '/flows')}
+            onClick={() => router.push('/flows')}
           >
             <p className="text-gray-600 mb-4">
               Create and deploy visual robot behaviors
@@ -92,7 +96,7 @@ export default function Home() {
             title="System"
             icon="🔧"
             className="hover:border-tafy-200 border-2 border-transparent"
-            onClick={() => (window.location.href = '/system')}
+            onClick={() => router.push('/system')}
           >
             <p className="text-gray-600 mb-4">
               Monitor health and configure your cluster
@@ -113,10 +117,7 @@ export default function Home() {
               <li>Deploy to your device and watch it move!</li>
             </ol>
             <div className="mt-4">
-              <Button
-                variant="ghost"
-                onClick={() => (window.location.href = '/docs')}
-              >
+              <Button variant="ghost" onClick={() => router.push('/docs')}>
                 View Documentation →
               </Button>
             </div>
