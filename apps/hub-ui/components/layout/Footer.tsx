@@ -8,7 +8,7 @@ export default function Footer() {
               © 2024 Tafy Studio • Apache 2.0 License
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             <a
               href="https://github.com/tafystudio"
@@ -25,7 +25,8 @@ export default function Footer() {
               Documentation
             </a>
             <span className="text-sm text-gray-500">
-              Time to First Motion: <span className="font-bold text-tafy-600">{'<'} 30 min</span>
+              Time to First Motion:{' '}
+              <span className="font-bold text-tafy-600">{'<'} 30 min</span>
             </span>
           </div>
         </div>

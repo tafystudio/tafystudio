@@ -47,8 +47,12 @@ export default function StatusBadge({ status, label }: StatusBadgeProps) {
   const displayLabel = label || config.defaultLabel;
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor}`}>
-      <span className={`w-2 h-2 rounded-full ${config.dotColor} mr-1.5 ${status === 'online' ? 'animate-pulse' : ''}`}></span>
+    <span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor}`}
+    >
+      <span
+        className={`w-2 h-2 rounded-full ${config.dotColor} mr-1.5 ${status === 'online' ? 'animate-pulse' : ''}`}
+      ></span>
       {displayLabel}
     </span>
   );

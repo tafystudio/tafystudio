@@ -26,7 +26,7 @@ export default function Home() {
               <StatusBadge status="offline" label="No devices" />
             </div>
           </Card>
-          
+
           <Card>
             <div className="flex items-center justify-between">
               <div>
@@ -36,7 +36,7 @@ export default function Home() {
               <StatusBadge status="warning" label="None active" />
             </div>
           </Card>
-          
+
           <Card>
             <div className="flex items-center justify-between">
               <div>
@@ -46,7 +46,7 @@ export default function Home() {
               <StatusBadge status="online" label="Healthy" />
             </div>
           </Card>
-          
+
           <Card>
             <div className="flex items-center justify-between">
               <div>
@@ -60,11 +60,11 @@ export default function Home() {
 
         {/* Main Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <Card 
-            title="Devices" 
+          <Card
+            title="Devices"
             icon="🤖"
             className="hover:border-tafy-200 border-2 border-transparent"
-            onClick={() => window.location.href = '/devices'}
+            onClick={() => (window.location.href = '/devices')}
           >
             <p className="text-gray-600 mb-4">
               Discover and manage connected robots and sensors
@@ -74,11 +74,11 @@ export default function Home() {
             </Button>
           </Card>
 
-          <Card 
-            title="Flows" 
+          <Card
+            title="Flows"
             icon="📊"
             className="hover:border-tafy-200 border-2 border-transparent"
-            onClick={() => window.location.href = '/flows'}
+            onClick={() => (window.location.href = '/flows')}
           >
             <p className="text-gray-600 mb-4">
               Create and deploy visual robot behaviors
@@ -88,11 +88,11 @@ export default function Home() {
             </Button>
           </Card>
 
-          <Card 
-            title="System" 
+          <Card
+            title="System"
             icon="🔧"
             className="hover:border-tafy-200 border-2 border-transparent"
-            onClick={() => window.location.href = '/system'}
+            onClick={() => (window.location.href = '/system')}
           >
             <p className="text-gray-600 mb-4">
               Monitor health and configure your cluster
@@ -113,7 +113,10 @@ export default function Home() {
               <li>Deploy to your device and watch it move!</li>
             </ol>
             <div className="mt-4">
-              <Button variant="ghost" onClick={() => window.location.href = '/docs'}>
+              <Button
+                variant="ghost"
+                onClick={() => (window.location.href = '/docs')}
+              >
                 View Documentation →
               </Button>
             </div>

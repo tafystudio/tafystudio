@@ -8,12 +8,19 @@ interface CardProps {
   onClick?: () => void;
 }
 
-export default function Card({ title, icon, children, className = '', onClick }: CardProps) {
-  const baseClasses = 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6';
+export default function Card({
+  title,
+  icon,
+  children,
+  className = '',
+  onClick,
+}: CardProps) {
+  const baseClasses =
+    'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6';
   const clickableClasses = onClick ? 'cursor-pointer' : '';
-  
+
   return (
-    <div 
+    <div
       className={`${baseClasses} ${clickableClasses} ${className}`}
       onClick={onClick}
     >
