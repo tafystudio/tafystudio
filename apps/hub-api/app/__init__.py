@@ -1,0 +1,1 @@
+"""Tafy Hub API application package."""

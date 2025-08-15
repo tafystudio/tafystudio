@@ -173,10 +173,8 @@ jobs:
           echo "Generating API documentation..."
           mkdir -p docs-build/api
           
-          # TypeScript/JavaScript API docs
-          if [ -d "apps/hub-ui" ]; then
-            pnpm exec typedoc --out docs-build/api/typescript apps/hub-ui/app
-          fi
+          # TypeScript/JavaScript API docs - Skip for now, needs proper configuration
+          echo "TypeScript API documentation will be generated in a future update" > docs-build/api/typescript.md
           
           # Python API docs
           if [ -d "apps/hub-api" ]; then
