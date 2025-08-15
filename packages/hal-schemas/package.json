@@ -10,8 +10,7 @@
     "generate:types": "tsx scripts/generate-types.ts",
     "generate:python": "python scripts/generate-python-types.py",
     "validate": "ajv compile -s schemas/**/*.json",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.tsx"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "robotics",
