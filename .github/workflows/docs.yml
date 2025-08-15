@@ -166,7 +166,7 @@ jobs:
           
       - name: Install dependencies
         run: |
-          pnpm add -D typedoc
+          pnpm add -D -w typedoc
           
       - name: Generate API documentation
         run: |
