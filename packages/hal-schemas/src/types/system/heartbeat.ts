@@ -1,0 +1,61 @@
+/* eslint-disable */
+
+/**
+ * Periodic heartbeat message from devices
+ */
+export interface DeviceHeartbeat {
+  /**
+   * Device uptime in seconds
+   */
+  uptime_seconds: number;
+  /**
+   * Current device status
+   */
+  status: 'idle' | 'active' | 'error' | 'maintenance' | 'emergency_stop';
+  health: {
+    /**
+     * CPU usage percentage
+     */
+    cpu_percent: number;
+    /**
+     * Memory usage percentage
+     */
+    memory_percent: number;
+    /**
+     * System temperature
+     */
+    temperature_celsius: number;
+    /**
+     * Battery level percentage (if applicable)
+     */
+    battery_percent?: number;
+    /**
+     * Supply voltage
+     */
+    voltage_volts?: number;
+    /**
+     * Storage usage percentage
+     */
+    storage_percent?: number;
+    [k: string]: unknown;
+  };
+  /**
+   * Currently active capabilities
+   */
+  active_capabilities?: string[];
+  /**
+   * Number of errors since last heartbeat
+   */
+  error_count?: number;
+  /**
+   * Current warning messages
+   */
+  warnings?: string[];
+  metrics?: {
+    messages_sent?: number;
+    messages_received?: number;
+    commands_executed?: number;
+    commands_failed?: number;
+    [k: string]: unknown;
+  };
+}

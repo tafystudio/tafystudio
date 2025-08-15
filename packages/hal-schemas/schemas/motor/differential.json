@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/motor/differential/1.0",
+  "title": "Differential Drive Motor Command",
+  "description": "Command schema for differential drive motors",
+  "type": "object",
+  "required": ["linear_meters_per_sec", "angular_rad_per_sec"],
+  "properties": {
+    "linear_meters_per_sec": {
+      "type": "number",
+      "minimum": -10,
+      "maximum": 10,
+      "description": "Linear velocity in meters per second"
+    },
+    "angular_rad_per_sec": {
+      "type": "number",
+      "minimum": -6.28,
+      "maximum": 6.28,
+      "description": "Angular velocity in radians per second"
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 60000,
+      "description": "Optional duration in milliseconds (0 = indefinite)"
+    },
+    "acceleration_meters_per_sec2": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Optional linear acceleration limit"
+    },
+    "angular_acceleration_rad_per_sec2": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Optional angular acceleration limit"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "normal", "high", "emergency"],
+      "default": "normal",
+      "description": "Command priority for queue management"
+    }
+  },
+  "additionalProperties": false
+}

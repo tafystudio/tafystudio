@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/motor/differential-telemetry/1.0",
+  "title": "Differential Drive Motor Telemetry",
+  "description": "Telemetry data from differential drive motors",
+  "type": "object",
+  "required": ["actual_linear_meters_per_sec", "actual_angular_rad_per_sec", "odometry"],
+  "properties": {
+    "actual_linear_meters_per_sec": {
+      "type": "number",
+      "description": "Actual linear velocity in meters per second"
+    },
+    "actual_angular_rad_per_sec": {
+      "type": "number",
+      "description": "Actual angular velocity in radians per second"
+    },
+    "commanded_linear_meters_per_sec": {
+      "type": "number",
+      "description": "Last commanded linear velocity"
+    },
+    "commanded_angular_rad_per_sec": {
+      "type": "number",
+      "description": "Last commanded angular velocity"
+    },
+    "odometry": {
+      "type": "object",
+      "required": ["x_meters", "y_meters", "theta_rad"],
+      "properties": {
+        "x_meters": {
+          "type": "number",
+          "description": "X position in meters (robot frame)"
+        },
+        "y_meters": {
+          "type": "number",
+          "description": "Y position in meters (robot frame)"
+        },
+        "theta_rad": {
+          "type": "number",
+          "description": "Orientation in radians"
+        },
+        "distance_meters": {
+          "type": "number",
+          "description": "Total distance traveled in meters"
+        }
+      }
+    },
+    "wheel_velocities": {
+      "type": "object",
+      "properties": {
+        "left_meters_per_sec": {
+          "type": "number",
+          "description": "Left wheel velocity"
+        },
+        "right_meters_per_sec": {
+          "type": "number",
+          "description": "Right wheel velocity"
+        }
+      }
+    },
+    "current_draw_amps": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total current draw in amperes"
+    },
+    "temperature_celsius": {
+      "type": "number",
+      "description": "Motor controller temperature"
+    },
+    "error_code": {
+      "type": "string",
+      "description": "Error code if any"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["idle", "moving", "stalled", "error", "emergency_stop"],
+      "description": "Current motor status"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/sensor/imu/1.0",
+  "title": "Inertial Measurement Unit Data",
+  "description": "Data from IMU sensors (accelerometer, gyroscope, magnetometer)",
+  "type": "object",
+  "required": ["acceleration", "angular_velocity"],
+  "properties": {
+    "acceleration": {
+      "type": "object",
+      "required": ["x_meters_per_sec2", "y_meters_per_sec2", "z_meters_per_sec2"],
+      "properties": {
+        "x_meters_per_sec2": {
+          "type": "number",
+          "description": "X-axis acceleration in m/s²"
+        },
+        "y_meters_per_sec2": {
+          "type": "number",
+          "description": "Y-axis acceleration in m/s²"
+        },
+        "z_meters_per_sec2": {
+          "type": "number",
+          "description": "Z-axis acceleration in m/s²"
+        }
+      }
+    },
+    "angular_velocity": {
+      "type": "object",
+      "required": ["x_rad_per_sec", "y_rad_per_sec", "z_rad_per_sec"],
+      "properties": {
+        "x_rad_per_sec": {
+          "type": "number",
+          "description": "X-axis angular velocity in rad/s"
+        },
+        "y_rad_per_sec": {
+          "type": "number",
+          "description": "Y-axis angular velocity in rad/s"
+        },
+        "z_rad_per_sec": {
+          "type": "number",
+          "description": "Z-axis angular velocity in rad/s"
+        }
+      }
+    },
+    "magnetic_field": {
+      "type": "object",
+      "properties": {
+        "x_gauss": {
+          "type": "number",
+          "description": "X-axis magnetic field in Gauss"
+        },
+        "y_gauss": {
+          "type": "number",
+          "description": "Y-axis magnetic field in Gauss"
+        },
+        "z_gauss": {
+          "type": "number",
+          "description": "Z-axis magnetic field in Gauss"
+        }
+      }
+    },
+    "orientation": {
+      "type": "object",
+      "properties": {
+        "quaternion": {
+          "type": "object",
+          "required": ["w", "x", "y", "z"],
+          "properties": {
+            "w": { "type": "number" },
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          }
+        },
+        "euler": {
+          "type": "object",
+          "properties": {
+            "roll_rad": {
+              "type": "number",
+              "description": "Roll angle in radians"
+            },
+            "pitch_rad": {
+              "type": "number",
+              "description": "Pitch angle in radians"
+            },
+            "yaw_rad": {
+              "type": "number",
+              "description": "Yaw angle in radians"
+            }
+          }
+        }
+      }
+    },
+    "temperature_celsius": {
+      "type": "number",
+      "description": "IMU temperature"
+    },
+    "calibration_status": {
+      "type": "object",
+      "properties": {
+        "system": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "accelerometer": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "gyroscope": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "magnetometer": { "type": "integer", "minimum": 0, "maximum": 3 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

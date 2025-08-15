@@ -1,0 +1,47 @@
+/* eslint-disable */
+
+/**
+ * Data from Time of Flight (ToF) range sensors
+ */
+export interface TimeOfFlightRangeSensorData {
+  /**
+   * Unique identifier for this sensor on the device
+   */
+  sensor_id: string;
+  /**
+   * Measured range in meters
+   */
+  range_meters: number;
+  /**
+   * Measurement quality/confidence percentage
+   */
+  quality: number;
+  /**
+   * Minimum measurable range for this sensor
+   */
+  min_range_meters?: number;
+  /**
+   * Maximum measurable range for this sensor
+   */
+  max_range_meters?: number;
+  /**
+   * Field of view in degrees
+   */
+  field_of_view_deg?: number;
+  /**
+   * Ambient light level (sensor specific units)
+   */
+  ambient_light_level?: number;
+  /**
+   * Sensor temperature
+   */
+  temperature_celsius?: number;
+  /**
+   * Sensor status
+   */
+  status?: 'ok' | 'out_of_range' | 'low_signal' | 'high_ambient_light' | 'error';
+  /**
+   * Raw sensor reading for debugging
+   */
+  raw_value?: number;
+}

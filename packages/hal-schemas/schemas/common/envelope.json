@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/common/envelope/1.0",
+  "title": "HAL Message Envelope",
+  "description": "Standard envelope for all HAL messages",
+  "type": "object",
+  "required": ["hal_major", "hal_minor", "schema", "device_id", "caps", "ts", "payload"],
+  "properties": {
+    "hal_major": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Major version of HAL specification"
+    },
+    "hal_minor": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Minor version of HAL specification"
+    },
+    "schema": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+/hal/[a-z0-9-]+/[a-z0-9-]+/[0-9]+\\.[0-9]+$",
+      "description": "Schema identifier for payload (e.g., tafylabs/hal/motor/differential/1.0)"
+    },
+    "device_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-zA-Z0-9-_]+$",
+      "description": "Unique device identifier"
+    },
+    "caps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+:v[0-9]+\\.[0-9]+$"
+      },
+      "uniqueItems": true,
+      "description": "Array of capability strings with versions (e.g., motor.differential:v1.0)"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Message payload conforming to schema"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Optional sequence number for ordering"
+    },
+    "correlation_id": {
+      "type": "string",
+      "description": "Optional correlation ID for request/response patterns"
+    }
+  },
+  "additionalProperties": false
+}

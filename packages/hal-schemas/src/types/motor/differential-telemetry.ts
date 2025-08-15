@@ -1,0 +1,69 @@
+/* eslint-disable */
+
+/**
+ * Telemetry data from differential drive motors
+ */
+export interface DifferentialDriveMotorTelemetry {
+  /**
+   * Actual linear velocity in meters per second
+   */
+  actual_linear_meters_per_sec: number;
+  /**
+   * Actual angular velocity in radians per second
+   */
+  actual_angular_rad_per_sec: number;
+  /**
+   * Last commanded linear velocity
+   */
+  commanded_linear_meters_per_sec?: number;
+  /**
+   * Last commanded angular velocity
+   */
+  commanded_angular_rad_per_sec?: number;
+  odometry: {
+    /**
+     * X position in meters (robot frame)
+     */
+    x_meters: number;
+    /**
+     * Y position in meters (robot frame)
+     */
+    y_meters: number;
+    /**
+     * Orientation in radians
+     */
+    theta_rad: number;
+    /**
+     * Total distance traveled in meters
+     */
+    distance_meters?: number;
+    [k: string]: unknown;
+  };
+  wheel_velocities?: {
+    /**
+     * Left wheel velocity
+     */
+    left_meters_per_sec?: number;
+    /**
+     * Right wheel velocity
+     */
+    right_meters_per_sec?: number;
+    [k: string]: unknown;
+  };
+  /**
+   * Total current draw in amperes
+   */
+  current_draw_amps?: number;
+  /**
+   * Motor controller temperature
+   */
+  temperature_celsius?: number;
+  /**
+   * Error code if any
+   */
+  error_code?: string;
+  /**
+   * Current motor status
+   */
+  status?: 'idle' | 'moving' | 'stalled' | 'error' | 'emergency_stop';
+}
