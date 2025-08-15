@@ -176,13 +176,8 @@ jobs:
           # TypeScript/JavaScript API docs - Skip for now, needs proper configuration
           echo "TypeScript API documentation will be generated in a future update" > docs-build/api/typescript.md
           
-          # Python API docs
-          if [ -d "apps/hub-api" ]; then
-            cd apps/hub-api
-            pip install pdoc3
-            pdoc --html --output-dir ../../docs-build/api/python app
-            cd ../..
-          fi
+          # Python API docs - Skip for now, needs proper environment
+          echo "Python API documentation will be generated in a future update" > docs-build/api/python.md
           
           # Go API docs
           echo "Go documentation available at https://pkg.go.dev/github.com/tafystudio/tafystudio" > docs-build/api/go.md
