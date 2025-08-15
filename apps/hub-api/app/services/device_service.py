@@ -27,7 +27,7 @@ class DeviceService:
             "status": DeviceStatus.discovered,
             "claimed": False,
             "capabilities": device_data.capabilities,
-            "metadata": device_data.metadata,
+            "device_metadata": device_data.device_metadata,
             "ip_address": device_data.ip_address,
             "mac_address": device_data.mac_address,
             "last_seen": datetime.utcnow(),

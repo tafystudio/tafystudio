@@ -34,8 +34,8 @@ class Flow(Base, TimestampMixin):
     # Version control
     version: Mapped[int] = mapped_column(Integer, default=1)
     
-    # Metadata
-    metadata: Mapped[Dict[str, Any]] = mapped_column(JSON, default=dict)
+    # Flow metadata
+    flow_metadata: Mapped[Dict[str, Any]] = mapped_column(JSON, default=dict)
     
     def __repr__(self) -> str:
         return f"<Flow {self.id}: {self.name} (v{self.version})>"

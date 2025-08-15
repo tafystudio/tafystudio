@@ -22,7 +22,7 @@ class DeviceBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     type: str = Field(..., min_length=1, max_length=64)
     capabilities: Dict[str, Any] = Field(default_factory=dict)
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    device_metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class DeviceCreate(DeviceBase):
@@ -37,7 +37,7 @@ class DeviceUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     status: Optional[DeviceStatus] = None
     capabilities: Optional[Dict[str, Any]] = None
-    metadata: Optional[Dict[str, Any]] = None
+    device_metadata: Optional[Dict[str, Any]] = None
     ip_address: Optional[str] = None
 
 

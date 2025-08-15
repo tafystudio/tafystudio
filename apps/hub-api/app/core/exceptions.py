@@ -120,3 +120,11 @@ async def general_exception_handler(request: Request, exc: Exception):
             "message": "An unexpected error occurred",
         }
     )
+
+
+def add_exception_handlers(app):
+    """Add exception handlers to the FastAPI app"""
+    app.add_exception_handler(TafyException, tafy_exception_handler)
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+    app.add_exception_handler(Exception, general_exception_handler)

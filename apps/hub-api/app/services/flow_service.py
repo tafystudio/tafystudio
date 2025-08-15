@@ -28,7 +28,7 @@ class FlowService:
             "description": flow_data.description,
             "config": flow_data.config,
             "target_nodes": flow_data.target_nodes,
-            "metadata": flow_data.metadata,
+            "flow_metadata": flow_data.flow_metadata,
             "deployed": False,
             "deployed_at": None,
             "version": 1,

@@ -40,8 +40,8 @@ class Device(Base, TimestampMixin):
     ip_address: Mapped[Optional[str]] = mapped_column(String(45), nullable=True)
     mac_address: Mapped[Optional[str]] = mapped_column(String(17), nullable=True)
     
-    # Metadata
-    metadata: Mapped[Dict[str, Any]] = mapped_column(JSON, default=dict)
+    # Device metadata
+    device_metadata: Mapped[Dict[str, Any]] = mapped_column(JSON, default=dict)
     
     # Last seen timestamp
     last_seen: Mapped[Optional[datetime]] = mapped_column(

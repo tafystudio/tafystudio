@@ -14,7 +14,7 @@ from sqlalchemy.pool import StaticPool
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.main import app
-from app.core.config import get_settings
+from app.core.config import settings
 from app.db.base import Base
 from app.db.session import get_db
 
@@ -84,9 +84,8 @@ def client(db: Session):
 @pytest.fixture
 def test_settings():
     """Override settings for testing."""
-    settings = get_settings()
-    settings.ENVIRONMENT = "test"
-    settings.DATABASE_URL = SQLALCHEMY_DATABASE_URL
+    # settings is already a singleton
+    # For testing, we could override settings here if needed
     return settings
 
 
@@ -98,7 +97,7 @@ def sample_device_data():
         "node_id": "node-001",
         "device_type": "esp32",
         "capabilities": ["motor.differential:v1.0", "sensor.range:v1.0"],
-        "metadata": {
+        "device_metadata": {
             "firmware_version": "1.0.0",
             "hardware_version": "rev-a"
         }
@@ -128,7 +127,7 @@ def sample_flow_data():
                 {"from": "sensor-1", "to": "motor-1"}
             ]
         },
-        "metadata": {
+        "flow_metadata": {
             "created_by": "test-user",
             "version": "1.0"
         }

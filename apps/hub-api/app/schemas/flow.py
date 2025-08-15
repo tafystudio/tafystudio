@@ -13,7 +13,7 @@ class FlowBase(BaseModel):
     description: Optional[str] = None
     config: Dict[str, Any] = Field(default_factory=dict)
     target_nodes: List[str] = Field(default_factory=list)
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    flow_metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class FlowCreate(FlowBase):
@@ -27,7 +27,7 @@ class FlowUpdate(BaseModel):
     description: Optional[str] = None
     config: Optional[Dict[str, Any]] = None
     target_nodes: Optional[List[str]] = None
-    metadata: Optional[Dict[str, Any]] = None
+    flow_metadata: Optional[Dict[str, Any]] = None
 
 
 class FlowResponse(FlowBase):
