@@ -3,11 +3,11 @@ Test flow endpoints
 """
 
 import pytest
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 
-@pytest.mark.asyncio
-async def test_create_flow(client: AsyncClient):
+
+def test_create_flow(client: TestClient):
     """Test flow creation"""
     flow_data = {
         "name": "Test Flow",
@@ -25,7 +25,7 @@ async def test_create_flow(client: AsyncClient):
         "metadata": {"category": "test"}
     }
     
-    response = await client.post("/api/v1/flows/", json=flow_data)
+    response = client.post("/api/v1/flows/", json=flow_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -35,18 +35,18 @@ async def test_create_flow(client: AsyncClient):
     assert "id" in data
 
 
-@pytest.mark.asyncio
-async def test_list_flows(client: AsyncClient):
+
+def test_list_flows(client: TestClient):
     """Test listing flows"""
     # Create a flow first
     flow_data = {
         "name": "Test Flow 2",
         "config": {}
     }
-    await client.post("/api/v1/flows/", json=flow_data)
+    client.post("/api/v1/flows/", json=flow_data)
     
     # List all flows
-    response = await client.get("/api/v1/flows/")
+    response = client.get("/api/v1/flows/")
     assert response.status_code == 200
     
     data = response.json()
@@ -54,19 +54,19 @@ async def test_list_flows(client: AsyncClient):
     assert len(data) >= 1
 
 
-@pytest.mark.asyncio
-async def test_get_flow(client: AsyncClient):
+
+def test_get_flow(client: TestClient):
     """Test getting specific flow"""
     # Create flow
     flow_data = {
         "name": "Test Flow 3",
         "config": {"test": True}
     }
-    create_response = await client.post("/api/v1/flows/", json=flow_data)
+    create_response = client.post("/api/v1/flows/", json=flow_data)
     flow_id = create_response.json()["id"]
     
     # Get the flow
-    response = await client.get(f"/api/v1/flows/{flow_id}")
+    response = client.get(f"/api/v1/flows/{flow_id}")
     assert response.status_code == 200
     
     data = response.json()
@@ -74,15 +74,15 @@ async def test_get_flow(client: AsyncClient):
     assert data["name"] == flow_data["name"]
 
 
-@pytest.mark.asyncio
-async def test_update_flow(client: AsyncClient):
+
+def test_update_flow(client: TestClient):
     """Test updating flow"""
     # Create flow
     flow_data = {
         "name": "Original Flow",
         "config": {"version": 1}
     }
-    create_response = await client.post("/api/v1/flows/", json=flow_data)
+    create_response = client.post("/api/v1/flows/", json=flow_data)
     flow_id = create_response.json()["id"]
     
     # Update flow
@@ -90,7 +90,7 @@ async def test_update_flow(client: AsyncClient):
         "name": "Updated Flow",
         "config": {"version": 2}
     }
-    response = await client.patch(f"/api/v1/flows/{flow_id}", json=update_data)
+    response = client.patch(f"/api/v1/flows/{flow_id}", json=update_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -99,8 +99,8 @@ async def test_update_flow(client: AsyncClient):
     assert data["version"] == 2  # Version should increment
 
 
-@pytest.mark.asyncio
-async def test_deploy_flow(client: AsyncClient):
+
+def test_deploy_flow(client: TestClient):
     """Test deploying flow"""
     # Create flow
     flow_data = {
@@ -108,12 +108,12 @@ async def test_deploy_flow(client: AsyncClient):
         "config": {"ready": True},
         "target_nodes": ["node-001"]
     }
-    create_response = await client.post("/api/v1/flows/", json=flow_data)
+    create_response = client.post("/api/v1/flows/", json=flow_data)
     flow_id = create_response.json()["id"]
     
     # Deploy flow
     deploy_data = {}  # Use default target nodes
-    response = await client.post(f"/api/v1/flows/{flow_id}/deploy", json=deploy_data)
+    response = client.post(f"/api/v1/flows/{flow_id}/deploy", json=deploy_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -121,8 +121,8 @@ async def test_deploy_flow(client: AsyncClient):
     assert data["deployed_at"] is not None
 
 
-@pytest.mark.asyncio
-async def test_undeploy_flow(client: AsyncClient):
+
+def test_undeploy_flow(client: TestClient):
     """Test undeploying flow"""
     # Create and deploy flow
     flow_data = {
@@ -130,14 +130,14 @@ async def test_undeploy_flow(client: AsyncClient):
         "config": {},
         "target_nodes": ["node-001"]
     }
-    create_response = await client.post("/api/v1/flows/", json=flow_data)
+    create_response = client.post("/api/v1/flows/", json=flow_data)
     flow_id = create_response.json()["id"]
     
     # Deploy first
-    await client.post(f"/api/v1/flows/{flow_id}/deploy", json={})
+    client.post(f"/api/v1/flows/{flow_id}/deploy", json={})
     
     # Undeploy
-    response = await client.delete(f"/api/v1/flows/{flow_id}/undeploy")
+    response = client.delete(f"/api/v1/flows/{flow_id}/undeploy")
     assert response.status_code == 200
     
     data = response.json()

@@ -3,13 +3,12 @@ Test system endpoints
 """
 
 import pytest
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 
-@pytest.mark.asyncio
-async def test_system_info(client: AsyncClient):
+def test_system_info(client: TestClient):
     """Test system info endpoint"""
-    response = await client.get("/api/v1/system/info")
+    response = client.get("/api/v1/system/info")
     assert response.status_code == 200
     
     data = response.json()
@@ -21,10 +20,9 @@ async def test_system_info(client: AsyncClient):
     assert data["uptime_seconds"] >= 0
 
 
-@pytest.mark.asyncio
-async def test_system_health(client: AsyncClient):
+def test_system_health(client: TestClient):
     """Test system health endpoint"""
-    response = await client.get("/api/v1/system/health")
+    response = client.get("/api/v1/system/health")
     assert response.status_code == 200
     
     data = response.json()
@@ -35,10 +33,9 @@ async def test_system_health(client: AsyncClient):
     assert isinstance(data["checks"], dict)
 
 
-@pytest.mark.asyncio
-async def test_system_logs(client: AsyncClient):
+def test_system_logs(client: TestClient):
     """Test system logs endpoint"""
-    response = await client.get("/api/v1/system/logs?limit=10")
+    response = client.get("/api/v1/system/logs?limit=10")
     assert response.status_code == 200
     
     data = response.json()
@@ -53,10 +50,9 @@ async def test_system_logs(client: AsyncClient):
         assert "module" in log
 
 
-@pytest.mark.asyncio
-async def test_system_logs_filter_by_level(client: AsyncClient):
+def test_system_logs_filter_by_level(client: TestClient):
     """Test filtering logs by level"""
-    response = await client.get("/api/v1/system/logs?level=error")
+    response = client.get("/api/v1/system/logs?level=error")
     assert response.status_code == 200
     
     data = response.json()
@@ -66,10 +62,9 @@ async def test_system_logs_filter_by_level(client: AsyncClient):
         assert log["level"] == "error"
 
 
-@pytest.mark.asyncio
-async def test_create_backup(client: AsyncClient):
+def test_create_backup(client: TestClient):
     """Test backup creation"""
-    response = await client.post("/api/v1/system/backup")
+    response = client.post("/api/v1/system/backup")
     assert response.status_code == 200
     
     data = response.json()

@@ -102,8 +102,8 @@ Open the web UI and:
 ### Join the Community
 
 - [GitHub Discussions](https://github.com/tafystudio/tafystudio/discussions) - Ask questions and share ideas
-- [Discord Server](https://discord.gg/tafystudio) - Real-time chat with the community
-- [YouTube Channel](https://youtube.com/@tafystudio) - Video tutorials and demos
+- [Discord Server](https://discord.gg/bVBcJ8ZJrK) - Real-time chat with the community
+- Video tutorials and demos coming soon
 
 ## Troubleshooting
 

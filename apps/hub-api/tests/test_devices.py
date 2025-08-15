@@ -3,13 +3,13 @@ Test device endpoints
 """
 
 import pytest
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 
 from app.schemas.device import DeviceStatus
 
 
-@pytest.mark.asyncio
-async def test_create_device(client: AsyncClient):
+
+def test_create_device(client: TestClient):
     """Test device creation"""
     device_data = {
         "id": "test-device-001",
@@ -23,7 +23,7 @@ async def test_create_device(client: AsyncClient):
         "mac_address": "AA:BB:CC:DD:EE:FF"
     }
     
-    response = await client.post("/api/v1/devices/", json=device_data)
+    response = client.post("/api/v1/devices/", json=device_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -33,8 +33,8 @@ async def test_create_device(client: AsyncClient):
     assert data["claimed"] is False
 
 
-@pytest.mark.asyncio
-async def test_list_devices(client: AsyncClient):
+
+def test_list_devices(client: TestClient):
     """Test listing devices"""
     # First create a device
     device_data = {
@@ -43,10 +43,10 @@ async def test_list_devices(client: AsyncClient):
         "type": "pi",
         "capabilities": {}
     }
-    await client.post("/api/v1/devices/", json=device_data)
+    client.post("/api/v1/devices/", json=device_data)
     
     # List all devices
-    response = await client.get("/api/v1/devices/")
+    response = client.get("/api/v1/devices/")
     assert response.status_code == 200
     
     data = response.json()
@@ -55,8 +55,8 @@ async def test_list_devices(client: AsyncClient):
     assert data["total"] >= 1
 
 
-@pytest.mark.asyncio
-async def test_get_device(client: AsyncClient):
+
+def test_get_device(client: TestClient):
     """Test getting specific device"""
     # Create device first
     device_id = "test-device-003"
@@ -66,10 +66,10 @@ async def test_get_device(client: AsyncClient):
         "type": "jetson",
         "capabilities": {}
     }
-    await client.post("/api/v1/devices/", json=device_data)
+    client.post("/api/v1/devices/", json=device_data)
     
     # Get the device
-    response = await client.get(f"/api/v1/devices/{device_id}")
+    response = client.get(f"/api/v1/devices/{device_id}")
     assert response.status_code == 200
     
     data = response.json()
@@ -77,15 +77,15 @@ async def test_get_device(client: AsyncClient):
     assert data["name"] == device_data["name"]
 
 
-@pytest.mark.asyncio
-async def test_get_nonexistent_device(client: AsyncClient):
+
+def test_get_nonexistent_device(client: TestClient):
     """Test getting device that doesn't exist"""
-    response = await client.get("/api/v1/devices/nonexistent")
+    response = client.get("/api/v1/devices/nonexistent")
     assert response.status_code == 404
 
 
-@pytest.mark.asyncio
-async def test_claim_device(client: AsyncClient):
+
+def test_claim_device(client: TestClient):
     """Test claiming a device"""
     # Create unclaimed device
     device_id = "test-device-004"
@@ -95,10 +95,10 @@ async def test_claim_device(client: AsyncClient):
         "type": "esp32",
         "capabilities": {}
     }
-    await client.post("/api/v1/devices/", json=device_data)
+    client.post("/api/v1/devices/", json=device_data)
     
     # Claim the device
-    response = await client.post(f"/api/v1/devices/{device_id}/claim")
+    response = client.post(f"/api/v1/devices/{device_id}/claim")
     assert response.status_code == 200
     
     data = response.json()
@@ -106,8 +106,8 @@ async def test_claim_device(client: AsyncClient):
     assert data["status"] == DeviceStatus.claimed
 
 
-@pytest.mark.asyncio
-async def test_update_device(client: AsyncClient):
+
+def test_update_device(client: TestClient):
     """Test updating device"""
     # Create device
     device_id = "test-device-005"
@@ -117,14 +117,14 @@ async def test_update_device(client: AsyncClient):
         "type": "esp32",
         "capabilities": {}
     }
-    await client.post("/api/v1/devices/", json=device_data)
+    client.post("/api/v1/devices/", json=device_data)
     
     # Update device
     update_data = {
         "name": "Updated Name",
         "status": DeviceStatus.online
     }
-    response = await client.patch(f"/api/v1/devices/{device_id}", json=update_data)
+    response = client.patch(f"/api/v1/devices/{device_id}", json=update_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -132,8 +132,8 @@ async def test_update_device(client: AsyncClient):
     assert data["status"] == DeviceStatus.online
 
 
-@pytest.mark.asyncio
-async def test_send_command(client: AsyncClient):
+
+def test_send_command(client: TestClient):
     """Test sending command to device"""
     # Create device
     device_id = "test-device-006"
@@ -143,7 +143,7 @@ async def test_send_command(client: AsyncClient):
         "type": "esp32",
         "capabilities": {"motor": ["differential"]}
     }
-    await client.post("/api/v1/devices/", json=device_data)
+    client.post("/api/v1/devices/", json=device_data)
     
     # Send command
     command = {
@@ -153,7 +153,7 @@ async def test_send_command(client: AsyncClient):
             "angular": 0.0
         }
     }
-    response = await client.post(f"/api/v1/devices/{device_id}/command", json=command)
+    response = client.post(f"/api/v1/devices/{device_id}/command", json=command)
     assert response.status_code == 200
     
     data = response.json()
