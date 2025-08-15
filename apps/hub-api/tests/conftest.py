@@ -2,7 +2,7 @@
 Pytest configuration and fixtures for hub-api tests
 """
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, PropertyMock
 import sys
 import os
 from fastapi.testclient import TestClient
@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.main import app
 from app.core.config import settings
+from app.core.nats import NATSClient
 from app.db.base import Base
 from app.db.session import get_db
 
@@ -32,16 +33,26 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 @pytest.fixture(autouse=True)
 def mock_nats_client(monkeypatch):
     """Mock NATS client for all tests"""
-    # Create a mock NATS client
-    mock_client = MagicMock()
+    # Create a mock NATS client instance
+    mock_client = MagicMock(spec=NATSClient)
     mock_client.connect = AsyncMock()
     mock_client.close = AsyncMock()
-    mock_client.is_connected = True
     mock_client.publish = AsyncMock()
     mock_client.subscribe = AsyncMock()
     
-    # Patch the nats_client in the module
-    monkeypatch.setattr("app.core.nats.nats_client", mock_client)
+    # Mock the is_connected property to always return True
+    type(mock_client).is_connected = PropertyMock(return_value=True)
+    
+    # Import and patch the global nats_client instance
+    import app.core.nats
+    monkeypatch.setattr(app.core.nats, "nats_client", mock_client)
+    
+    # Also patch any direct imports
+    import app.services.device_service
+    monkeypatch.setattr(app.services.device_service, "nats_client", mock_client)
+    
+    import app.services.flow_service  
+    monkeypatch.setattr(app.services.flow_service, "nats_client", mock_client)
     
     return mock_client
 
