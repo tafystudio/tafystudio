@@ -16,9 +16,9 @@ export default function Input({
     focus:outline-none focus:ring-2 focus:ring-tafy-500 focus:border-transparent
     disabled:bg-gray-100 disabled:cursor-not-allowed
   `;
-  
-  const errorClasses = error 
-    ? 'border-red-500 focus:ring-red-500' 
+
+  const errorClasses = error
+    ? 'border-red-500 focus:ring-red-500'
     : 'border-gray-300';
 
   return (
@@ -32,9 +32,7 @@ export default function Input({
         className={`${baseClasses} ${errorClasses} ${className}`}
         {...props}
       />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

@@ -13,9 +13,7 @@ export default function NotFound() {
           The page you're looking for doesn't exist or has been moved.
         </p>
         <Link href="/">
-          <Button variant="primary">
-            Go to Dashboard
-          </Button>
+          <Button variant="primary">Go to Dashboard</Button>
         </Link>
       </div>
     </div>

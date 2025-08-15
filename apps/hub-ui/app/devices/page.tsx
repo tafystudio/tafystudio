@@ -40,9 +40,7 @@ export default function DevicesPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-tafy-900">Devices</h1>
-        <Button variant="primary">
-          Scan for Devices
-        </Button>
+        <Button variant="primary">Scan for Devices</Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -51,11 +49,11 @@ export default function DevicesPage() {
             <div className="absolute top-4 right-4">
               <StatusBadge status={device.status} />
             </div>
-            
+
             <h3 className="text-xl font-semibold text-tafy-800 mb-2">
               {device.name}
             </h3>
-            
+
             <div className="space-y-2 text-sm">
               <p className="text-gray-600">
                 <span className="font-medium">Type:</span> {device.type}
@@ -77,7 +75,7 @@ export default function DevicesPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-4 flex gap-2">
               {device.status === 'discovered' ? (
                 <Button variant="primary" size="sm" className="flex-1">
@@ -96,7 +94,7 @@ export default function DevicesPage() {
             </div>
           </Card>
         ))}
-        
+
         {/* Empty state card */}
         <Card className="border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
           <div className="text-center">

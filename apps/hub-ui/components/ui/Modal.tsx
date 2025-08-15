@@ -62,9 +62,9 @@ export default function Modal({
             </svg>
           </button>
         </div>
-        
+
         <div className="p-6">{children}</div>
-        
+
         {footer && (
           <div className="flex justify-end gap-2 p-6 border-t bg-gray-50">
             {footer}
