@@ -164,6 +164,16 @@ jobs:
         with:
           version: 9
           
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          
       - name: Install dependencies
         run: |
           pnpm add -D -w typedoc
@@ -176,8 +186,35 @@ jobs:
           # TypeScript/JavaScript API docs - Skip for now, needs proper configuration
           echo "TypeScript API documentation will be generated in a future update" > docs-build/api/typescript.md
           
-          # Python API docs - Skip for now, needs proper environment
-          echo "Python API documentation will be generated in a future update" > docs-build/api/python.md
+          # Python API docs using Sphinx (industry standard)
+          if [ -d "apps/hub-api" ]; then
+            echo "Setting up Python environment for Sphinx documentation..."
+            cd apps/hub-api
+            
+            # Ensure docs directory exists
+            mkdir -p docs/_static docs/_templates
+            
+            # Create a minimal virtual environment for docs
+            uv venv .venv-docs
+            source .venv-docs/bin/activate
+            
+            # Install Sphinx and theme
+            echo "Installing Sphinx..."
+            uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+            
+            # Build documentation
+            echo "Building Python API documentation with Sphinx..."
+            cd docs
+            sphinx-build -b html . ../../../docs-build/api/python -W --keep-going || {
+              echo "Warning: Some documentation warnings occurred"
+            }
+            
+            cd ..
+            deactivate
+            cd ../..
+          else
+            echo "Python API source not found" > docs-build/api/python.md
+          fi
           
           # Go API docs
           echo "Go documentation available at https://pkg.go.dev/github.com/tafystudio/tafystudio" > docs-build/api/go.md
