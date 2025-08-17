@@ -397,12 +397,15 @@ docs-build-api: ## Build API documentation
 	@echo "$(YELLOW)Building API documentation...$(NC)"
 	@mkdir -p .docs-build/api
 	@# TypeScript API docs
-	@if command -v typedoc >/dev/null 2>&1; then \
+	@if [ -d "packages/sdk-ts" ] && command -v typedoc >/dev/null 2>&1; then \
 		echo "Building TypeScript API docs..."; \
 		cd packages/sdk-ts && typedoc --out ../../.docs-build/api/typescript || true; \
 		cd ../..; \
-	else \
+	elif [ -d "packages/sdk-ts" ]; then \
 		echo "TypeDoc not found, skipping TypeScript API docs"; \
+		echo "Install with: pnpm add -D -w typedoc"; \
+	else \
+		echo "TypeScript SDK package not found, skipping"; \
 	fi
 	@# Python API docs
 	@if [ -d "apps/hub-api/docs" ]; then \
@@ -410,13 +413,15 @@ docs-build-api: ## Build API documentation
 		cd apps/hub-api && \
 		uv venv .venv-docs && \
 		. .venv-docs/bin/activate && \
-		uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints && \
+		uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst-parser && \
 		cd docs && \
-		sphinx-build -b markdown . ../../../.docs-build/api/python && \
+		sphinx-build -b html . ../../../.docs-build/api/python && \
 		deactivate && \
 		cd ../../..; \
+		echo "Python API docs built as HTML"; \
 	else \
 		echo "Python docs not configured, skipping"; \
+		echo "Note: Create apps/hub-api/docs/conf.py to enable Python API docs"; \
 	fi
 
 docs-build-schemas: ## Generate HAL schema documentation

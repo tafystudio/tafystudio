@@ -133,9 +133,9 @@ docs-build-api:
 		cd apps/hub-api && \
 		uv venv .venv-docs && \
 		. .venv-docs/bin/activate && \
-		uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints && \
+		uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst-parser && \
 		cd docs && \
-		sphinx-build -b markdown . ../../../.docs-build/api/python && \
+		sphinx-build -b html . ../../../.docs-build/api/python && \
 		deactivate && \
 		cd ../../..; \
 	else \

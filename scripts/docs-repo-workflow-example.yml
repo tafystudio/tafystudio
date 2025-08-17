@@ -50,7 +50,7 @@ jobs:
         run: |
           npm ci
           # Install any additional tools needed for doc generation
-          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst-parser
       
       - name: Extract documentation from monorepo
         run: |

@@ -59,7 +59,7 @@ cat > "$OUTPUT_DIR/index.json" << EOF
   },
   "api": {
     "typescript": "api/typescript/index.html",
-    "python": "api/python/index.md",
+    "python": "api/python/index.html",
     "go": "https://pkg.go.dev/github.com/tafystudio/tafystudio"
   },
   "packages": [

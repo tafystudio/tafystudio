@@ -51,7 +51,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst-parser
       
       - name: Copy documentation from main repo
         run: |
@@ -163,7 +163,7 @@ jobs:
             # Try to generate Sphinx docs
             if [ -d "docs" ]; then
               cd docs
-              sphinx-build -b markdown . ../../../../docs/api/python -W --keep-going || {
+              sphinx-build -b html . ../../../../docs/api/python -W --keep-going || {
                 echo "Sphinx build had warnings, continuing..."
               }
               cd ..
