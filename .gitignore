@@ -75,3 +75,6 @@ htmlcov/
 dmypy.json
 .ruff_cache/
 *.log
+
+# Documentation build
+.docs-build/

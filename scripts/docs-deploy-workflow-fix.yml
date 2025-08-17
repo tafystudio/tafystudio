@@ -1,0 +1,229 @@
+# Updated deploy.yml for tafystudio-docs repository
+# This version properly handles public repository access
+
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [docs-update]
+  schedule:
+    # Run every 6 hours to catch updates from main repo
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs repository
+        uses: actions/checkout@v4
+        
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          repository: tafystudio/tafystudio
+          path: tafystudio-main
+          # No token needed for public repository
+          # Remove continue-on-error to ensure we know if checkout fails
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+      
+      - name: Copy documentation from main repo
+        run: |
+          # Create docs directory
+          mkdir -p docs
+          
+          # Debug: Show what's in the main repo
+          echo "Contents of tafystudio-main:"
+          ls -la tafystudio-main/
+          
+          echo "Contents of tafystudio-main/docs (if exists):"
+          ls -la tafystudio-main/docs/ || echo "docs directory not found"
+          
+          # Copy all markdown files from main repo's docs directory
+          if [ -d "tafystudio-main/docs" ]; then
+            echo "Copying documentation files..."
+            cp -r tafystudio-main/docs/* docs/
+            echo "Documentation files copied successfully"
+          else
+            echo "ERROR: tafystudio-main/docs directory not found!"
+            exit 1
+          fi
+          
+          # Copy README from root
+          if [ -f "tafystudio-main/README.md" ]; then
+            echo "Copying README.md..."
+            cp tafystudio-main/README.md docs/
+          else
+            echo "Warning: README.md not found in main repository"
+          fi
+          
+          # Show what was copied
+          echo "Contents of docs directory after copy:"
+          ls -la docs/
+          
+          # Create API documentation directory
+          mkdir -p docs/api
+          
+          # Create API index
+          cat > docs/api/index.md << 'EOF'
+          ---
+          title: API Reference
+          description: Tafy Studio API documentation
+          ---
+
+          # API Reference
+
+          Tafy Studio provides APIs in multiple languages for building robotics applications.
+
+          ## Available APIs
+
+          ### [TypeScript/JavaScript API](./typescript)
+          The TypeScript SDK for building web interfaces and Node.js applications.
+
+          ### [Python API](./python)
+          The Python SDK for building backend services and robotics applications.
+
+          ### [Go API](./go)
+          The Go SDK for building high-performance node agents and services.
+
+          ## Getting Started
+
+          Each API provides:
+          - Client libraries for NATS messaging
+          - HAL (Hardware Abstraction Layer) message types
+          - Helper utilities for common robotics tasks
+
+          Choose the API that best fits your use case and development environment.
+          EOF
+          
+          # Generate TypeScript API docs placeholder
+          cat > docs/api/typescript.md << 'EOF'
+          ---
+          title: TypeScript API
+          ---
+
+          # TypeScript API Reference
+
+          The TypeScript SDK is available as `@tafystudio/sdk-ts`.
+
+          ## Installation
+
+          ```bash
+          npm install @tafystudio/sdk-ts
+          ```
+
+          ## Usage
+
+          ```typescript
+          import { TafyClient } from '@tafystudio/sdk-ts';
+
+          const client = new TafyClient({
+            natsUrl: 'nats://localhost:4222'
+          });
+
+          await client.connect();
+          ```
+
+          Full API documentation will be generated from the TypeScript source.
+          EOF
+          
+          # Generate Python API docs
+          if [ -d "tafystudio-main/apps/hub-api" ]; then
+            cd tafystudio-main/apps/hub-api
+            python -m venv .venv
+            source .venv/bin/activate
+            pip install -e . || echo "No setup.py found, skipping install"
+            
+            # Try to generate Sphinx docs
+            if [ -d "docs" ]; then
+              cd docs
+              sphinx-build -b markdown . ../../../../docs/api/python -W --keep-going || {
+                echo "Sphinx build had warnings, continuing..."
+              }
+              cd ..
+            fi
+            
+            deactivate
+            cd ../../..
+          fi
+          
+          # Go API docs reference
+          cat > docs/api/go.md << 'EOF'
+          ---
+          title: Go API
+          ---
+
+          # Go API Reference
+
+          The Go SDK is available as a Go module.
+
+          ## Installation
+
+          ```bash
+          go get github.com/tafystudio/tafystudio/packages/sdk-go
+          ```
+
+          ## Documentation
+
+          Full API documentation is available at:
+          <https://pkg.go.dev/github.com/tafystudio/tafystudio>
+
+          ## Usage
+
+          ```go
+          import (
+              "github.com/tafystudio/tafystudio/packages/sdk-go/client"
+          )
+
+          client, err := client.NewTafyClient("nats://localhost:4222")
+          if err != nil {
+              log.Fatal(err)
+          }
+          defer client.Close()
+          ```
+          EOF
+      
+      - name: Build documentation
+        run: npm run build
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

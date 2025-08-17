@@ -1,0 +1,108 @@
+# Example workflow for tafystudio-docs repository
+# Shows how to use the extract-docs.sh script
+
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [docs-update]
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs repository
+        uses: actions/checkout@v4
+        
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          repository: tafystudio/tafystudio
+          path: tafystudio-main
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          # Install any additional tools needed for doc generation
+          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+      
+      - name: Extract documentation from monorepo
+        run: |
+          cd tafystudio-main
+          ./scripts/extract-docs.sh ../extracted-docs
+          cd ..
+          
+          # Show what was extracted
+          echo "Extracted documentation structure:"
+          find extracted-docs -type f -name "*.json" -exec echo {} \; -exec head -5 {} \;
+      
+      - name: Process extracted documentation
+        run: |
+          # Copy static content to Docusaurus docs directory
+          cp -r extracted-docs/content/* docs/
+          
+          # Copy API documentation to static directory
+          mkdir -p static/api
+          if [ -d "extracted-docs/api" ]; then
+            cp -r extracted-docs/api/* static/api/
+          fi
+          
+          # Process schemas if available
+          if [ -d "extracted-docs/schemas" ]; then
+            mkdir -p docs/reference
+            cp -r extracted-docs/schemas/* docs/reference/
+          fi
+          
+          # Process examples if available
+          if [ -d "extracted-docs/examples" ]; then
+            mkdir -p docs/examples
+            cp -r extracted-docs/examples/* docs/examples/
+          fi
+          
+          # Generate sidebar based on index.json
+          node scripts/generate-sidebar.js extracted-docs/index.json > sidebars.js
+      
+      - name: Build Docusaurus site
+        run: npm run build
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

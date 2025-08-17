@@ -357,6 +357,95 @@ docs-site: ## Information about the documentation site
 	@echo ""
 	@echo "Documentation content is maintained in this repository's docs/ directory."
 
+# Documentation build targets
+.PHONY: docs-prepare docs-build-static docs-build-api docs-build-schemas docs-build-examples docs-clean
+
+docs-prepare: ## Prepare all documentation for docs site build
+	@echo "$(YELLOW)Preparing documentation for build...$(NC)"
+	@mkdir -p .docs-build
+	@make docs-build-static
+	@make docs-build-api
+	@make docs-build-schemas
+	@make docs-build-examples
+	@echo "$(GREEN)Documentation prepared in .docs-build/$(NC)"
+
+docs-build-static: ## Copy static documentation files
+	@echo "$(YELLOW)Copying static documentation...$(NC)"
+	@mkdir -p .docs-build/content
+	@cp -r docs/* .docs-build/content/
+	@cp README.md .docs-build/content/
+	@# Copy package READMEs
+	@mkdir -p .docs-build/content/packages
+	@for pkg in packages/*/README.md; do \
+		if [ -f "$$pkg" ]; then \
+			dir=$$(dirname "$$pkg"); \
+			name=$$(basename "$$dir"); \
+			cp "$$pkg" ".docs-build/content/packages/$$name.md"; \
+		fi; \
+	done
+	@# Copy app READMEs
+	@mkdir -p .docs-build/content/apps
+	@for app in apps/*/README.md; do \
+		if [ -f "$$app" ]; then \
+			dir=$$(dirname "$$app"); \
+			name=$$(basename "$$dir"); \
+			cp "$$app" ".docs-build/content/apps/$$name.md"; \
+		fi; \
+	done
+
+docs-build-api: ## Build API documentation
+	@echo "$(YELLOW)Building API documentation...$(NC)"
+	@mkdir -p .docs-build/api
+	@# TypeScript API docs
+	@if command -v typedoc >/dev/null 2>&1; then \
+		echo "Building TypeScript API docs..."; \
+		cd packages/sdk-ts && typedoc --out ../../.docs-build/api/typescript || true; \
+		cd ../..; \
+	else \
+		echo "TypeDoc not found, skipping TypeScript API docs"; \
+	fi
+	@# Python API docs
+	@if [ -d "apps/hub-api/docs" ]; then \
+		echo "Building Python API docs..."; \
+		cd apps/hub-api && \
+		uv venv .venv-docs && \
+		. .venv-docs/bin/activate && \
+		uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints && \
+		cd docs && \
+		sphinx-build -b markdown . ../../../.docs-build/api/python && \
+		deactivate && \
+		cd ../../..; \
+	else \
+		echo "Python docs not configured, skipping"; \
+	fi
+
+docs-build-schemas: ## Generate HAL schema documentation
+	@echo "$(YELLOW)Generating HAL schema documentation...$(NC)"
+	@mkdir -p .docs-build/schemas
+	@if [ -d "packages/hal-schemas" ]; then \
+		cd packages/hal-schemas && \
+		pnpm run generate:docs || echo "Schema docs generation not configured"; \
+		cd ../..; \
+	fi
+
+docs-build-examples: ## Extract and format examples
+	@echo "$(YELLOW)Extracting examples...$(NC)"
+	@mkdir -p .docs-build/examples
+	@# Copy example files with proper formatting
+	@if [ -d "examples" ]; then \
+		find examples -name "*.md" -o -name "*.py" -o -name "*.ts" -o -name "*.go" | \
+		while read -r file; do \
+			rel=$${file#examples/}; \
+			dir=$$(dirname ".docs-build/examples/$$rel"); \
+			mkdir -p "$$dir"; \
+			cp "$$file" ".docs-build/examples/$$rel"; \
+		done; \
+	fi
+
+docs-clean: ## Clean documentation build artifacts
+	@echo "$(YELLOW)Cleaning documentation build...$(NC)"
+	@rm -rf .docs-build
+
 # Pre-push validation
 pre-push: ## Run all checks before pushing (recommended before git push)
 	@echo "$(YELLOW)Running pre-push validation...$(NC)"
