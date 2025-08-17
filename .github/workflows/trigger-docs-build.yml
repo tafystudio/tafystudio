@@ -1,0 +1,25 @@
+# This workflow should be added to the main tafystudio/tafystudio repository
+# at .github/workflows/trigger-docs-build.yml
+
+name: Trigger Documentation Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - '.github/workflows/trigger-docs-build.yml'
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger docs repository build
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DOCS_TRIGGER_TOKEN }}
+          repository: tafystudio/tafystudio-docs
+          event-type: docs-update
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

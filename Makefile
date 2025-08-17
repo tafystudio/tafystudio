@@ -343,11 +343,19 @@ docs-links: ## Check documentation links
 		--exclude-path dist \
 		docs/**/*.md README.md
 
-docs-serve: ## Serve documentation locally
-	@echo "$(YELLOW)Starting documentation server...$(NC)"
-	@command -v python3 >/dev/null 2>&1 || { echo "$(RED)Python 3 is required$(NC)"; exit 1; }
-	@echo "$(GREEN)Documentation available at http://localhost:8080$(NC)"
-	cd docs && python3 -m http.server 8080
+docs-site: ## Information about the documentation site
+	@echo "$(YELLOW)Documentation Site Information$(NC)"
+	@echo "The documentation site is deployed separately using Docusaurus."
+	@echo ""
+	@echo "$(CYAN)Production URL:$(NC) https://docs.tafy.studio"
+	@echo "$(CYAN)Repository:$(NC) https://github.com/tafystudio/tafystudio-docs"
+	@echo ""
+	@echo "To work on the documentation site locally:"
+	@echo "  1. Clone the tafystudio-docs repository"
+	@echo "  2. Run 'npm install' to install dependencies"
+	@echo "  3. Run 'npm start' to start the development server"
+	@echo ""
+	@echo "Documentation content is maintained in this repository's docs/ directory."
 
 # Pre-push validation
 pre-push: ## Run all checks before pushing (recommended before git push)
