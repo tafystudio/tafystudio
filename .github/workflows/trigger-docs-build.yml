@@ -1,5 +1,5 @@
-# This workflow should be added to the main tafystudio/tafystudio repository
-# at .github/workflows/trigger-docs-build.yml
+# This workflow triggers a documentation build in the tafystudio-docs repository
+# whenever documentation files are updated in this repository
 
 name: Trigger Documentation Build
 
@@ -9,6 +9,9 @@ on:
     paths:
       - 'docs/**'
       - 'README.md'
+      - 'CLAUDE.md'
+      - 'packages/*/README.md'
+      - 'apps/*/README.md'
       - '.github/workflows/trigger-docs-build.yml'
   workflow_dispatch:
 
