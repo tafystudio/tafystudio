@@ -413,15 +413,40 @@ docs-build-api: ## Build API documentation
 		cd apps/hub-api && \
 		uv venv .venv-docs && \
 		. .venv-docs/bin/activate && \
-		uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst-parser && \
+		uv pip install -e ".[docs]" && \
 		cd docs && \
-		sphinx-build -b html . ../../../.docs-build/api/python && \
+		sphinx-build -b markdown . ../../../.docs-build/api/python/markdown && \
+		sphinx-build -b html . ../../../.docs-build/api/python/html && \
 		deactivate && \
 		cd ../../..; \
-		echo "Python API docs built as HTML"; \
+		echo "Python API docs built as Markdown and HTML"; \
 	else \
 		echo "Python docs not configured, skipping"; \
 		echo "Note: Create apps/hub-api/docs/conf.py to enable Python API docs"; \
+	fi
+	@# Go API docs
+	@if [ -d "apps/tafyd" ]; then \
+		echo "Building Go API docs..."; \
+		if command -v go >/dev/null 2>&1; then \
+			mkdir -p .docs-build/api/go; \
+			cd apps/tafyd && \
+			go install golang.org/x/tools/cmd/godoc@latest && \
+			echo "Generating Go documentation..."; \
+			godoc -http=localhost:6060 & \
+			GODOC_PID=$$!; \
+			sleep 2; \
+			curl -s http://localhost:6060/pkg/github.com/tafystudio/tafystudio/apps/tafyd/ > ../../.docs-build/api/go/tafyd.html || true; \
+			kill $$GODOC_PID 2>/dev/null || true; \
+			if command -v gomarkdoc >/dev/null 2>&1 || go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest; then \
+				gomarkdoc -o ../../.docs-build/api/go/tafyd.md ./... || echo "gomarkdoc failed, HTML docs available"; \
+			fi; \
+			cd ../..; \
+			echo "Go API docs built"; \
+		else \
+			echo "Go not installed, skipping Go API docs"; \
+		fi; \
+	else \
+		echo "Go app (tafyd) not found, skipping"; \
 	fi
 
 docs-build-schemas: ## Generate HAL schema documentation
@@ -450,6 +475,10 @@ docs-build-examples: ## Extract and format examples
 docs-clean: ## Clean documentation build artifacts
 	@echo "$(YELLOW)Cleaning documentation build...$(NC)"
 	@rm -rf .docs-build
+
+docs-preview: ## Preview documentation locally (requires tafystudio-docs repo)
+	@echo "$(YELLOW)Starting documentation preview...$(NC)"
+	@./scripts/docs-preview.sh
 
 # Pre-push validation
 pre-push: ## Run all checks before pushing (recommended before git push)

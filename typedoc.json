@@ -1,0 +1,16 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Tafy Studio TypeScript API",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "theme": "markdown",
+  "plugin": ["typedoc-plugin-markdown"],
+  "outputFileStrategy": "members",
+  "readme": "none",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "packages/hal-schemas"
+  ],
+  "out": ".docs-build/api/typescript"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts"],
+  "out": "../../.docs-build/api/typescript/hal-schemas",
+  "name": "HAL Schemas",
+  "navigationLinks": {
+    "Documentation": "https://docs.tafy.studio",
+    "GitHub": "https://github.com/tafystudio/tafystudio"
+  },
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "plugin": ["typedoc-plugin-markdown"],
+  "outputFileStrategy": "members",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "readme": "./README.md",
+  "theme": "markdown",
+  "hideBreadcrumbs": false,
+  "hideInPageTOC": false,
+  "publicPath": "/api/typescript/hal-schemas/",
+  "preserveLinkText": true,
+  "tsconfig": "./tsconfig.json"
+}

@@ -17,6 +17,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
     'sphinx_autodoc_typehints',
+    'myst_parser',
+    'sphinx_markdown_builder',
 ]
 
 # Napoleon settings for Google and NumPy style docstrings
@@ -54,4 +56,15 @@ intersphinx_mapping = {
     'fastapi': ('https://fastapi.tiangolo.com', None),
     'pydantic': ('https://docs.pydantic.dev', None),
     'sqlalchemy': ('https://docs.sqlalchemy.org/en/20/', None),
+}
+
+# Source file suffix
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+# Markdown builder configuration
+markdown_builder_options = {
+    'table_style': 'github',
 }

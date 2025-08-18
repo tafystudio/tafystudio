@@ -8,10 +8,12 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
-      - 'README.md'
-      - 'CLAUDE.md'
-      - 'packages/*/README.md'
-      - 'apps/*/README.md'
+      - '**/*.md'
+      - 'Makefile'
+      - 'scripts/extract-docs.sh'
+      - 'packages/**/package.json'
+      - 'apps/**/pyproject.toml'
+      - 'apps/**/go.mod'
       - '.github/workflows/trigger-docs-build.yml'
   workflow_dispatch:
 
@@ -19,6 +21,21 @@ jobs:
   trigger:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Validate documentation
+        run: |
+          echo "Validating documentation structure..."
+          # Check required documentation files exist
+          for file in docs/VISION.md docs/ARCHITECTURE.md docs/CONCEPTS.md docs/QUICKSTART.md; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: Required file $file not found"
+              exit 1
+            fi
+          done
+          echo "Documentation validation passed"
+      
       - name: Trigger docs repository build
         uses: peter-evans/repository-dispatch@v3
         with:

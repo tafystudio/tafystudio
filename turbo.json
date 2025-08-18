@@ -46,6 +46,16 @@
     },
     "clean": {
       "cache": false
+    },
+    "docs:build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "**/*.md", "**/*.ts", "**/*.py", "**/*.go"],
+      "outputs": [".docs-build/**"],
+      "cache": true
+    },
+    "docs:validate": {
+      "inputs": ["$TURBO_DEFAULT$", "**/*.md"],
+      "cache": false
     }
   }
 }
