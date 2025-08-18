@@ -54,7 +54,7 @@ html_static_path = ['_static']
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'fastapi': ('https://fastapi.tiangolo.com', None),
-    'pydantic': ('https://docs.pydantic.dev', None),
+    'pydantic': ('https://docs.pydantic.dev/latest/', None),
     'sqlalchemy': ('https://docs.sqlalchemy.org/en/20/', None),
 }
 

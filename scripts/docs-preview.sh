@@ -43,8 +43,79 @@ fi
 
 # Copy built docs to docs repo
 echo -e "${YELLOW}Copying documentation to preview site...${NC}"
-rm -rf "$DOCS_REPO_PATH/extracted-docs"
-cp -r "$DOCS_BUILD_DIR" "$DOCS_REPO_PATH/extracted-docs"
+rm -rf "$DOCS_REPO_PATH/docs"
+mkdir -p "$DOCS_REPO_PATH/docs"
+# Copy content as docs
+cp -r "$DOCS_BUILD_DIR/content/"* "$DOCS_REPO_PATH/docs/" 2>/dev/null || true
+
+# Create API documentation index pages
+mkdir -p "$DOCS_REPO_PATH/docs/api"
+cat > "$DOCS_REPO_PATH/docs/api/index.md" << 'EOF'
+# API Reference
+
+The Tafy Studio platform provides APIs in multiple languages:
+
+- [TypeScript API](/api/typescript) - For web and Node.js applications
+- [Python API](/api/python) - For backend services and automation
+- [Go API](/api/go) - For high-performance agents and services
+
+## TypeScript SDK
+
+The TypeScript SDK provides HAL schema definitions and utilities for building Tafy applications.
+
+## Python SDK
+
+The Python SDK includes FastAPI services, NATS integration, and HAL message handling.
+
+## Go SDK
+
+The Go SDK powers the Tafyd agent and provides high-performance HAL communication.
+EOF
+
+cat > "$DOCS_REPO_PATH/docs/api/typescript.md" << 'EOF'
+# TypeScript API
+
+[View TypeScript API Documentation](/api/typescript/README)
+
+The TypeScript API includes:
+- HAL message type definitions
+- NATS client utilities
+- Schema validation helpers
+EOF
+
+cat > "$DOCS_REPO_PATH/docs/api/python.md" << 'EOF'
+# Python API
+
+[View Python API Documentation](/api/python/html/index.html)
+
+The Python API includes:
+- FastAPI endpoints
+- NATS service integration
+- Device and flow management
+- HAL message handling
+EOF
+
+cat > "$DOCS_REPO_PATH/docs/api/go.md" << 'EOF'
+# Go API
+
+[View Go API Documentation](/api/go/tafyd.html)
+
+The Go API includes:
+- Tafyd agent implementation
+- High-performance HAL messaging
+- Device discovery and management
+- K3s integration utilities
+EOF
+
+# Copy API docs to static
+mkdir -p "$DOCS_REPO_PATH/static/api"
+cp -r "$DOCS_BUILD_DIR/api/"* "$DOCS_REPO_PATH/static/api/" 2>/dev/null || true
+# Copy schemas to static
+mkdir -p "$DOCS_REPO_PATH/static/schemas"
+cp -r "$DOCS_BUILD_DIR/schemas/"* "$DOCS_REPO_PATH/static/schemas/" 2>/dev/null || true
+# Copy examples to static
+mkdir -p "$DOCS_REPO_PATH/static/examples"
+cp -r "$DOCS_BUILD_DIR/examples/"* "$DOCS_REPO_PATH/static/examples/" 2>/dev/null || true
 
 # Navigate to docs repo
 cd "$DOCS_REPO_PATH"

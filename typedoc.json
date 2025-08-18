@@ -6,7 +6,6 @@
   "excludeInternal": true,
   "theme": "markdown",
   "plugin": ["typedoc-plugin-markdown"],
-  "outputFileStrategy": "members",
   "readme": "none",
   "entryPointStrategy": "packages",
   "entryPoints": [

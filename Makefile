@@ -311,7 +311,9 @@ docs-lint: ## Lint markdown documentation
 		--ignore .venv \
 		--ignore '**/node_modules/**' \
 		--ignore '**/dist/**' \
-		--ignore '**/.next/**'
+		--ignore '**/.next/**' \
+		--ignore 'test-output/**' \
+		--ignore '.docs-build/**'
 
 docs-fix: ## Fix markdown linting issues
 	@echo "$(YELLOW)Fixing documentation linting issues...$(NC)"
@@ -321,7 +323,9 @@ docs-fix: ## Fix markdown linting issues
 		--ignore .venv \
 		--ignore '**/node_modules/**' \
 		--ignore '**/dist/**' \
-		--ignore '**/.next/**'
+		--ignore '**/.next/**' \
+		--ignore 'test-output/**' \
+		--ignore '.docs-build/**'
 	@echo "$(GREEN)Documentation linting issues fixed!$(NC)"
 
 docs-links: ## Check documentation links
@@ -397,15 +401,11 @@ docs-build-api: ## Build API documentation
 	@echo "$(YELLOW)Building API documentation...$(NC)"
 	@mkdir -p .docs-build/api
 	@# TypeScript API docs
-	@if [ -d "packages/sdk-ts" ] && command -v typedoc >/dev/null 2>&1; then \
+	@if [ -d "packages/hal-schemas" ]; then \
 		echo "Building TypeScript API docs..."; \
-		cd packages/sdk-ts && typedoc --out ../../.docs-build/api/typescript || true; \
-		cd ../..; \
-	elif [ -d "packages/sdk-ts" ]; then \
-		echo "TypeDoc not found, skipping TypeScript API docs"; \
-		echo "Install with: pnpm add -D -w typedoc"; \
+		npx typedoc || echo "TypeDoc failed, check configuration"; \
 	else \
-		echo "TypeScript SDK package not found, skipping"; \
+		echo "TypeScript packages not found, skipping"; \
 	fi
 	@# Python API docs
 	@if [ -d "apps/hub-api/docs" ]; then \
@@ -454,7 +454,12 @@ docs-build-schemas: ## Generate HAL schema documentation
 	@mkdir -p .docs-build/schemas
 	@if [ -d "packages/hal-schemas" ]; then \
 		cd packages/hal-schemas && \
-		pnpm run generate:docs || echo "Schema docs generation not configured"; \
+		if [ -d "schemas" ]; then \
+			cp -r schemas ../../.docs-build/schemas/; \
+			echo "Schema files copied to docs build"; \
+		else \
+			echo "No schemas directory found, skipping schema docs"; \
+		fi; \
 		cd ../..; \
 	fi
 

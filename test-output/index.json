@@ -1,0 +1,31 @@
+{
+  "static": {
+    "vision": "content/VISION.md",
+    "architecture": "content/ARCHITECTURE.md",
+    "concepts": "content/CONCEPTS.md",
+    "quickstart": "content/QUICKSTART.md",
+    "development": "content/DEVELOPMENT_SETUP.md",
+    "testing": "content/TESTING.md",
+    "security": "content/SECURITY.md",
+    "hal_spec": "content/HAL_SPEC.md",
+    "troubleshooting": "content/TROUBLESHOOTING.md",
+    "documentation_build": "content/DOCUMENTATION_BUILD_SPEC.md"
+  },
+  "api": {
+    "typescript": "api/typescript/index.html",
+    "python": "api/python/index.html",
+    "go": "https://pkg.go.dev/github.com/tafystudio/tafystudio"
+  },
+  "packages": [
+    "hal-schemas"
+  ],
+  "apps": [
+    "bootstrapd",
+    "hub-api",
+    "hub-ui",
+    "tafyd"
+  ],
+  "examples": [
+
+  ]
+}

@@ -67,7 +67,7 @@ EOF
 
 # Add package list
 first=true
-for pkg in "$OUTPUT_DIR"/content/packages/*.md 2>/dev/null; do
+for pkg in "$OUTPUT_DIR"/content/packages/*.md; do
     if [ -f "$pkg" ]; then
         name=$(basename "$pkg" .md)
         if [ "$first" = true ]; then
@@ -87,7 +87,7 @@ EOF
 
 # Add apps list
 first=true
-for app in "$OUTPUT_DIR"/content/apps/*.md 2>/dev/null; do
+for app in "$OUTPUT_DIR"/content/apps/*.md; do
     if [ -f "$app" ]; then
         name=$(basename "$app" .md)
         if [ "$first" = true ]; then

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Tafy Hub API Documentation &mdash; Tafy Hub API 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Tafy Hub API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to Tafy Hub API Documentation</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li><a class="reference internal" href="#module-app.core.config">Core Modules</a><ul>
+<li><a class="reference internal" href="#app.core.config.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul>
+<li><a class="reference internal" href="#app.core.config.Settings.API_V1_STR"><code class="docutils literal notranslate"><span class="pre">Settings.API_V1_STR</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.PROJECT_NAME"><code class="docutils literal notranslate"><span class="pre">Settings.PROJECT_NAME</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.VERSION"><code class="docutils literal notranslate"><span class="pre">Settings.VERSION</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.BACKEND_CORS_ORIGINS"><code class="docutils literal notranslate"><span class="pre">Settings.BACKEND_CORS_ORIGINS</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.assemble_cors_origins"><code class="docutils literal notranslate"><span class="pre">Settings.assemble_cors_origins()</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.NATS_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NATS_URL</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.NATS_USER"><code class="docutils literal notranslate"><span class="pre">Settings.NATS_USER</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.NATS_PASSWORD"><code class="docutils literal notranslate"><span class="pre">Settings.NATS_PASSWORD</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.DATABASE_URL"><code class="docutils literal notranslate"><span class="pre">Settings.DATABASE_URL</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.REDIS_URL"><code class="docutils literal notranslate"><span class="pre">Settings.REDIS_URL</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.SECRET_KEY"><code class="docutils literal notranslate"><span class="pre">Settings.SECRET_KEY</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.ALGORITHM"><code class="docutils literal notranslate"><span class="pre">Settings.ALGORITHM</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.ACCESS_TOKEN_EXPIRE_MINUTES"><code class="docutils literal notranslate"><span class="pre">Settings.ACCESS_TOKEN_EXPIRE_MINUTES</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.LOG_LEVEL"><code class="docutils literal notranslate"><span class="pre">Settings.LOG_LEVEL</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.LOG_FORMAT"><code class="docutils literal notranslate"><span class="pre">Settings.LOG_FORMAT</span></code></a></li>
+<li><a class="reference internal" href="#app.core.config.Settings.model_config"><code class="docutils literal notranslate"><span class="pre">Settings.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.core.nats.NATSClient"><code class="docutils literal notranslate"><span class="pre">NATSClient</span></code></a><ul>
+<li><a class="reference internal" href="#app.core.nats.NATSClient.__init__"><code class="docutils literal notranslate"><span class="pre">NATSClient.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#app.core.nats.NATSClient.connect"><code class="docutils literal notranslate"><span class="pre">NATSClient.connect()</span></code></a></li>
+<li><a class="reference internal" href="#app.core.nats.NATSClient.close"><code class="docutils literal notranslate"><span class="pre">NATSClient.close()</span></code></a></li>
+<li><a class="reference internal" href="#app.core.nats.NATSClient.is_connected"><code class="docutils literal notranslate"><span class="pre">NATSClient.is_connected</span></code></a></li>
+<li><a class="reference internal" href="#app.core.nats.NATSClient.publish"><code class="docutils literal notranslate"><span class="pre">NATSClient.publish()</span></code></a></li>
+<li><a class="reference internal" href="#app.core.nats.NATSClient.subscribe"><code class="docutils literal notranslate"><span class="pre">NATSClient.subscribe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.models">Database Models</a></li>
+<li><a class="reference internal" href="#module-app.schemas">API Schemas</a><ul>
+<li><a class="reference internal" href="#app.schemas.DeviceCreate"><code class="docutils literal notranslate"><span class="pre">DeviceCreate</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.DeviceCreate.id"><code class="docutils literal notranslate"><span class="pre">DeviceCreate.id</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceCreate.ip_address"><code class="docutils literal notranslate"><span class="pre">DeviceCreate.ip_address</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceCreate.mac_address"><code class="docutils literal notranslate"><span class="pre">DeviceCreate.mac_address</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceCreate.model_config"><code class="docutils literal notranslate"><span class="pre">DeviceCreate.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate.name"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate.name</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate.status"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate.status</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate.capabilities"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate.capabilities</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate.device_metadata"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate.device_metadata</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate.ip_address"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate.ip_address</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceUpdate.model_config"><code class="docutils literal notranslate"><span class="pre">DeviceUpdate.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse"><code class="docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.id"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.id</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.status"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.status</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.claimed"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.claimed</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.ip_address"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.ip_address</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.mac_address"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.mac_address</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.last_seen"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.last_seen</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.created_at"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.created_at</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.updated_at"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.updated_at</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceResponse.model_config"><code class="docutils literal notranslate"><span class="pre">DeviceResponse.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.DeviceList"><code class="docutils literal notranslate"><span class="pre">DeviceList</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.DeviceList.devices"><code class="docutils literal notranslate"><span class="pre">DeviceList.devices</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceList.total"><code class="docutils literal notranslate"><span class="pre">DeviceList.total</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.DeviceList.model_config"><code class="docutils literal notranslate"><span class="pre">DeviceList.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.FlowCreate"><code class="docutils literal notranslate"><span class="pre">FlowCreate</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.FlowCreate.model_config"><code class="docutils literal notranslate"><span class="pre">FlowCreate.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate"><code class="docutils literal notranslate"><span class="pre">FlowUpdate</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate.name"><code class="docutils literal notranslate"><span class="pre">FlowUpdate.name</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate.description"><code class="docutils literal notranslate"><span class="pre">FlowUpdate.description</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate.config"><code class="docutils literal notranslate"><span class="pre">FlowUpdate.config</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate.target_nodes"><code class="docutils literal notranslate"><span class="pre">FlowUpdate.target_nodes</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate.flow_metadata"><code class="docutils literal notranslate"><span class="pre">FlowUpdate.flow_metadata</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowUpdate.model_config"><code class="docutils literal notranslate"><span class="pre">FlowUpdate.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse"><code class="docutils literal notranslate"><span class="pre">FlowResponse</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.id"><code class="docutils literal notranslate"><span class="pre">FlowResponse.id</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.deployed"><code class="docutils literal notranslate"><span class="pre">FlowResponse.deployed</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.deployed_at"><code class="docutils literal notranslate"><span class="pre">FlowResponse.deployed_at</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.version"><code class="docutils literal notranslate"><span class="pre">FlowResponse.version</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.created_at"><code class="docutils literal notranslate"><span class="pre">FlowResponse.created_at</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.updated_at"><code class="docutils literal notranslate"><span class="pre">FlowResponse.updated_at</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowResponse.model_config"><code class="docutils literal notranslate"><span class="pre">FlowResponse.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.FlowDeploy"><code class="docutils literal notranslate"><span class="pre">FlowDeploy</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.FlowDeploy.target_nodes"><code class="docutils literal notranslate"><span class="pre">FlowDeploy.target_nodes</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowDeploy.force"><code class="docutils literal notranslate"><span class="pre">FlowDeploy.force</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.FlowDeploy.model_config"><code class="docutils literal notranslate"><span class="pre">FlowDeploy.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo"><code class="docutils literal notranslate"><span class="pre">SystemInfo</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.version"><code class="docutils literal notranslate"><span class="pre">SystemInfo.version</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.hostname"><code class="docutils literal notranslate"><span class="pre">SystemInfo.hostname</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.platform"><code class="docutils literal notranslate"><span class="pre">SystemInfo.platform</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.python_version"><code class="docutils literal notranslate"><span class="pre">SystemInfo.python_version</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.uptime_seconds"><code class="docutils literal notranslate"><span class="pre">SystemInfo.uptime_seconds</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.memory_usage_mb"><code class="docutils literal notranslate"><span class="pre">SystemInfo.memory_usage_mb</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.cpu_percent"><code class="docutils literal notranslate"><span class="pre">SystemInfo.cpu_percent</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.nats_connected"><code class="docutils literal notranslate"><span class="pre">SystemInfo.nats_connected</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.redis_connected"><code class="docutils literal notranslate"><span class="pre">SystemInfo.redis_connected</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.database_connected"><code class="docutils literal notranslate"><span class="pre">SystemInfo.database_connected</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.SystemInfo.model_config"><code class="docutils literal notranslate"><span class="pre">SystemInfo.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.HealthCheck"><code class="docutils literal notranslate"><span class="pre">HealthCheck</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.HealthCheck.status"><code class="docutils literal notranslate"><span class="pre">HealthCheck.status</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.HealthCheck.version"><code class="docutils literal notranslate"><span class="pre">HealthCheck.version</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.HealthCheck.checks"><code class="docutils literal notranslate"><span class="pre">HealthCheck.checks</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.HealthCheck.timestamp"><code class="docutils literal notranslate"><span class="pre">HealthCheck.timestamp</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.HealthCheck.model_config"><code class="docutils literal notranslate"><span class="pre">HealthCheck.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.schemas.LogEntry"><code class="docutils literal notranslate"><span class="pre">LogEntry</span></code></a><ul>
+<li><a class="reference internal" href="#app.schemas.LogEntry.timestamp"><code class="docutils literal notranslate"><span class="pre">LogEntry.timestamp</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.LogEntry.level"><code class="docutils literal notranslate"><span class="pre">LogEntry.level</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.LogEntry.message"><code class="docutils literal notranslate"><span class="pre">LogEntry.message</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.LogEntry.module"><code class="docutils literal notranslate"><span class="pre">LogEntry.module</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.LogEntry.metadata"><code class="docutils literal notranslate"><span class="pre">LogEntry.metadata</span></code></a></li>
+<li><a class="reference internal" href="#app.schemas.LogEntry.model_config"><code class="docutils literal notranslate"><span class="pre">LogEntry.model_config</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.api.v1.endpoints.devices">API Endpoints</a><ul>
+<li><a class="reference internal" href="#app.api.v1.endpoints.devices.list_devices"><code class="docutils literal notranslate"><span class="pre">list_devices()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.devices.get_device"><code class="docutils literal notranslate"><span class="pre">get_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.devices.create_device"><code class="docutils literal notranslate"><span class="pre">create_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.devices.update_device"><code class="docutils literal notranslate"><span class="pre">update_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.devices.claim_device"><code class="docutils literal notranslate"><span class="pre">claim_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.devices.send_command"><code class="docutils literal notranslate"><span class="pre">send_command()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.flows.list_flows"><code class="docutils literal notranslate"><span class="pre">list_flows()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.flows.get_flow"><code class="docutils literal notranslate"><span class="pre">get_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.flows.create_flow"><code class="docutils literal notranslate"><span class="pre">create_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.flows.update_flow"><code class="docutils literal notranslate"><span class="pre">update_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.flows.deploy_flow"><code class="docutils literal notranslate"><span class="pre">deploy_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.v1.endpoints.flows.undeploy_flow"><code class="docutils literal notranslate"><span class="pre">undeploy_flow()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.services">Services</a><ul>
+<li><a class="reference internal" href="#app.services.DeviceService"><code class="docutils literal notranslate"><span class="pre">DeviceService</span></code></a><ul>
+<li><a class="reference internal" href="#app.services.DeviceService.__init__"><code class="docutils literal notranslate"><span class="pre">DeviceService.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.DeviceService.create_device"><code class="docutils literal notranslate"><span class="pre">DeviceService.create_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.DeviceService.get_device"><code class="docutils literal notranslate"><span class="pre">DeviceService.get_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.DeviceService.update_device"><code class="docutils literal notranslate"><span class="pre">DeviceService.update_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.DeviceService.list_devices"><code class="docutils literal notranslate"><span class="pre">DeviceService.list_devices()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.DeviceService.claim_device"><code class="docutils literal notranslate"><span class="pre">DeviceService.claim_device()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.DeviceService.send_command"><code class="docutils literal notranslate"><span class="pre">DeviceService.send_command()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.services.FlowService"><code class="docutils literal notranslate"><span class="pre">FlowService</span></code></a><ul>
+<li><a class="reference internal" href="#app.services.FlowService.__init__"><code class="docutils literal notranslate"><span class="pre">FlowService.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.FlowService.create_flow"><code class="docutils literal notranslate"><span class="pre">FlowService.create_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.FlowService.get_flow"><code class="docutils literal notranslate"><span class="pre">FlowService.get_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.FlowService.update_flow"><code class="docutils literal notranslate"><span class="pre">FlowService.update_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.FlowService.list_flows"><code class="docutils literal notranslate"><span class="pre">FlowService.list_flows()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.FlowService.deploy_flow"><code class="docutils literal notranslate"><span class="pre">FlowService.deploy_flow()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.FlowService.undeploy_flow"><code class="docutils literal notranslate"><span class="pre">FlowService.undeploy_flow()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.services.NATSService"><code class="docutils literal notranslate"><span class="pre">NATSService</span></code></a><ul>
+<li><a class="reference internal" href="#app.services.NATSService.__init__"><code class="docutils literal notranslate"><span class="pre">NATSService.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.NATSService.subscribe"><code class="docutils literal notranslate"><span class="pre">NATSService.subscribe()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.NATSService.unsubscribe"><code class="docutils literal notranslate"><span class="pre">NATSService.unsubscribe()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.NATSService.publish"><code class="docutils literal notranslate"><span class="pre">NATSService.publish()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.NATSService.request"><code class="docutils literal notranslate"><span class="pre">NATSService.request()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.NATSService.setup_standard_subscriptions"><code class="docutils literal notranslate"><span class="pre">NATSService.setup_standard_subscriptions()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Tafy Hub API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to Tafy Hub API Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-tafy-hub-api-documentation">
+<h1>Welcome to Tafy Hub API Documentation<a class="headerlink" href="#welcome-to-tafy-hub-api-documentation" title="Link to this heading"></a></h1>
+<p>The Tafy Hub API is the backend service for the Tafy Studio Robot Distributed Operation System (RDOS).</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="module-app.core.config">
+<span id="core-modules"></span><h2>Core Modules<a class="headerlink" href="#module-app.core.config" title="Link to this heading"></a></h2>
+<p>Application configuration using Pydantic Settings</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.core.config.Settings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.core.config.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_case_sensitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_nested_model_default_partial_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('.')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_file_encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_ignore_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_nested_delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_nested_max_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_parse_none_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_parse_enums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_prog_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_parse_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_settings_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_parse_none_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_hide_none_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_avoid_json</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_enforce_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_use_class_docs_for_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_exit_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_flag_prefix_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_implicit_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_ignore_unknown_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_kebab_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_shortcuts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_secrets_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/config.html#Settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.config.Settings" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.BaseSettings" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSettings</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.API_V1_STR">
+<span class="sig-name descname"><span class="pre">API_V1_STR</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.API_V1_STR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.PROJECT_NAME">
+<span class="sig-name descname"><span class="pre">PROJECT_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.PROJECT_NAME" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.VERSION">
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.VERSION" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.BACKEND_CORS_ORIGINS">
+<span class="sig-name descname"><span class="pre">BACKEND_CORS_ORIGINS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnyHttpUrl</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.core.config.Settings.BACKEND_CORS_ORIGINS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.core.config.Settings.assemble_cors_origins">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assemble_cors_origins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/config.html#Settings.assemble_cors_origins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.config.Settings.assemble_cors_origins" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.NATS_URL">
+<span class="sig-name descname"><span class="pre">NATS_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.NATS_URL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.NATS_USER">
+<span class="sig-name descname"><span class="pre">NATS_USER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.core.config.Settings.NATS_USER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.NATS_PASSWORD">
+<span class="sig-name descname"><span class="pre">NATS_PASSWORD</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.core.config.Settings.NATS_PASSWORD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.DATABASE_URL">
+<span class="sig-name descname"><span class="pre">DATABASE_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.core.config.Settings.DATABASE_URL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.REDIS_URL">
+<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.core.config.Settings.REDIS_URL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.SECRET_KEY">
+<span class="sig-name descname"><span class="pre">SECRET_KEY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.SECRET_KEY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.ALGORITHM">
+<span class="sig-name descname"><span class="pre">ALGORITHM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.ALGORITHM" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.ACCESS_TOKEN_EXPIRE_MINUTES">
+<span class="sig-name descname"><span class="pre">ACCESS_TOKEN_EXPIRE_MINUTES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.ACCESS_TOKEN_EXPIRE_MINUTES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.LOG_LEVEL">
+<span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.LOG_LEVEL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.LOG_FORMAT">
+<span class="sig-name descname"><span class="pre">LOG_FORMAT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.core.config.Settings.LOG_FORMAT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.core.config.Settings.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[SettingsConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'arbitrary_types_allowed':</span> <span class="pre">True,</span> <span class="pre">'case_sensitive':</span> <span class="pre">True,</span> <span class="pre">'cli_avoid_json':</span> <span class="pre">False,</span> <span class="pre">'cli_enforce_required':</span> <span class="pre">False,</span> <span class="pre">'cli_exit_on_error':</span> <span class="pre">True,</span> <span class="pre">'cli_flag_prefix_char':</span> <span class="pre">'-',</span> <span class="pre">'cli_hide_none_type':</span> <span class="pre">False,</span> <span class="pre">'cli_ignore_unknown_args':</span> <span class="pre">False,</span> <span class="pre">'cli_implicit_flags':</span> <span class="pre">False,</span> <span class="pre">'cli_kebab_case':</span> <span class="pre">False,</span> <span class="pre">'cli_parse_args':</span> <span class="pre">None,</span> <span class="pre">'cli_parse_none_str':</span> <span class="pre">None,</span> <span class="pre">'cli_prefix':</span> <span class="pre">'',</span> <span class="pre">'cli_prog_name':</span> <span class="pre">None,</span> <span class="pre">'cli_shortcuts':</span> <span class="pre">None,</span> <span class="pre">'cli_use_class_docs_for_groups':</span> <span class="pre">False,</span> <span class="pre">'enable_decoding':</span> <span class="pre">True,</span> <span class="pre">'env_file':</span> <span class="pre">'.env',</span> <span class="pre">'env_file_encoding':</span> <span class="pre">'utf-8',</span> <span class="pre">'env_ignore_empty':</span> <span class="pre">False,</span> <span class="pre">'env_nested_delimiter':</span> <span class="pre">None,</span> <span class="pre">'env_nested_max_split':</span> <span class="pre">None,</span> <span class="pre">'env_parse_enums':</span> <span class="pre">None,</span> <span class="pre">'env_parse_none_str':</span> <span class="pre">None,</span> <span class="pre">'env_prefix':</span> <span class="pre">'',</span> <span class="pre">'extra':</span> <span class="pre">'forbid',</span> <span class="pre">'json_file':</span> <span class="pre">None,</span> <span class="pre">'json_file_encoding':</span> <span class="pre">None,</span> <span class="pre">'nested_model_default_partial_update':</span> <span class="pre">False,</span> <span class="pre">'protected_namespaces':</span> <span class="pre">('model_validate',</span> <span class="pre">'model_dump',</span> <span class="pre">'settings_customise_sources'),</span> <span class="pre">'secrets_dir':</span> <span class="pre">None,</span> <span class="pre">'toml_file':</span> <span class="pre">None,</span> <span class="pre">'validate_default':</span> <span class="pre">True,</span> <span class="pre">'yaml_config_section':</span> <span class="pre">None,</span> <span class="pre">'yaml_file':</span> <span class="pre">None,</span> <span class="pre">'yaml_file_encoding':</span> <span class="pre">None}</span></em><a class="headerlink" href="#app.core.config.Settings.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-app.core.nats">NATS client singleton for the application</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.core.nats.</span></span><span class="sig-name descname"><span class="pre">NATSClient</span></span><a class="reference internal" href="_modules/app/core/nats.html#NATSClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.nats.NATSClient" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>NATS client wrapper with connection management</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/nats.html#NATSClient.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.nats.NATSClient.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient.connect">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/nats.html#NATSClient.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.nats.NATSClient.connect" title="Link to this definition"></a></dt>
+<dd><p>Connect to NATS server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient.close">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/nats.html#NATSClient.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.nats.NATSClient.close" title="Link to this definition"></a></dt>
+<dd><p>Close NATS connection</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient.is_connected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#app.core.nats.NATSClient.is_connected" title="Link to this definition"></a></dt>
+<dd><p>Check if connected to NATS</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient.publish">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/nats.html#NATSClient.publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.nats.NATSClient.publish" title="Link to this definition"></a></dt>
+<dd><p>Publish message to subject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.core.nats.NATSClient.subscribe">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/core/nats.html#NATSClient.subscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.core.nats.NATSClient.subscribe" title="Link to this definition"></a></dt>
+<dd><p>Subscribe to subject with callback</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.models">
+<span id="database-models"></span><h2>Database Models<a class="headerlink" href="#module-app.models" title="Link to this heading"></a></h2>
+<p>Database models package</p>
+</section>
+<section id="module-app.schemas">
+<span id="api-schemas"></span><h2>API Schemas<a class="headerlink" href="#module-app.schemas" title="Link to this heading"></a></h2>
+<p>Pydantic schemas for request/response validation</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.DeviceCreate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">DeviceCreate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/device.html#DeviceCreate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.DeviceCreate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceBase</span></code></p>
+<p>Schema for creating a device</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceCreate.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.DeviceCreate.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceCreate.ip_address">
+<span class="sig-name descname"><span class="pre">ip_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceCreate.ip_address" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceCreate.mac_address">
+<span class="sig-name descname"><span class="pre">mac_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceCreate.mac_address" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceCreate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.DeviceCreate.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">DeviceUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/device.html#DeviceUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.DeviceUpdate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Schema for updating a device</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceUpdate.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate.status">
+<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceStatus</span></code><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceUpdate.status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate.capabilities">
+<span class="sig-name descname"><span class="pre">capabilities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]]</span></em><a class="headerlink" href="#app.schemas.DeviceUpdate.capabilities" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate.device_metadata">
+<span class="sig-name descname"><span class="pre">device_metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]]</span></em><a class="headerlink" href="#app.schemas.DeviceUpdate.device_metadata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate.ip_address">
+<span class="sig-name descname"><span class="pre">ip_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceUpdate.ip_address" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceUpdate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.DeviceUpdate.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">DeviceResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/device.html#DeviceResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.DeviceResponse" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceBase</span></code></p>
+<p>Schema for device responses</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.DeviceResponse.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.status">
+<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceStatus</span></code></em><a class="headerlink" href="#app.schemas.DeviceResponse.status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.claimed">
+<span class="sig-name descname"><span class="pre">claimed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><a class="headerlink" href="#app.schemas.DeviceResponse.claimed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.ip_address">
+<span class="sig-name descname"><span class="pre">ip_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceResponse.ip_address" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.mac_address">
+<span class="sig-name descname"><span class="pre">mac_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceResponse.mac_address" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.last_seen">
+<span class="sig-name descname"><span class="pre">last_seen</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceResponse.last_seen" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></em><a class="headerlink" href="#app.schemas.DeviceResponse.created_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.updated_at">
+<span class="sig-name descname"><span class="pre">updated_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></em><a class="headerlink" href="#app.schemas.DeviceResponse.updated_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceResponse.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'from_attributes':</span> <span class="pre">True}</span></em><a class="headerlink" href="#app.schemas.DeviceResponse.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.DeviceList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">DeviceList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/device.html#DeviceList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.DeviceList" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Schema for device list responses</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceList.devices">
+<span class="sig-name descname"><span class="pre">devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference internal" href="#app.schemas.DeviceResponse" title="app.schemas.device.DeviceResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.DeviceList.devices" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceList.total">
+<span class="sig-name descname"><span class="pre">total</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><a class="headerlink" href="#app.schemas.DeviceList.total" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.DeviceList.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.DeviceList.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.FlowCreate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">FlowCreate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/flow.html#FlowCreate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.FlowCreate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FlowBase</span></code></p>
+<p>Schema for creating a flow</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowCreate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.FlowCreate.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">FlowUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/flow.html#FlowUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.FlowUpdate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Schema for updating a flow</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.FlowUpdate.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.FlowUpdate.description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate.config">
+<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]]</span></em><a class="headerlink" href="#app.schemas.FlowUpdate.config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate.target_nodes">
+<span class="sig-name descname"><span class="pre">target_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]]</span></em><a class="headerlink" href="#app.schemas.FlowUpdate.target_nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate.flow_metadata">
+<span class="sig-name descname"><span class="pre">flow_metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]]</span></em><a class="headerlink" href="#app.schemas.FlowUpdate.flow_metadata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowUpdate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.FlowUpdate.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">FlowResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/flow.html#FlowResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.FlowResponse" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FlowBase</span></code></p>
+<p>Schema for flow responses</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.FlowResponse.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.deployed">
+<span class="sig-name descname"><span class="pre">deployed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><a class="headerlink" href="#app.schemas.FlowResponse.deployed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.deployed_at">
+<span class="sig-name descname"><span class="pre">deployed_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.FlowResponse.deployed_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></em><a class="headerlink" href="#app.schemas.FlowResponse.version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></em><a class="headerlink" href="#app.schemas.FlowResponse.created_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.updated_at">
+<span class="sig-name descname"><span class="pre">updated_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></em><a class="headerlink" href="#app.schemas.FlowResponse.updated_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowResponse.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'from_attributes':</span> <span class="pre">True}</span></em><a class="headerlink" href="#app.schemas.FlowResponse.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.FlowDeploy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">FlowDeploy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/flow.html#FlowDeploy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.FlowDeploy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Schema for flow deployment</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowDeploy.target_nodes">
+<span class="sig-name descname"><span class="pre">target_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]]</span></em><a class="headerlink" href="#app.schemas.FlowDeploy.target_nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowDeploy.force">
+<span class="sig-name descname"><span class="pre">force</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><a class="headerlink" href="#app.schemas.FlowDeploy.force" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.FlowDeploy.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.FlowDeploy.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">SystemInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/system.html#SystemInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.SystemInfo" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>System information schema</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.hostname">
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.hostname" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.platform">
+<span class="sig-name descname"><span class="pre">platform</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.platform" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.python_version">
+<span class="sig-name descname"><span class="pre">python_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.python_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.uptime_seconds">
+<span class="sig-name descname"><span class="pre">uptime_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.uptime_seconds" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.memory_usage_mb">
+<span class="sig-name descname"><span class="pre">memory_usage_mb</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.memory_usage_mb" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.cpu_percent">
+<span class="sig-name descname"><span class="pre">cpu_percent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.cpu_percent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.nats_connected">
+<span class="sig-name descname"><span class="pre">nats_connected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.nats_connected" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.redis_connected">
+<span class="sig-name descname"><span class="pre">redis_connected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.redis_connected" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.database_connected">
+<span class="sig-name descname"><span class="pre">database_connected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><a class="headerlink" href="#app.schemas.SystemInfo.database_connected" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.SystemInfo.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.SystemInfo.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.HealthCheck">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">HealthCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/system.html#HealthCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.HealthCheck" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Health check response schema</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.HealthCheck.status">
+<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.HealthCheck.status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.HealthCheck.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.HealthCheck.version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.HealthCheck.checks">
+<span class="sig-name descname"><span class="pre">checks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.HealthCheck.checks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.HealthCheck.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></em><a class="headerlink" href="#app.schemas.HealthCheck.timestamp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.HealthCheck.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.HealthCheck.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.schemas.LogEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.schemas.</span></span><span class="sig-name descname"><span class="pre">LogEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/schemas/system.html#LogEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.schemas.LogEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Log entry schema</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.LogEntry.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></em><a class="headerlink" href="#app.schemas.LogEntry.timestamp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.LogEntry.level">
+<span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">LogLevel</span></code></em><a class="headerlink" href="#app.schemas.LogEntry.level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.LogEntry.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.LogEntry.message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.LogEntry.module">
+<span class="sig-name descname"><span class="pre">module</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#app.schemas.LogEntry.module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.LogEntry.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#app.schemas.LogEntry.metadata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.schemas.LogEntry.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar[ConfigDict]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app.schemas.LogEntry.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.api.v1.endpoints.devices">
+<span id="api-endpoints"></span><h2>API Endpoints<a class="headerlink" href="#module-app.api.v1.endpoints.devices" title="Link to this heading"></a></h2>
+<p>Device management endpoints</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.devices.list_devices">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.devices.</span></span><span class="sig-name descname"><span class="pre">list_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Query(None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/devices.html#list_devices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.devices.list_devices" title="Link to this definition"></a></dt>
+<dd><p>List all discovered devices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.devices.get_device">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.devices.</span></span><span class="sig-name descname"><span class="pre">get_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/devices.html#get_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.devices.get_device" title="Link to this definition"></a></dt>
+<dd><p>Get device details</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.devices.create_device">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.devices.</span></span><span class="sig-name descname"><span class="pre">create_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/devices.html#create_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.devices.create_device" title="Link to this definition"></a></dt>
+<dd><p>Register a new device</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.devices.update_device">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.devices.</span></span><span class="sig-name descname"><span class="pre">update_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/devices.html#update_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.devices.update_device" title="Link to this definition"></a></dt>
+<dd><p>Update device information</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.devices.claim_device">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.devices.</span></span><span class="sig-name descname"><span class="pre">claim_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/devices.html#claim_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.devices.claim_device" title="Link to this definition"></a></dt>
+<dd><p>Claim a device for this hub</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.devices.send_command">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.devices.</span></span><span class="sig-name descname"><span class="pre">send_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Body(PydanticUndefined)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/devices.html#send_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.devices.send_command" title="Link to this definition"></a></dt>
+<dd><p>Send command to device</p>
+</dd></dl>
+
+<p id="module-app.api.v1.endpoints.flows">Flow management endpoints for Node-RED integration</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.flows.list_flows">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.flows.</span></span><span class="sig-name descname"><span class="pre">list_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deployed_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Query(False)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/flows.html#list_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.flows.list_flows" title="Link to this definition"></a></dt>
+<dd><p>List available flows</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.flows.get_flow">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.flows.</span></span><span class="sig-name descname"><span class="pre">get_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/flows.html#get_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.flows.get_flow" title="Link to this definition"></a></dt>
+<dd><p>Get flow details</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.flows.create_flow">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.flows.</span></span><span class="sig-name descname"><span class="pre">create_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/flows.html#create_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.flows.create_flow" title="Link to this definition"></a></dt>
+<dd><p>Create a new flow</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.flows.update_flow">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.flows.</span></span><span class="sig-name descname"><span class="pre">update_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/flows.html#update_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.flows.update_flow" title="Link to this definition"></a></dt>
+<dd><p>Update flow configuration</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.flows.deploy_flow">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.flows.</span></span><span class="sig-name descname"><span class="pre">deploy_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_data=Body(target_nodes=None</span> <span class="pre">force=False)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/flows.html#deploy_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.flows.deploy_flow" title="Link to this definition"></a></dt>
+<dd><p>Deploy flow to devices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.v1.endpoints.flows.undeploy_flow">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api.v1.endpoints.flows.</span></span><span class="sig-name descname"><span class="pre">undeploy_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/v1/endpoints/flows.html#undeploy_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.v1.endpoints.flows.undeploy_flow" title="Link to this definition"></a></dt>
+<dd><p>Undeploy a running flow</p>
+</dd></dl>
+
+</section>
+<section id="module-app.services">
+<span id="services"></span><h2>Services<a class="headerlink" href="#module-app.services" title="Link to this heading"></a></h2>
+<p>Business logic services</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.services.DeviceService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.services.</span></span><span class="sig-name descname"><span class="pre">DeviceService</span></span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Service for managing devices</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.create_device">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.create_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.create_device" title="Link to this definition"></a></dt>
+<dd><p>Create a new device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#app.schemas.DeviceResponse" title="app.schemas.device.DeviceResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.get_device">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.get_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.get_device" title="Link to this definition"></a></dt>
+<dd><p>Get device by ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.DeviceResponse" title="app.schemas.device.DeviceResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.update_device">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.update_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.update_device" title="Link to this definition"></a></dt>
+<dd><p>Update device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.DeviceResponse" title="app.schemas.device.DeviceResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.list_devices">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.list_devices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.list_devices" title="Link to this definition"></a></dt>
+<dd><p>List all devices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#app.schemas.DeviceResponse" title="app.schemas.device.DeviceResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.claim_device">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">claim_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.claim_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.claim_device" title="Link to this definition"></a></dt>
+<dd><p>Claim a device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.DeviceResponse" title="app.schemas.device.DeviceResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.DeviceService.send_command">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/device_service.html#DeviceService.send_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.DeviceService.send_command" title="Link to this definition"></a></dt>
+<dd><p>Send command to device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.services.FlowService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.services.</span></span><span class="sig-name descname"><span class="pre">FlowService</span></span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Service for managing Node-RED flows</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.create_flow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.create_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.create_flow" title="Link to this definition"></a></dt>
+<dd><p>Create a new flow</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#app.schemas.FlowResponse" title="app.schemas.flow.FlowResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlowResponse</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.get_flow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.get_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.get_flow" title="Link to this definition"></a></dt>
+<dd><p>Get flow by ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.FlowResponse" title="app.schemas.flow.FlowResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlowResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.update_flow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.update_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.update_flow" title="Link to this definition"></a></dt>
+<dd><p>Update flow</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.FlowResponse" title="app.schemas.flow.FlowResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlowResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.list_flows">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deployed_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.list_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.list_flows" title="Link to this definition"></a></dt>
+<dd><p>List all flows</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#app.schemas.FlowResponse" title="app.schemas.flow.FlowResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlowResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.deploy_flow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deploy_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.deploy_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.deploy_flow" title="Link to this definition"></a></dt>
+<dd><p>Deploy flow to nodes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.FlowResponse" title="app.schemas.flow.FlowResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlowResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.FlowService.undeploy_flow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">undeploy_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/flow_service.html#FlowService.undeploy_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.FlowService.undeploy_flow" title="Link to this definition"></a></dt>
+<dd><p>Undeploy flow from nodes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#app.schemas.FlowResponse" title="app.schemas.flow.FlowResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlowResponse</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.services.NATSService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.services.</span></span><span class="sig-name descname"><span class="pre">NATSService</span></span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Service for NATS messaging operations</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.NATSService.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.NATSService.subscribe">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService.subscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService.subscribe" title="Link to this definition"></a></dt>
+<dd><p>Subscribe to a NATS subject</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.NATSService.unsubscribe">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unsubscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService.unsubscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService.unsubscribe" title="Link to this definition"></a></dt>
+<dd><p>Unsubscribe from a subject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.NATSService.publish">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService.publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService.publish" title="Link to this definition"></a></dt>
+<dd><p>Publish message to a subject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.NATSService.request">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService.request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService.request" title="Link to this definition"></a></dt>
+<dd><p>Send request and wait for response</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.NATSService.setup_standard_subscriptions">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setup_standard_subscriptions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/nats_service.html#NATSService.setup_standard_subscriptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.NATSService.setup_standard_subscriptions" title="Link to this definition"></a></dt>
+<dd><p>Set up standard Hub subscriptions</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tafy Studio.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

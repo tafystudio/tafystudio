@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/system/discovery/1.0",
+  "title": "Device Discovery Announcement",
+  "description": "Message broadcast by devices for discovery",
+  "type": "object",
+  "required": ["device_type", "hardware_id", "firmware_version", "capabilities"],
+  "properties": {
+    "device_type": {
+      "type": "string",
+      "enum": ["esp32", "esp8266", "rpi", "jetson", "x86", "other"],
+      "description": "Hardware platform type"
+    },
+    "hardware_id": {
+      "type": "string",
+      "description": "Unique hardware identifier (MAC address or serial)"
+    },
+    "firmware_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9]+)?$",
+      "description": "Firmware version (semver)"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+:v[0-9]+\\.[0-9]+$"
+      },
+      "uniqueItems": true,
+      "description": "List of supported capabilities"
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "format": "ipv4"
+        },
+        "mac_address": {
+          "type": "string",
+          "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "manufacturer": { "type": "string" },
+        "model": { "type": "string" },
+        "serial_number": { "type": "string" },
+        "hardware_revision": { "type": "string" },
+        "location": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": { "type": "integer", "minimum": 1 },
+        "ram_mb": { "type": "integer", "minimum": 1 },
+        "storage_mb": { "type": "integer", "minimum": 1 },
+        "cpu_freq_mhz": { "type": "integer", "minimum": 1 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

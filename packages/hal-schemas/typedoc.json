@@ -10,7 +10,6 @@
   "includeVersion": true,
   "categorizeByGroup": true,
   "plugin": ["typedoc-plugin-markdown"],
-  "outputFileStrategy": "members",
   "excludePrivate": true,
   "excludeInternal": true,
   "readme": "./README.md",

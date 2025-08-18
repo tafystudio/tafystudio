@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/system/heartbeat/1.0",
+  "title": "Device Heartbeat",
+  "description": "Periodic heartbeat message from devices",
+  "type": "object",
+  "required": ["uptime_seconds", "status", "health"],
+  "properties": {
+    "uptime_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Device uptime in seconds"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["idle", "active", "error", "maintenance", "emergency_stop"],
+      "description": "Current device status"
+    },
+    "health": {
+      "type": "object",
+      "required": ["cpu_percent", "memory_percent", "temperature_celsius"],
+      "properties": {
+        "cpu_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "CPU usage percentage"
+        },
+        "memory_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Memory usage percentage"
+        },
+        "temperature_celsius": {
+          "type": "number",
+          "description": "System temperature"
+        },
+        "battery_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Battery level percentage (if applicable)"
+        },
+        "voltage_volts": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Supply voltage"
+        },
+        "storage_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Storage usage percentage"
+        }
+      }
+    },
+    "active_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+:v[0-9]+\\.[0-9]+$"
+      },
+      "description": "Currently active capabilities"
+    },
+    "error_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of errors since last heartbeat"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Current warning messages"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "messages_sent": { "type": "integer", "minimum": 0 },
+        "messages_received": { "type": "integer", "minimum": 0 },
+        "commands_executed": { "type": "integer", "minimum": 0 },
+        "commands_failed": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

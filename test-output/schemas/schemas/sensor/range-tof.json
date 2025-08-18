@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafystudio.com/schemas/hal/sensor/range-tof/1.0",
+  "title": "Time of Flight Range Sensor Data",
+  "description": "Data from Time of Flight (ToF) range sensors",
+  "type": "object",
+  "required": ["range_meters", "quality", "sensor_id"],
+  "properties": {
+    "sensor_id": {
+      "type": "string",
+      "description": "Unique identifier for this sensor on the device"
+    },
+    "range_meters": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Measured range in meters"
+    },
+    "quality": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Measurement quality/confidence percentage"
+    },
+    "min_range_meters": {
+      "type": "number",
+      "default": 0.02,
+      "description": "Minimum measurable range for this sensor"
+    },
+    "max_range_meters": {
+      "type": "number",
+      "default": 4.0,
+      "description": "Maximum measurable range for this sensor"
+    },
+    "field_of_view_deg": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 180,
+      "description": "Field of view in degrees"
+    },
+    "ambient_light_level": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Ambient light level (sensor specific units)"
+    },
+    "temperature_celsius": {
+      "type": "number",
+      "description": "Sensor temperature"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "out_of_range", "low_signal", "high_ambient_light", "error"],
+      "description": "Sensor status"
+    },
+    "raw_value": {
+      "type": "integer",
+      "description": "Raw sensor reading for debugging"
+    }
+  },
+  "additionalProperties": false
+}
