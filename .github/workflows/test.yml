@@ -73,7 +73,7 @@ jobs:
         
       - name: Upload coverage
         if: matrix.node-version == 20
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
@@ -106,7 +106,7 @@ jobs:
           
       - name: Upload Python coverage
         if: matrix.python-version == '3.11'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./apps/hub-api/coverage.xml
@@ -141,7 +141,7 @@ jobs:
           go tool cover -html=coverage.out -o coverage.html
           
       - name: Upload Go coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./apps/tafyd/coverage.out
