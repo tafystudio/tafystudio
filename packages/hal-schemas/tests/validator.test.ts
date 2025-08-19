@@ -12,7 +12,7 @@ describe('HAL Validator', () => {
     it('should load all schemas', () => {
       const schemaIds = validator.getSchemaIds();
       expect(schemaIds.length).toBeGreaterThan(0);
-      expect(schemaIds).toContain('https://tafystudio.com/schemas/hal/common/envelope/1.0');
+      expect(schemaIds).toContain('https://tafy.studio/schemas/hal/common/envelope/1.0');
     });
   });
   
@@ -26,7 +26,7 @@ describe('HAL Validator', () => {
       );
       
       const result = validator.validate(
-        'https://tafystudio.com/schemas/hal/common/envelope/1.0',
+        'https://tafy.studio/schemas/hal/common/envelope/1.0',
         envelope
       );
       
@@ -42,7 +42,7 @@ describe('HAL Validator', () => {
       };
       
       const result = validator.validate(
-        'https://tafystudio.com/schemas/hal/common/envelope/1.0',
+        'https://tafy.studio/schemas/hal/common/envelope/1.0',
         invalidEnvelope
       );
       
@@ -61,7 +61,7 @@ describe('HAL Validator', () => {
       };
       
       const result = validator.validate(
-        'https://tafystudio.com/schemas/hal/motor/differential/1.0',
+        'https://tafy.studio/schemas/hal/motor/differential/1.0',
         command
       );
       
@@ -75,7 +75,7 @@ describe('HAL Validator', () => {
       };
       
       const result = validator.validate(
-        'https://tafystudio.com/schemas/hal/motor/differential/1.0',
+        'https://tafy.studio/schemas/hal/motor/differential/1.0',
         command
       );
       

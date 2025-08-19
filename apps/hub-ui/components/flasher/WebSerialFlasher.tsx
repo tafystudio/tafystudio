@@ -24,7 +24,14 @@ interface SerialOptions {
 }
 
 interface FlashProgress {
-  state: 'idle' | 'connecting' | 'erasing' | 'writing' | 'verifying' | 'complete' | 'error';
+  state:
+    | 'idle'
+    | 'connecting'
+    | 'erasing'
+    | 'writing'
+    | 'verifying'
+    | 'complete'
+    | 'error';
   progress: number;
   message: string;
 }
@@ -64,13 +71,18 @@ const firmwareOptions: FirmwareOption[] = [
     description: 'Multi-sensor hub with environmental and motion sensors',
     version: '1.0.0',
     size: 384 * 1024, // 384KB
-    capabilities: ['sensor.temperature:v1.0', 'sensor.humidity:v1.0', 'sensor.imu:v1.0'],
+    capabilities: [
+      'sensor.temperature:v1.0',
+      'sensor.humidity:v1.0',
+      'sensor.imu:v1.0',
+    ],
     url: '/firmware/esp32/sensor-hub-v1.0.0.bin',
   },
 ];
 
 export default function WebSerialFlasher() {
-  const [selectedFirmware, setSelectedFirmware] = useState<FirmwareOption | null>(null);
+  const [selectedFirmware, setSelectedFirmware] =
+    useState<FirmwareOption | null>(null);
   const [progress, setProgress] = useState<FlashProgress>({
     state: 'idle',
     progress: 0,
@@ -81,12 +93,19 @@ export default function WebSerialFlasher() {
   const readerRef = useRef<ReadableStreamDefaultReader | null>(null);
 
   const addToLog = useCallback((message: string) => {
-    setSerialLog((prev) => [...prev.slice(-100), `[${new Date().toLocaleTimeString()}] ${message}`]);
+    setSerialLog((prev) => [
+      ...prev.slice(-100),
+      `[${new Date().toLocaleTimeString()}] ${message}`,
+    ]);
   }, []);
 
   const connectToDevice = async () => {
     try {
-      setProgress({ state: 'connecting', progress: 0, message: 'Requesting serial port...' });
+      setProgress({
+        state: 'connecting',
+        progress: 0,
+        message: 'Requesting serial port...',
+      });
 
       // Request serial port access
       const port = await (navigator as any).serial.requestPort({
@@ -102,7 +121,11 @@ export default function WebSerialFlasher() {
       portRef.current = port;
 
       addToLog('Connected to serial port');
-      setProgress({ state: 'connecting', progress: 100, message: 'Connected!' });
+      setProgress({
+        state: 'connecting',
+        progress: 100,
+        message: 'Connected!',
+      });
 
       // Start reading from serial
       const reader = port.readable.getReader();
@@ -114,7 +137,7 @@ export default function WebSerialFlasher() {
           while (true) {
             const { value, done } = await reader.read();
             if (done) break;
-            
+
             const text = new TextDecoder().decode(value);
             addToLog(text);
           }
@@ -127,7 +150,11 @@ export default function WebSerialFlasher() {
       return true;
     } catch (error: any) {
       addToLog(`Connection error: ${error.message}`);
-      setProgress({ state: 'error', progress: 0, message: `Failed to connect: ${error.message}` });
+      setProgress({
+        state: 'error',
+        progress: 0,
+        message: `Failed to connect: ${error.message}`,
+      });
       return false;
     }
   };
@@ -144,11 +171,19 @@ export default function WebSerialFlasher() {
         if (!connected) return;
       }
 
-      setProgress({ state: 'erasing', progress: 10, message: 'Erasing flash...' });
+      setProgress({
+        state: 'erasing',
+        progress: 10,
+        message: 'Erasing flash...',
+      });
       addToLog('Starting firmware flash...');
 
       // Simulate firmware download
-      setProgress({ state: 'writing', progress: 20, message: 'Downloading firmware...' });
+      setProgress({
+        state: 'writing',
+        progress: 20,
+        message: 'Downloading firmware...',
+      });
       const response = await fetch(selectedFirmware.url);
       const firmwareData = await response.arrayBuffer();
 
@@ -161,17 +196,25 @@ export default function WebSerialFlasher() {
           progress,
           message: `Writing block ${i + 1}/${chunks}...`,
         });
-        
+
         // Simulate delay
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       // Verify
-      setProgress({ state: 'verifying', progress: 85, message: 'Verifying firmware...' });
+      setProgress({
+        state: 'verifying',
+        progress: 85,
+        message: 'Verifying firmware...',
+      });
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Complete
-      setProgress({ state: 'complete', progress: 100, message: 'Flash complete! Device will restart.' });
+      setProgress({
+        state: 'complete',
+        progress: 100,
+        message: 'Flash complete! Device will restart.',
+      });
       addToLog('Firmware flash completed successfully');
 
       // Reset after 3 seconds
@@ -180,7 +223,11 @@ export default function WebSerialFlasher() {
       }, 3000);
     } catch (error: any) {
       addToLog(`Flash error: ${error.message}`);
-      setProgress({ state: 'error', progress: 0, message: `Flash failed: ${error.message}` });
+      setProgress({
+        state: 'error',
+        progress: 0,
+        message: `Flash failed: ${error.message}`,
+      });
     }
   };
 
@@ -189,7 +236,7 @@ export default function WebSerialFlasher() {
       await readerRef.current.cancel();
       readerRef.current = null;
     }
-    
+
     if (portRef.current) {
       await portRef.current.close();
       portRef.current = null;
@@ -203,9 +250,12 @@ export default function WebSerialFlasher() {
   if (typeof window !== 'undefined' && !(navigator as any).serial) {
     return (
       <Card className="text-center p-8">
-        <h3 className="text-xl font-semibold text-red-600 mb-2">WebSerial Not Supported</h3>
+        <h3 className="text-xl font-semibold text-red-600 mb-2">
+          WebSerial Not Supported
+        </h3>
         <p className="text-gray-600">
-          Your browser does not support WebSerial API. Please use Chrome, Edge, or Opera.
+          Your browser does not support WebSerial API. Please use Chrome, Edge,
+          or Opera.
         </p>
       </Card>
     );
@@ -227,10 +277,13 @@ export default function WebSerialFlasher() {
               onClick={() => setSelectedFirmware(firmware)}
             >
               <h4 className="font-semibold text-tafy-800">{firmware.name}</h4>
-              <p className="text-sm text-gray-600 mt-1">{firmware.description}</p>
+              <p className="text-sm text-gray-600 mt-1">
+                {firmware.description}
+              </p>
               <div className="mt-2 space-y-1">
                 <p className="text-xs text-gray-500">
-                  Version: {firmware.version} • Size: {(firmware.size / 1024).toFixed(0)}KB
+                  Version: {firmware.version} • Size:{' '}
+                  {(firmware.size / 1024).toFixed(0)}KB
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {firmware.capabilities.map((cap) => (
@@ -257,14 +310,16 @@ export default function WebSerialFlasher() {
                 progress.state === 'complete'
                   ? 'online'
                   : progress.state === 'error'
-                  ? 'error'
-                  : progress.state === 'idle'
-                  ? 'offline'
-                  : 'warning'
+                    ? 'error'
+                    : progress.state === 'idle'
+                      ? 'offline'
+                      : 'warning'
               }
               label={progress.message}
             />
-            <span className="text-sm font-medium text-gray-600">{progress.progress}%</span>
+            <span className="text-sm font-medium text-gray-600">
+              {progress.progress}%
+            </span>
           </div>
 
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -273,8 +328,8 @@ export default function WebSerialFlasher() {
                 progress.state === 'error'
                   ? 'bg-red-500'
                   : progress.state === 'complete'
-                  ? 'bg-green-500'
-                  : 'bg-tafy-500'
+                    ? 'bg-green-500'
+                    : 'bg-tafy-500'
               }`}
               style={{ width: `${progress.progress}%` }}
             />
@@ -286,10 +341,16 @@ export default function WebSerialFlasher() {
               onClick={flashFirmware}
               disabled={
                 !selectedFirmware ||
-                ['connecting', 'erasing', 'writing', 'verifying'].includes(progress.state)
+                ['connecting', 'erasing', 'writing', 'verifying'].includes(
+                  progress.state
+                )
               }
             >
-              {progress.state === 'idle' ? 'Flash Firmware' : <Spinner size="sm" />}
+              {progress.state === 'idle' ? (
+                'Flash Firmware'
+              ) : (
+                <Spinner size="sm" />
+              )}
             </Button>
             {portRef.current && (
               <Button variant="secondary" onClick={disconnect}>

@@ -22,7 +22,9 @@ export default function FlashPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-tafy-900 mb-2">Flash Firmware</h1>
+          <h1 className="text-3xl font-bold text-tafy-900 mb-2">
+            Flash Firmware
+          </h1>
           <p className="text-gray-600">
             Flash Tafy firmware to your ESP32 devices directly from the browser
           </p>
@@ -37,7 +39,9 @@ export default function FlashPage() {
                 <ul className="list-disc list-inside space-y-1">
                   <li>Connect your ESP32 to this computer via USB</li>
                   <li>Ensure you have the correct USB drivers installed</li>
-                  <li>Your browser must support WebSerial (Chrome, Edge, Opera)</li>
+                  <li>
+                    Your browser must support WebSerial (Chrome, Edge, Opera)
+                  </li>
                   <li>The device will restart automatically after flashing</li>
                 </ul>
               </div>
@@ -51,7 +55,9 @@ export default function FlashPage() {
           <Card title="Troubleshooting" icon="🔧">
             <div className="space-y-3 text-sm">
               <div>
-                <p className="font-semibold text-gray-700">Device not showing up?</p>
+                <p className="font-semibold text-gray-700">
+                  Device not showing up?
+                </p>
                 <ul className="list-disc list-inside text-gray-600 mt-1">
                   <li>Check USB cable (must be data cable, not charge-only)</li>
                   <li>Install CP2102/CH340 drivers for your OS</li>
@@ -59,7 +65,7 @@ export default function FlashPage() {
                   <li>Hold BOOT button while connecting on some boards</li>
                 </ul>
               </div>
-              
+
               <div>
                 <p className="font-semibold text-gray-700">Flash failing?</p>
                 <ul className="list-disc list-inside text-gray-600 mt-1">

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tafystudio.com/schemas/hal/common/envelope/1.0",
+  "$id": "https://tafy.studio/schemas/hal/common/envelope/1.0",
   "title": "HAL Message Envelope",
   "description": "Standard envelope for all HAL messages",
   "type": "object",

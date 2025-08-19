@@ -70,7 +70,7 @@ export class HALValidator {
   validateMessage(message: unknown): { valid: boolean; errors?: any[] } {
     // First validate the envelope
     const envelopeResult = this.validate(
-      'https://tafystudio.com/schemas/hal/common/envelope/1.0',
+      'https://tafy.studio/schemas/hal/common/envelope/1.0',
       message
     );
     
@@ -97,13 +97,13 @@ export class HALValidator {
    */
   private schemaToId(schema: string): string | undefined {
     // Convert tafylabs/hal/motor/differential/1.0 to
-    // https://tafystudio.com/schemas/hal/motor/differential/1.0
+    // https://tafy.studio/schemas/hal/motor/differential/1.0
     const match = schema.match(/^([^/]+)\/hal\/(.+)$/);
     if (!match) {
       return undefined;
     }
     
-    return `https://tafystudio.com/schemas/hal/${match[2]}`;
+    return `https://tafy.studio/schemas/hal/${match[2]}`;
   }
   
   /**

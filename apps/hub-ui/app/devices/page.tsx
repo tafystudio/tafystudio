@@ -41,7 +41,10 @@ export default function DevicesPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-tafy-900">Devices</h1>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => window.location.href = '/devices/flash'}>
+          <Button
+            variant="secondary"
+            onClick={() => (window.location.href = '/devices/flash')}
+          >
             Flash Firmware
           </Button>
           <Button variant="primary">Scan for Devices</Button>
