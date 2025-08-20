@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tafystudio.com/schemas/hal/sensor/imu/1.0",
+  "$id": "https://tafy.studio/schemas/hal/sensor/imu/1.0",
   "title": "Inertial Measurement Unit Data",
   "description": "Data from IMU sensors (accelerometer, gyroscope, magnetometer)",
   "type": "object",

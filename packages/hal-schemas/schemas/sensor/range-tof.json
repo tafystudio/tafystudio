@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tafystudio.com/schemas/hal/sensor/range-tof/1.0",
+  "$id": "https://tafy.studio/schemas/hal/sensor/range-tof/1.0",
   "title": "Time of Flight Range Sensor Data",
   "description": "Data from Time of Flight (ToF) range sensors",
   "type": "object",

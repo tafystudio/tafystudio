@@ -193,27 +193,27 @@ describe("HALRequestReplyClient", () => {
       const sentMessage = JSON.parse(published[0].data);
       expect(sentMessage.correlation_id).toBeDefined();
 
-      // Simulate reply handler
-      natsClient.subscribe("hal.v1.reply", (msg: any) => {
+      // Simulate a device that responds to commands
+      const commandHandler = (msg: any) => {
         const message = JSON.parse(msg.data);
-        if (message.correlation_id === sentMessage.correlation_id) {
-          const reply = {
-            ...message,
-            payload: { result: "success" },
-          };
-          // Simulate publishing reply back
-          setTimeout(() => {
-            const handler = (natsClient as any).handlers.get("hal.v1.reply");
-            if (handler) {
-              handler({ data: JSON.stringify(reply) });
-            }
-          }, 10);
-        }
-      });
+        const reply = {
+          ...message,
+          payload: { result: "success" },
+        };
+        // Simulate publishing reply back
+        setTimeout(() => {
+          const replyHandler = (natsClient as any).handlers.get("hal.v1.reply");
+          if (replyHandler) {
+            replyHandler({ data: JSON.stringify(reply) });
+          }
+        }, 10);
+      };
 
-      // Trigger the reply
-      const handler = (natsClient as any).handlers.get("hal.v1.command");
-      handler({ data: published[0].data });
+      // Set up the command handler before triggering
+      (natsClient as any).handlers.set("hal.v1.command", commandHandler);
+
+      // Trigger the command handler
+      commandHandler({ data: published[0].data });
 
       // Wait for reply
       const result = await promise;
