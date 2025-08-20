@@ -1,0 +1,167 @@
+# Default values for tafy-node-red
+
+replicaCount: 1
+
+image:
+  repository: nodered/node-red
+  pullPolicy: IfNotPresent
+  tag: "3.1.0"
+
+# Custom Tafy nodes image
+customNodes:
+  enabled: true
+  repository: tafystudio/node-red-tafy
+  tag: "latest"
+  pullPolicy: Always
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 1880
+  targetPort: 1880
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: flows.tafy.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: node-red-tls
+  #    hosts:
+  #      - flows.tafy.local
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  existingClaim: ""
+
+# Node-RED specific configuration
+nodeRed:
+  # Admin API security
+  adminAuth:
+    enabled: false
+    username: admin
+    # Password hash generated with: node -e "console.log(require('bcryptjs').hashSync('password', 8));"
+    passwordHash: ""
+  
+  # Editor theme
+  editorTheme:
+    page:
+      title: "Tafy Flow Editor"
+      favicon: "/usr/src/node-red/static/favicon.ico"
+    header:
+      title: "Tafy Studio Robot Control"
+      image: ""
+    
+  # Project settings
+  projects:
+    enabled: true
+    workflow:
+      mode: "manual"
+  
+  # Context storage
+  contextStorage:
+    default:
+      module: "localfilesystem"
+  
+  # Logging
+  logging:
+    console:
+      level: "info"
+      metrics: false
+      audit: false
+
+# NATS configuration
+nats:
+  url: "nats://nats:4222"
+  credentials:
+    enabled: false
+    username: ""
+    password: ""
+  
+# Custom environment variables
+env:
+  - name: TZ
+    value: "UTC"
+  - name: NODE_RED_ENABLE_SAFE_MODE
+    value: "false"
+  - name: NODE_RED_ENABLE_PROJECTS
+    value: "true"
+
+# Additional Node-RED nodes to install
+additionalNodes:
+  - node-red-dashboard
+  - node-red-contrib-web-worldmap
+  - node-red-contrib-image-tools
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

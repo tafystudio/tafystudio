@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "node-red.fullname" . }}
+  labels:
+    {{- include "node-red.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "node-red.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "node-red.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "node-red.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.customNodes.enabled }}
+        - name: install-custom-nodes
+          image: "{{ .Values.customNodes.repository }}:{{ .Values.customNodes.tag }}"
+          imagePullPolicy: {{ .Values.customNodes.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              cp -R /nodes/* /data/ || true
+              cd /data && npm install --production
+          volumeMounts:
+            - name: data
+              mountPath: /data
+        {{- end }}
+        {{- if .Values.additionalNodes }}
+        - name: install-additional-nodes
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              cd /data
+              {{- range .Values.additionalNodes }}
+              npm install {{ . }}
+              {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          env:
+            - name: NODE_RED_HOME
+              value: "/usr/src/node-red"
+            - name: FLOWS
+              value: "flows.json"
+            - name: NATS_URL
+              value: {{ .Values.nats.url | quote }}
+            {{- if .Values.nats.credentials.enabled }}
+            - name: NATS_USER
+              value: {{ .Values.nats.credentials.username | quote }}
+            - name: NATS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "node-red.fullname" . }}-nats
+                  key: password
+            {{- end }}
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: settings
+              mountPath: /data/settings.js
+              subPath: settings.js
+      volumes:
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "node-red.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: settings
+          configMap:
+            name: {{ include "node-red.fullname" . }}-settings
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

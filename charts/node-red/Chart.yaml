@@ -1,0 +1,21 @@
+apiVersion: v2
+name: tafy-node-red
+description: Node-RED deployment for Tafy Studio with custom robot control nodes
+type: application
+version: 0.1.0
+appVersion: "3.1.0"
+keywords:
+  - node-red
+  - iot
+  - robotics
+  - tafy
+home: https://tafy.studio
+sources:
+  - https://github.com/tafystudio/tafystudio
+maintainers:
+  - name: Tafy Studio Team
+    email: team@tafy.studio
+annotations:
+  artifacthub.io/category: iot
+  artifacthub.io/license: Apache-2.0
+dependencies: []

@@ -1,0 +1,64 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-nats-pub', {
+        category: 'tafy',
+        color: '#00B4D8',
+        defaults: {
+            name: { value: "" },
+            server: { value: "", type: "tafy-nats-config", required: true },
+            subject: { value: "", required: true },
+            subjectType: { value: "str" }
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "bridge.svg",
+        label: function() {
+            return this.name || this.subject || "nats publish";
+        },
+        paletteLabel: "nats pub",
+        oneditprepare: function() {
+            $("#node-input-subject").typedInput({
+                types: ["str", "msg", "flow", "global"],
+                default: "str"
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-nats-pub">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-subject"><i class="fa fa-tag"></i> Subject</label>
+        <input type="text" id="node-input-subject" placeholder="device.*.command">
+        <input type="hidden" id="node-input-subjectType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-nats-pub">
+    <p>Publishes messages to a NATS subject.</p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>The message to publish. Objects will be JSON stringified.</dd>
+    </dl>
+    <h3>Configuration</h3>
+    <dl class="message-properties">
+        <dt>Server</dt>
+        <dd>The NATS server connection to use.</dd>
+        <dt>Subject</dt>
+        <dd>The NATS subject to publish to. Can be a string or derived from msg/flow/global.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>Publishes messages to NATS subjects following the Tafy naming convention:</p>
+    <ul>
+        <li><code>device.{id}.command</code> - Device commands</li>
+        <li><code>hal.v1.{type}.{action}</code> - HAL messages</li>
+        <li><code>node.{id}.{event}</code> - Node events</li>
+    </ul>
+</script>

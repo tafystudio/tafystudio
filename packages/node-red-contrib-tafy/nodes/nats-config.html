@@ -1,0 +1,48 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-nats-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            url: { value: "nats://localhost:4222", required: true }
+        },
+        credentials: {
+            username: { type: "text" },
+            password: { type: "password" }
+        },
+        label: function() {
+            return this.name || this.url;
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-nats-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-url"><i class="fa fa-server"></i> Server URL</label>
+        <input type="text" id="node-config-input-url" placeholder="nats://localhost:4222">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-username" placeholder="Leave blank for no auth">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-config-input-password">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-nats-config">
+    <p>Configuration node for NATS connection.</p>
+    <h3>Configuration</h3>
+    <dl class="message-properties">
+        <dt>Server URL</dt>
+        <dd>NATS server URL (e.g., nats://localhost:4222)</dd>
+        <dt>Username <span class="property-type">optional</span></dt>
+        <dd>Username for authentication</dd>
+        <dt>Password <span class="property-type">optional</span></dt>
+        <dd>Password for authentication</dd>
+    </dl>
+</script>

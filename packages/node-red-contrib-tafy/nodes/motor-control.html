@@ -1,0 +1,74 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-motor-control', {
+        category: 'tafy',
+        color: '#FFA500',
+        defaults: {
+            name: { value: "" },
+            deviceId: { value: "", required: true },
+            deviceIdType: { value: "str" },
+            driveType: { value: "differential" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-cogs",
+        label: function() {
+            return this.name || "motor control";
+        },
+        paletteLabel: "motor",
+        oneditprepare: function() {
+            $("#node-input-deviceId").typedInput({
+                types: ["str", "msg", "flow", "global"],
+                default: "str"
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-motor-control">
+    <div class="form-row">
+        <label for="node-input-deviceId"><i class="fa fa-microchip"></i> Device ID</label>
+        <input type="text" id="node-input-deviceId" placeholder="esp32-a4cf12">
+        <input type="hidden" id="node-input-deviceIdType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-driveType"><i class="fa fa-car"></i> Drive Type</label>
+        <select id="node-input-driveType">
+            <option value="differential">Differential Drive</option>
+            <option value="mecanum" disabled>Mecanum (coming soon)</option>
+            <option value="ackermann" disabled>Ackermann (coming soon)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-motor-control">
+    <p>Sends HAL-compliant motor control commands to robot devices.</p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object | array</span></dt>
+        <dd>Motor speed commands. For differential drive:
+            <ul>
+                <li>Object: <code>{linear: 0.5, angular: 0.2}</code> or <code>{x: 0.5, rotation: 0.2}</code></li>
+                <li>Array: <code>[linear, angular]</code></li>
+            </ul>
+        </dd>
+        <dt class="optional">duration_ms <span class="property-type">number</span></dt>
+        <dd>Optional duration in milliseconds for the command.</dd>
+        <dt class="optional">priority <span class="property-type">string</span></dt>
+        <dd>Command priority: "low", "normal", "high", "emergency"</dd>
+    </dl>
+    <h3>Outputs</h3>
+    <p>Outputs a HAL-compliant message ready to be published to NATS:</p>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Complete HAL envelope with motor command.</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>NATS subject: <code>hal.v1.motor.cmd</code></dd>
+    </dl>
+    <h3>Details</h3>
+    <p>This node creates properly formatted HAL motor control messages for differential drive robots.</p>
+    <p>Speeds are in m/s for linear and rad/s for angular velocity.</p>
+</script>

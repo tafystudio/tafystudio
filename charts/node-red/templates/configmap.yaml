@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "node-red.fullname" . }}-settings
+  labels:
+    {{- include "node-red.labels" . | nindent 4 }}
+data:
+  settings.js: |
+    module.exports = {
+        // Basic configuration
+        uiPort: process.env.PORT || {{ .Values.service.targetPort }},
+        uiHost: "0.0.0.0",
+        
+        // Admin auth
+        {{- if .Values.nodeRed.adminAuth.enabled }}
+        adminAuth: {
+            type: "credentials",
+            users: [{
+                username: "{{ .Values.nodeRed.adminAuth.username }}",
+                password: "{{ .Values.nodeRed.adminAuth.passwordHash }}",
+                permissions: "*"
+            }]
+        },
+        {{- end }}
+        
+        // Editor theme
+        editorTheme: {{ .Values.nodeRed.editorTheme | toJson }},
+        
+        // Projects
+        {{- if .Values.nodeRed.projects.enabled }}
+        projects: {
+            enabled: true,
+            workflow: {
+                mode: "{{ .Values.nodeRed.projects.workflow.mode }}"
+            }
+        },
+        {{- end }}
+        
+        // Context storage
+        contextStorage: {{ .Values.nodeRed.contextStorage | toJson }},
+        
+        // Logging
+        logging: {{ .Values.nodeRed.logging | toJson }},
+        
+        // Custom functions for Tafy integration
+        functionGlobalContext: {
+            // NATS connection info
+            natsUrl: process.env.NATS_URL || "{{ .Values.nats.url }}",
+            {{- if .Values.nats.credentials.enabled }}
+            natsUser: process.env.NATS_USER,
+            natsPass: process.env.NATS_PASS,
+            {{- end }}
+            
+            // Tafy specific helpers
+            tafyHelpers: {
+                createHALEnvelope: function(schema, deviceId, caps, payload) {
+                    return {
+                        hal_major: 1,
+                        hal_minor: 0,
+                        schema: schema,
+                        device_id: deviceId,
+                        caps: caps,
+                        ts: new Date().toISOString(),
+                        payload: payload
+                    };
+                },
+                
+                parseHALMessage: function(msg) {
+                    if (msg.hal_major && msg.schema && msg.payload) {
+                        return {
+                            valid: true,
+                            schema: msg.schema,
+                            deviceId: msg.device_id,
+                            payload: msg.payload
+                        };
+                    }
+                    return { valid: false };
+                }
+            }
+        }
+    };
