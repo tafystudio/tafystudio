@@ -109,7 +109,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./apps/hub-api/coverage.xml
+          files: ./apps/hub-api/coverage.xml
           fail_ci_if_error: false
 
   go-tests:
@@ -144,7 +144,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./apps/tafyd/coverage.out
+          files: ./apps/tafyd/coverage.out
           fail_ci_if_error: false
 
   integration-tests:
