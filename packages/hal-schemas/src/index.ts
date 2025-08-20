@@ -152,3 +152,6 @@ export function getSubjectForSchema(schema: string): string | undefined {
 
 // Re-export generated types (will be created by json-schema-to-typescript)
 export * from './types';
+
+// Export request-reply functionality
+export * from './request-reply';
