@@ -13,7 +13,7 @@ jobs:
     name: Dependency Scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -79,7 +79,7 @@ jobs:
         app: [hub-ui, hub-api, tafyd]
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
