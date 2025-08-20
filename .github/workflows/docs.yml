@@ -43,7 +43,8 @@ jobs:
             --ignore .venv \
             --ignore '**/node_modules/**' \
             --ignore '**/dist/**' \
-            --ignore '**/.next/**'
+            --ignore '**/.next/**' \
+            --ignore 'test-output/**'
 
   check-links:
     name: Check Links
@@ -101,6 +102,7 @@ jobs:
             pnpm-lock.yaml
             uv.lock
             go.sum
+            test-output/**
 
   validate-structure:
     name: Validate Documentation Structure
