@@ -8,6 +8,7 @@ import structlog
 from nats.aio.msg import Msg
 
 from app.core.nats import nats_client
+from app.schemas.device import DeviceCreate, DeviceStatus
 
 logger = structlog.get_logger()
 
@@ -71,6 +72,9 @@ class NATSService:
     
     async def setup_standard_subscriptions(self):
         """Set up standard Hub subscriptions"""
+        # Device discovery
+        await self.subscribe("device.discovered", self._handle_device_discovered)
+        
         # Device events
         await self.subscribe("device.*.status", self._handle_device_status)
         await self.subscribe("device.*.telemetry", self._handle_device_telemetry)
@@ -82,6 +86,46 @@ class NATSService:
         await self.subscribe("node.*.heartbeat", self._handle_node_heartbeat)
         
         logger.info("Standard subscriptions set up")
+    
+    async def _handle_device_discovered(self, data: Dict[str, Any], msg: Msg):
+        """Handle newly discovered devices from mDNS"""
+        from app.services.device_service import device_service
+        
+        # Extract device info from mDNS data
+        device_id = data.get("Instance", "")
+        if not device_id:
+            logger.error("Invalid device discovery data", data=data)
+            return
+        
+        # Check if device already exists
+        existing = await device_service.get_device(device_id)
+        if existing:
+            logger.info("Device already registered", device_id=device_id)
+            return
+        
+        # Parse capabilities from text records
+        capabilities = []
+        device_metadata = {}
+        for txt in data.get("Text", []):
+            if txt.startswith("caps="):
+                capabilities = txt[5:].split(",")
+            elif "=" in txt:
+                key, value = txt.split("=", 1)
+                device_metadata[key] = value
+        
+        # Create device
+        device_create = DeviceCreate(
+            id=device_id,
+            name=data.get("HostName", device_id),
+            type=device_metadata.get("type", "unknown"),
+            capabilities=capabilities,
+            device_metadata=device_metadata,
+            ip_address=data.get("AddrIPv4", [None])[0] if data.get("AddrIPv4") else None,
+            mac_address=None  # mDNS doesn't provide MAC
+        )
+        
+        await device_service.create_device(device_create)
+        logger.info("Device registered from discovery", device_id=device_id)
     
     async def _handle_device_status(self, data: Dict[str, Any], msg: Msg):
         """Handle device status updates"""
