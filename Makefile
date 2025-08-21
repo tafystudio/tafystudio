@@ -35,6 +35,8 @@ help:
 	@echo "  test-integration      - Run integration tests"
 	@echo "  test-coverage         - Run tests with coverage"
 	@echo "  test-watch            - Run tests in watch mode"
+	@echo "  test-webserial        - Test WebSerial flasher (requires ESP32)"
+	@echo "  test-webserial-mock   - Test WebSerial with mocks only"
 	@echo ""
 	@echo "$(YELLOW)Documentation:$(NC)"
 	@echo "  docs-lint             - Lint markdown documentation"
@@ -155,6 +157,16 @@ test-coverage:
 
 test-watch:
 	cd apps/hub-ui && pnpm run test:watch
+
+# WebSerial testing
+test-webserial: ## Test WebSerial with real ESP32 hardware
+	@echo "$(GREEN)Running WebSerial tests with hardware...$(NC)"
+	@echo "$(YELLOW)Make sure ESP32 is connected via USB$(NC)"
+	./scripts/test-webserial.sh
+
+test-webserial-mock: ## Test WebSerial with mocks only (no hardware)
+	@echo "$(GREEN)Running WebSerial mock tests...$(NC)"
+	cd apps/hub-ui && pnpm exec playwright test webserial.spec.ts --grep-invert @hardware
 
 # Hub API specific commands
 hub-api-init-db: ## Initialize Hub API database

@@ -20,6 +20,7 @@ This guide helps developers set up their environment for contributing to Tafy St
 - **kubectl** - Kubernetes CLI
 - **helm** - Kubernetes package manager
 - **VS Code** - With recommended extensions
+- **Playwright** - Cross-browser testing for WebSerial
 
 ### Installing Package Managers
 
@@ -206,11 +207,16 @@ make docker-test
 ### Component-Specific Testing
 
 ```bash
-# Hub UI (Jest)
+# Hub UI (Jest + Playwright)
 cd apps/hub-ui
 pnpm test              # Run tests
 pnpm test:watch        # Watch mode
 pnpm test:coverage     # With coverage
+
+# WebSerial browser testing
+pnpm exec playwright install  # Install browsers (first time)
+make test-webserial-mock      # Test without hardware
+make test-webserial          # Test with ESP32 connected
 
 # Hub API (pytest)
 cd apps/hub-api
@@ -236,6 +242,7 @@ Tests automatically run on GitHub Actions for:
 - Go 1.23
 - Integration tests with Docker Compose
 - Coverage reporting to Codecov
+- Cross-browser testing with Playwright (Chrome, Edge, Firefox, Safari)
 
 ## Code Style
 
@@ -345,6 +352,19 @@ kubectl port-forward pod/hub-api-xxx 5678:5678
 ```
 
 ### Common Issues
+
+#### WebSerial Testing
+
+```bash
+# Browser not found
+pnpm exec playwright install chromium
+
+# Permission denied on Linux
+sudo usermod -a -G dialout $USER  # Then logout/login
+
+# ESP32 not detected
+ls /dev/tty.usbserial-* || ls /dev/ttyUSB*  # Check device
+```
 
 #### Port Conflicts
 
