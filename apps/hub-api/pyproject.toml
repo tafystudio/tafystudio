@@ -10,7 +10,7 @@ dependencies = [
     "pydantic==2.11.7",
     "pydantic-settings==2.10.1",
     "nats-py==2.11.0",
-    "websockets==14.2",
+    "websockets==15.0.1",
     "httpx==0.28.1",
     "python-multipart==0.0.20",
     "python-jose[cryptography]==3.5.0",
@@ -36,10 +36,10 @@ dev = [
     "types-redis==4.6.0.20241004",
 ]
 docs = [
-    "sphinx==7.2.6",
-    "sphinx-rtd-theme==2.0.0",
-    "sphinx-autodoc-typehints==2.0.0",
-    "sphinx-markdown-builder==0.6.6",
+    "sphinx==8.2.3",
+    "sphinx-rtd-theme==3.0.2",
+    "sphinx-autodoc-typehints==3.2.0",
+    "sphinx-markdown-builder==0.6.8",
     "myst-parser==4.0.1",
 ]
 
