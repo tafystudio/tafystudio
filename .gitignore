@@ -79,3 +79,7 @@ dmypy.json
 # Documentation build
 .docs-build/
 test-output/
+
+# Sphinx documentation
+apps/hub-api/docs/_build/
+apps/hub-api/docs/.doctrees/
