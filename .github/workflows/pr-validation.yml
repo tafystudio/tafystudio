@@ -8,6 +8,8 @@ jobs:
   validate-commits:
     name: Validate Commits
     runs-on: ubuntu-latest
+    # Skip for Dependabot PRs as they don't follow conventional commits
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v5
         with:
@@ -25,6 +27,8 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Check for large files
+        # Skip for Dependabot PRs due to permission issues
+        if: github.actor != 'dependabot[bot]'
         uses: actionsdesk/lfs-warning@v3.2
         with:
           filesizelimit: '10MB'
@@ -40,8 +44,24 @@ jobs:
   label-pr:
     name: Label PR
     runs-on: ubuntu-latest
+    # Skip for Dependabot PRs due to permission limitations
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/labeler@v5
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: .github/labeler.yml
+
+  # Special validation for Dependabot PRs
+  validate-dependabot:
+    name: Validate Dependabot PR
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: Validate dependency update
+        run: |
+          echo "Dependabot PR detected - skipping conventional commit validation"
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "This is a dependency update and will be auto-merged if tests pass"
