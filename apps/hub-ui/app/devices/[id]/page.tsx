@@ -33,7 +33,7 @@ interface Device {
   id: string;
   name: string;
   type: string;
-  status: 'online' | 'offline' | 'configuring';
+  status: 'online' | 'offline' | 'discovered' | 'claimed' | 'error' | 'warning';
   claimed: boolean;
   capabilities: string[];
   config: DeviceConfig;
@@ -53,6 +53,7 @@ export default function DeviceConfigPage() {
 
   useEffect(() => {
     fetchDevice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceId]);
 
   const fetchDevice = async () => {
@@ -393,7 +394,7 @@ export default function DeviceConfigPage() {
         {/* Actions */}
         <div className="flex justify-end gap-3">
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => setConfig(device.config)}
             disabled={saving}
           >

@@ -5,25 +5,27 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = params;
     const config = await request.json();
 
     // In a real implementation, this would:
     // 1. Validate the configuration
-    // 2. Send to the device via NATS
+    // 2. Send to the device via NATS with device ID: ${id}
     // 3. Wait for acknowledgment
     // 4. Update the database
 
-    console.log(`Updating config for device ${params.id}:`, config);
+    // In production, this would update the device config via NATS
 
     // Simulate async operation
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     return NextResponse.json({
       success: true,
-      message: 'Configuration updated successfully',
+      message: `Configuration updated successfully for device ${id}`,
+      deviceId: id,
       config,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to update configuration' },
       { status: 500 }

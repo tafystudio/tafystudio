@@ -12,14 +12,14 @@ export class MockSerialPort {
         setTimeout(() => {
           controller.enqueue(new TextEncoder().encode('ESP32 Ready\r\n'));
         }, 100);
-      }
+      },
     });
 
     // Create mock writable stream
     this._writable = new WritableStream({
       write(chunk) {
         console.log('Mock write:', new TextDecoder().decode(chunk));
-      }
+      },
     });
   }
 
@@ -44,7 +44,7 @@ export class MockSerialPort {
   getInfo() {
     return {
       usbVendorId: 0x10c4,
-      usbProductId: 0xea60
+      usbProductId: 0xea60,
     };
   }
 }
@@ -52,7 +52,9 @@ export class MockSerialPort {
 export class MockSerial {
   private ports: MockSerialPort[] = [];
 
-  async requestPort(options?: SerialPortRequestOptions): Promise<MockSerialPort> {
+  async requestPort(
+    options?: SerialPortRequestOptions
+  ): Promise<MockSerialPort> {
     console.log('Mock requestPort:', options);
     const port = new MockSerialPort();
     this.ports.push(port);
