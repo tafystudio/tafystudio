@@ -1,5 +1,4 @@
-import { test, expect, chromium, BrowserContext } from '@playwright/test';
-import { _electron as electron } from 'playwright';
+import { test, expect, chromium } from '@playwright/test';
 
 // WebSerial is only available in Chromium-based browsers
 test.describe('WebSerial Flasher Tests', () => {

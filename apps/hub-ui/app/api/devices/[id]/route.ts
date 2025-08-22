@@ -56,9 +56,10 @@ const mockDevices = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const device = mockDevices[params.id as keyof typeof mockDevices];
+  const { id } = await params;
+  const device = mockDevices[id as keyof typeof mockDevices];
 
   if (!device) {
     return NextResponse.json({ error: 'Device not found' }, { status: 404 });

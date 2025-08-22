@@ -44,15 +44,14 @@ export default defineConfig({
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
       // Skip WebSerial tests on Firefox
-      grep: [/@hardware/, /WebSerial/],
-      grepInvert: true,
+      testIgnore: /webserial.*\.spec\.ts/,
     },
     // Safari doesn't support WebSerial
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      grep: [/@hardware/, /WebSerial/],
-      grepInvert: true,
+      // Skip WebSerial tests on Safari
+      testIgnore: /webserial.*\.spec\.ts/,
     },
   ],
 
