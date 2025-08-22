@@ -91,7 +91,14 @@ export default function DevicesPage() {
                 </Button>
               ) : (
                 <>
-                  <Button variant="secondary" size="sm" className="flex-1">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() =>
+                      (window.location.href = `/devices/${device.id}`)
+                    }
+                  >
                     Configure
                   </Button>
                   <Button variant="ghost" size="sm">
