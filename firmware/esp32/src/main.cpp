@@ -30,8 +30,10 @@ SensorManager sensorManager;
 // Timing
 unsigned long lastHeartbeat = 0;
 unsigned long lastSensorRead = 0;
+unsigned long lastMotorTelemetry = 0;
 const unsigned long HEARTBEAT_INTERVAL = 10000; // 10 seconds
 const unsigned long SENSOR_INTERVAL = 100;      // 100ms
+const unsigned long MOTOR_TELEMETRY_INTERVAL = 100; // 100ms
 
 void setup() {
     Serial.begin(115200);
@@ -123,6 +125,12 @@ void loop() {
     
     // Update motor controller
     motorController.update();
+    
+    // Publish motor telemetry
+    if (now - lastMotorTelemetry > MOTOR_TELEMETRY_INTERVAL) {
+        lastMotorTelemetry = now;
+        motorController.publishTelemetry(&natsClient, deviceInfo.getDeviceId());
+    }
     
     // Handle serial commands (for debugging)
     if (Serial.available()) {

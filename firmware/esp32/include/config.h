@@ -12,6 +12,13 @@
 #define MOTOR_RIGHT_DIR1  33
 #define MOTOR_RIGHT_DIR2  34
 
+// Hardware pins - Encoders (optional)
+#define ENCODER_LEFT_A    35
+#define ENCODER_LEFT_B    36
+#define ENCODER_RIGHT_A   39
+#define ENCODER_RIGHT_B   4
+#define ENCODERS_ENABLED  false  // Set to true if encoders are connected
+
 // Hardware pins - Time of Flight sensor
 #define TOF_SDA 21
 #define TOF_SCL 22
@@ -22,6 +29,11 @@
 #define MOTOR_PWM_RESOLUTION 8
 #define MOTOR_MAX_PWM 255
 #define MOTOR_DEADZONE 10
+
+// Encoder configuration (if enabled)
+#define ENCODER_COUNTS_PER_REV 20  // Encoder counts per motor revolution
+#define GEAR_RATIO 48              // Motor gear ratio
+#define WHEEL_DIAMETER_MM 70       // Wheel diameter in mm
 
 // Network configuration
 #define WIFI_CONNECT_TIMEOUT 30000  // 30 seconds
