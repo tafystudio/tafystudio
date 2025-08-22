@@ -75,8 +75,8 @@ export async function injectWebSerialMock(page: any) {
   });
 
   // Inject mock classes
-  await page.evaluate(() => {
+  await page.evaluate(`
     (window as any).MockSerialPort = ${MockSerialPort.toString()};
     (window as any).MockSerial = ${MockSerial.toString()};
-  });
+  `);
 }
