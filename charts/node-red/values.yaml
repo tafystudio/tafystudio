@@ -9,7 +9,7 @@ image:
 
 # Custom Tafy nodes image
 customNodes:
-  enabled: true
+  enabled: false  # Disabled until we build the image
   repository: tafystudio/node-red-tafy
   tag: "latest"
   pullPolicy: Always
@@ -113,7 +113,7 @@ nodeRed:
 
 # NATS configuration
 nats:
-  url: "nats://nats:4222"
+  url: "nats://nats.tafy-system.svc.cluster.local:4222"
   credentials:
     enabled: false
     username: ""

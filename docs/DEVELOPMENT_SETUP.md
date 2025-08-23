@@ -16,9 +16,9 @@ This guide helps developers set up their environment for contributing to Tafy St
 
 ### Recommended Tools
 
-- **k3d** - Local Kubernetes for testing
-- **kubectl** - Kubernetes CLI
-- **helm** - Kubernetes package manager
+- **k3d** (5.5+) - Local Kubernetes for testing
+- **kubectl** (1.28+) - Kubernetes CLI
+- **helm** (3.10+) - Kubernetes package manager
 - **VS Code** - With recommended extensions
 - **Playwright** - Cross-browser testing for WebSerial
 
@@ -34,6 +34,25 @@ npm install -g pnpm
 
 # Install uv (Python)
 curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+### Installing Kubernetes Tools
+
+These tools are required for local development with Node-RED and NATS:
+
+#### All Platforms (using official scripts)
+
+```bash
+# Install k3d
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/$(uname -s | tr '[:upper:]' '[:lower:]')/$(uname -m)/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# Install helm
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 
 ### Platform-Specific
@@ -52,18 +71,48 @@ brew install --cask docker visual-studio-code
 #### Linux (Ubuntu/Debian)
 
 ```bash
-# Add repositories
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+# Add Node.js repository
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 
-# Install tools
+# Install basic tools
 sudo apt update
 sudo apt install -y nodejs golang python3 python3-pip docker.io
+
+# Install Kubernetes tools via snap
 sudo snap install helm --classic
 sudo snap install kubectl --classic
 
 # Install k3d
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+# Install pnpm
+npm install -g pnpm
+
+# Install uv for Python
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+#### Windows (WSL2)
+
+```bash
+# Use the Linux instructions above in WSL2
+# Ensure Docker Desktop is installed and WSL2 integration is enabled
+```
+
+### Verify Installation
+
+After installing the tools, verify they're working:
+
+```bash
+# Check versions
+node --version      # Should be 20+
+pnpm --version      # Should be 9+
+go version          # Should be 1.23+
+python3 --version   # Should be 3.11+
+docker --version    # Should be 20+
+k3d version         # Should be 5.5+
+kubectl version --client  # Should be 1.28+
+helm version        # Should be 3.10+
 ```
 
 ## Repository Setup
@@ -100,13 +149,19 @@ echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > apps/hub-ui/.env.local
 Start a local k3s cluster for development:
 
 ```bash
-# Create cluster with registry
+# Create cluster (if make command doesn't exist yet)
+k3d cluster create tafy-dev --servers 1 --agents 2
+
+# Or use make command if available
 make cluster-create
 
 # Check cluster status
-make cluster-status
+kubectl get nodes
+kubectl cluster-info
 
 # Delete cluster when done
+k3d cluster delete tafy-dev
+# or
 make cluster-delete
 ```
 
@@ -118,18 +173,32 @@ helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
 
-# Install NATS
-helm install nats nats/nats \
-  --set cluster.enabled=true \
-  --set cluster.replicas=1
+# Deploy NATS
+helm install nats nats/nats -f charts/nats/values.yaml \
+  --create-namespace --namespace tafy-system
 
-# Install Traefik
-helm install traefik traefik/traefik \
-  --set ports.web.port=9080 \
-  --set ports.websecure.port=9443
+# Deploy Node-RED
+helm install node-red ./charts/node-red --namespace tafy-system
 
-# Deploy Tafy services
-make deploy-dev
+# Check deployments
+kubectl get all -n tafy-system
+```
+
+### Node-RED Development
+
+For visual robot programming with Node-RED:
+
+```bash
+# Port forward to access Node-RED UI
+kubectl port-forward service/node-red-tafy-node-red 1880:1880 -n tafy-system
+
+# Access Node-RED at http://localhost:1880
+# Access Dashboard at http://localhost:1880/ui
+
+# To develop custom nodes
+cd packages/node-red-contrib-tafy
+pnpm install
+pnpm run build
 ```
 
 ### Running Services Locally
@@ -529,6 +598,105 @@ make port-forward
 ### Complete Makefile Reference
 
 Run `make help` to see all available commands with descriptions.
+
+## Troubleshooting
+
+### k3d Issues
+
+#### k3d command not found
+
+```bash
+# Reinstall k3d
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+# Add to PATH if needed
+export PATH=$PATH:/usr/local/bin
+```
+
+#### Cannot connect to Docker
+
+```bash
+# Ensure Docker is running
+docker info
+
+# On macOS, start Docker Desktop
+# On Linux, start Docker service
+sudo systemctl start docker
+```
+
+### kubectl Issues
+
+#### kubectl: command not found
+
+```bash
+# Reinstall kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/$(uname -s | tr '[:upper:]' '[:lower:]')/$(uname -m)/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+
+#### The connection to the server localhost:xxxx was refused
+
+```bash
+# Check if cluster is running
+k3d cluster list
+
+# Create cluster if needed
+k3d cluster create tafy-dev --servers 1 --agents 2
+
+# Update kubeconfig
+k3d kubeconfig merge tafy-dev --kubeconfig-switch-context
+```
+
+### Helm Issues
+
+#### Error: Kubernetes cluster unreachable
+
+```bash
+# Check cluster connection
+kubectl cluster-info
+
+# Set correct context
+kubectl config current-context
+kubectl config use-context k3d-tafy-dev
+```
+
+#### Repository not found
+
+```bash
+# Re-add helm repositories
+helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm repo update
+```
+
+### Node-RED Access Issues
+
+#### Cannot access <http://localhost:1880>
+
+```bash
+# Check if pod is running
+kubectl get pods -n tafy-system
+
+# Check logs
+kubectl logs -n tafy-system deployment/node-red-tafy-node-red
+
+# Restart port forwarding
+kubectl port-forward service/node-red-tafy-node-red 1880:1880 -n tafy-system
+```
+
+### NATS Connection Issues
+
+#### NATS not reachable from Node-RED
+
+```bash
+# Check NATS pods
+kubectl get pods -n tafy-system | grep nats
+
+# Test NATS connection
+kubectl exec -it nats-box-xxx -n tafy-system -- nats sub ">"
+
+# Check service DNS
+kubectl exec -it node-red-pod-xxx -n tafy-system -- nslookup nats.tafy-system.svc.cluster.local
+```
 
 ## Getting Help
 

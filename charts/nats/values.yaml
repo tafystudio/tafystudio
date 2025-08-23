@@ -1,0 +1,64 @@
+# NATS values for Tafy Studio
+
+# Basic NATS configuration
+nats:
+  jetstream:
+    enabled: true
+    
+    # Memory storage for development
+    memStorage:
+      enabled: true
+      size: 1Gi
+    
+    # File storage for persistence
+    fileStorage:
+      enabled: true
+      size: 5Gi
+      storageDirectory: /data
+      
+  # Enable monitoring
+  promExporter:
+    enabled: true
+    image: natsio/prometheus-nats-exporter:latest
+    pullPolicy: IfNotPresent
+    
+  # Logging
+  logging:
+    debug: false
+    trace: false
+    
+# Cluster configuration
+cluster:
+  enabled: false  # Single node for development
+  
+# Client connections
+natsbox:
+  enabled: true  # Enable for debugging
+
+# Resources
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# Service configuration
+config:
+  monitor:
+    enabled: true
+    port: 8222
+    
+# Enable config reloading
+reloader:
+  enabled: true
+
+# Auth configuration (disabled for development)
+auth:
+  enabled: false
+  # TODO: Enable auth for production
+  # basic:
+  #   users:
+  #     - user: tafy
+  #       password: changeme
