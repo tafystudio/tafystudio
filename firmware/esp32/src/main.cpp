@@ -31,9 +31,11 @@ SensorManager sensorManager;
 unsigned long lastHeartbeat = 0;
 unsigned long lastSensorRead = 0;
 unsigned long lastMotorTelemetry = 0;
+unsigned long lastSensorTelemetry = 0;
 const unsigned long HEARTBEAT_INTERVAL = 10000; // 10 seconds
-const unsigned long SENSOR_INTERVAL = 100;      // 100ms
+const unsigned long SENSOR_INTERVAL = 50;       // 50ms for sensor reading
 const unsigned long MOTOR_TELEMETRY_INTERVAL = 100; // 100ms
+const unsigned long SENSOR_TELEMETRY_INTERVAL = 100; // 100ms
 
 void setup() {
     Serial.begin(115200);
@@ -88,6 +90,11 @@ void setup() {
             motorController.handleCommand(payload);
         });
     
+    halHandler.registerHandler("sensor.range-tof",
+        [](JsonDocument& payload) {
+            sensorManager.handleCommand(payload);
+        });
+    
     Serial.println("Setup complete!");
 }
 
@@ -117,9 +124,11 @@ void loop() {
         lastSensorRead = now;
         sensorManager.update();
         
-        // Publish sensor data if changed significantly
-        if (sensorManager.hasSignificantChange()) {
-            publishSensorData();
+        // Check for obstacle detection (emergency stop)
+        if (sensorManager.isTofAvailable() && 
+            sensorManager.getFilteredRange() > 0 &&
+            sensorManager.getFilteredRange() < EMERGENCY_STOP_DISTANCE_MM) {
+            motorController.emergencyStopTrigger();
         }
     }
     
@@ -130,6 +139,17 @@ void loop() {
     if (now - lastMotorTelemetry > MOTOR_TELEMETRY_INTERVAL) {
         lastMotorTelemetry = now;
         motorController.publishTelemetry(&natsClient, deviceInfo.getDeviceId());
+    }
+    
+    // Publish sensor telemetry
+    if (now - lastSensorTelemetry > SENSOR_TELEMETRY_INTERVAL) {
+        lastSensorTelemetry = now;
+        sensorManager.publishTelemetry(&natsClient, deviceInfo.getDeviceId());
+        
+        // Also publish event-based data if significant change
+        if (sensorManager.hasSignificantChange()) {
+            publishSensorData();
+        }
     }
     
     // Handle serial commands (for debugging)
@@ -160,8 +180,8 @@ void sendHeartbeat() {
 void publishSensorData() {
     if (!natsClient.connected()) return;
     
-    // Publish range sensor data
-    float range = sensorManager.getRange();
+    // Publish range sensor data (event-based on significant change)
+    float range = sensorManager.getFilteredRange();
     if (range >= 0) {
         JsonDocument rangeDoc;
         halHandler.createEnvelope(rangeDoc, "tafylabs/hal/sensor/range-tof/1.0");
@@ -170,9 +190,16 @@ void publishSensorData() {
         payload["sensor_id"] = "tof-front";
         payload["range_meters"] = range / 1000.0; // Convert mm to meters
         payload["quality"] = sensorManager.getRangeQuality();
-        payload["status"] = "ok";
+        payload["status"] = sensorManager.getRangeQuality() > 0 ? "ok" : "error";
+        payload["event"] = "significant_change";
         
-        natsClient.publish("hal.v1.sensor.range.data", rangeDoc);
+        // Add threshold breach info if applicable
+        if (range < EMERGENCY_STOP_DISTANCE_MM) {
+            payload["alert"] = "obstacle_detected";
+            payload["alert_threshold_mm"] = EMERGENCY_STOP_DISTANCE_MM;
+        }
+        
+        natsClient.publish("hal.v1.sensor.range.event", rangeDoc);
     }
 }
 
@@ -197,7 +224,39 @@ void handleSerialCommand() {
             motorController.setSpeed(left, right);
             Serial.println("Motor speeds set: L=" + String(left) + " R=" + String(right));
         }
+    } else if (command == "sensor") {
+        // Display sensor info
+        if (sensorManager.isTofAvailable()) {
+            Serial.println("ToF Sensor Status:");
+            Serial.println("  Range: " + String(sensorManager.getRange()) + " mm (raw)");
+            Serial.println("  Filtered: " + String(sensorManager.getFilteredRange()) + " mm");
+            Serial.println("  Quality: " + String(sensorManager.getRangeQuality()) + "%");
+            
+            uint32_t total, valid, timeouts;
+            sensorManager.getStatistics(total, valid, timeouts);
+            Serial.println("  Total readings: " + String(total));
+            Serial.println("  Valid readings: " + String(valid));
+            Serial.println("  Timeouts: " + String(timeouts));
+        } else {
+            Serial.println("ToF sensor not available");
+        }
+    } else if (command.startsWith("calibrate ")) {
+        // Calibrate sensor: calibrate <actual_distance_mm>
+        int actualDist = command.substring(10).toInt();
+        if (actualDist > 0) {
+            sensorManager.calibrate(actualDist);
+        }
+    } else if (command == "clear estop") {
+        motorController.emergencyStopClear();
+        Serial.println("Emergency stop cleared");
     } else {
         Serial.println("Unknown command: " + command);
+        Serial.println("Available commands:");
+        Serial.println("  info - Show device info");
+        Serial.println("  restart - Restart device");
+        Serial.println("  motor <left> <right> - Set motor speeds");
+        Serial.println("  sensor - Show sensor status");
+        Serial.println("  calibrate <mm> - Calibrate sensor");
+        Serial.println("  clear estop - Clear emergency stop");
     }
 }
