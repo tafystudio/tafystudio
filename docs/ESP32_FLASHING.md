@@ -202,6 +202,6 @@ After successful flashing:
 
 ## Related Documentation
 
-- [Device Configuration Guide](./DEVICE_CONFIG.md)
 - [HAL Message Reference](./HAL_SPEC.md)
-- [Node-RED Flow Examples](./FLOW_EXAMPLES.md)
+- [Node-RED Deployment Guide](./NODE_RED_DEPLOYMENT.md)
+- [Architecture Overview](./ARCHITECTURE.md)
