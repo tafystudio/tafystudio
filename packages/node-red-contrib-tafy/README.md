@@ -1,244 +1,259 @@
 # Node-RED Tafy Nodes
 
-Custom Node-RED nodes for Tafy Studio robot control system. These nodes provide easy integration with the Tafy RDOS platform through NATS messaging and HAL-compliant communication.
+A collection of Node-RED nodes for the Tafy Robot Distributed Operation System (RDOS).
 
 ## Installation
 
-### Via npm
-
 ```bash
 cd ~/.node-red
-npm install @tafy/node-red-contrib-tafy
+npm install @tafystudio/node-red-contrib-tafy
 ```
 
-### Via Node-RED Palette Manager
+Or install directly from the Node-RED palette manager.
 
-1. Open Node-RED
-2. Go to Menu → Manage Palette
-3. Search for "tafy"
-4. Click install
+## Camera Nodes
 
-### From Source
+### tafy-camera-stream
 
-```bash
-cd packages/node-red-contrib-tafy
-npm link
-cd ~/.node-red
-npm link node-red-contrib-tafy
+Connects to a Tafy camera stream and outputs frame data or stream URLs.
+
+**Features:**
+
+- MJPEG HTTP streaming
+- WebSocket frame-by-frame delivery
+- WebRTC peer-to-peer streaming
+- Auto-reconnection support
+- Multiple output formats
+
+**Example Flow:**
+
+```json
+[{"id":"cam1","type":"tafy-camera-stream","cameraUrl":"http://camera:8080","streamType":"mjpeg"},
+ {"id":"template1","type":"template","template":"<img src='{{payload.url}}' />"},
+ {"id":"ui1","type":"ui_template"}]
 ```
 
-## Available Nodes
+### tafy-camera-snapshot
 
-### Communication Nodes
+Captures single frames from a Tafy camera.
 
-#### tafy-nats-pub
+**Features:**
 
-Publishes messages to NATS subjects.
+- On-demand snapshot capture
+- Multiple output formats (Buffer, Base64, URL)
+- Metadata inclusion
+- Error handling
 
-- **Input**: Any payload (objects are JSON stringified)
-- **Config**: NATS server, subject pattern
-- **Output**: None (publishes to NATS)
+**Use Cases:**
 
-#### tafy-nats-sub
+- Periodic image capture
+- Motion-triggered snapshots
+- Image analysis pipelines
 
-Subscribes to NATS subjects with wildcard support.
+### tafy-camera-discovery
 
-- **Input**: None
-- **Config**: NATS server, subject pattern
-- **Output**: Received messages
+Discovers available cameras on the network.
 
-### Control Nodes
+**Features:**
 
-#### tafy-motor-control
+- Automatic camera detection
+- Periodic discovery updates
+- Best camera selection
+- Multiple output formats
 
-Sends HAL-compliant motor control commands.
+**Example - Auto-select best camera:**
 
-- **Input**: Speed commands (linear/angular)
-- **Config**: Device ID, drive type
-- **Output**: HAL message for publishing
+```javascript
+// In a function node after discovery
+const cameras = msg.payload.cameras;
+const mjpegCamera = cameras.find(cam => 
+    cam.formats.some(f => f.name.includes('MJPEG'))
+);
+return { payload: mjpegCamera };
+```
 
-#### tafy-hal-command
+### tafy-camera-control
 
-Generic HAL command builder for any device capability.
+Controls and queries camera settings.
 
-- **Input**: Command payload
-- **Config**: Schema, device ID, capabilities
-- **Output**: Complete HAL envelope
+**Current Commands:**
 
-### Sensor Nodes
+- `status` - Get camera status and statistics
+- `info` - Get camera information
 
-#### tafy-sensor-range
+**Future Commands:**
 
-Processes range sensor data from HAL messages.
-
-- **Input**: HAL sensor message
-- **Config**: Sensor ID, units
-- **Output**: Parsed sensor reading
-
-#### tafy-hal-telemetry
-
-Parses HAL telemetry messages from devices.
-
-- **Input**: HAL telemetry message
-- **Config**: Schema filter
-- **Output**: Parsed telemetry data
-
-### Device Management
-
-#### tafy-device-discovery
-
-Monitors device discovery events.
-
-- **Input**: None (subscribes to discovery)
-- **Config**: Device type filter
-- **Output**: Discovered device info
-
-### Input Nodes
-
-#### tafy-gamepad
-
-Reads gamepad/joystick input for robot control.
-
-- **Input**: None (polls gamepad)
-- **Config**: Gamepad index, dead zones
-- **Output**: Joystick values
+- `configure` - Change camera settings
+- `start/stop` - Control capture state
+- Exposure, white balance, focus control
 
 ## Example Flows
 
-### Basic Teleop Control
+### 1. Dashboard Camera Viewer
 
 ```json
 [
-    {
-        "id": "gamepad-1",
-        "type": "tafy-gamepad",
-        "name": "Xbox Controller",
-        "gamepadIndex": 0,
-        "deadzone": 0.1
-    },
-    {
-        "id": "motor-1",
-        "type": "tafy-motor-control",
-        "name": "Robot Motors",
-        "deviceId": "esp32-robot",
-        "driveType": "differential"
-    },
-    {
-        "id": "pub-1",
-        "type": "tafy-nats-pub",
-        "name": "Send Command",
-        "subject": "hal.v1.motor.cmd"
-    }
+  {
+    "id": "inject1",
+    "type": "inject",
+    "repeat": "",
+    "once": true,
+    "topic": "",
+    "payload": "true",
+    "x": 100,
+    "y": 100
+  },
+  {
+    "id": "discovery1", 
+    "type": "tafy-camera-discovery",
+    "discoveryUrl": "http://hub:8080",
+    "outputFormat": "simple",
+    "x": 250,
+    "y": 100
+  },
+  {
+    "id": "function1",
+    "type": "function", 
+    "func": "// Select first camera\nconst camera = msg.payload[0];\nif (camera) {\n    flow.set('cameraUrl', `http://${camera.device}:8080`);\n    return { payload: true };\n}\nreturn null;",
+    "x": 400,
+    "y": 100
+  },
+  {
+    "id": "stream1",
+    "type": "tafy-camera-stream",
+    "cameraUrl": "{{flow.cameraUrl}}",
+    "streamType": "mjpeg",
+    "x": 550,
+    "y": 100
+  },
+  {
+    "id": "dashboard1",
+    "type": "ui_template",
+    "template": "<img src='{{msg.payload.url}}' style='width:100%' />",
+    "x": 700,
+    "y": 100
+  }
 ]
 ```
 
-### Device Discovery Monitor
+### 2. Motion Detection Alert
 
 ```json
 [
-    {
-        "id": "discovery-1",
-        "type": "tafy-device-discovery",
-        "name": "Find ESP32 Devices",
-        "deviceType": "esp32"
-    },
-    {
-        "id": "debug-1",
-        "type": "debug",
-        "name": "Show Devices"
-    }
+  {
+    "id": "motion1",
+    "type": "mqtt in",
+    "topic": "sensors/motion",
+    "x": 100,
+    "y": 200
+  },
+  {
+    "id": "filter1",
+    "type": "switch",
+    "property": "payload",
+    "rules": [{"t": "true"}],
+    "x": 250,
+    "y": 200
+  },
+  {
+    "id": "snapshot1",
+    "type": "tafy-camera-snapshot",
+    "cameraUrl": "http://camera:8080",
+    "outputType": "buffer",
+    "includeMetadata": true,
+    "x": 400,
+    "y": 200
+  },
+  {
+    "id": "notify1",
+    "type": "function",
+    "func": "// Send notification with image\nreturn {\n    payload: {\n        message: 'Motion detected!',\n        image: msg.payload,\n        timestamp: msg.metadata.timestamp\n    }\n};",
+    "x": 550,
+    "y": 200
+  }
 ]
 ```
 
-## NATS Subject Conventions
+### 3. Multi-Camera Monitoring
 
-The nodes follow Tafy's NATS subject naming conventions:
-
-- `device.{device_id}.{action}` - Device-specific messages
-- `hal.v1.{type}.{action}` - HAL protocol messages
-- `node.{node_id}.{event}` - Node lifecycle events
-- `hub.events.{type}` - Hub event stream
-
-## HAL Message Format
-
-All HAL messages follow this structure:
-
-```javascript
-{
-    "hal_major": 1,
-    "hal_minor": 0,
-    "schema": "tafylabs/hal/motor/differential/1.0",
-    "device_id": "esp32-a4cf12",
-    "caps": ["motor.differential:v1.0"],
-    "ts": "2024-03-14T10:30:00.000Z",
-    "payload": {
-        // Schema-specific payload
-    }
-}
+```json
+[
+  {
+    "id": "timer1",
+    "type": "inject",
+    "repeat": "30",
+    "topic": "",
+    "payload": "discover",
+    "x": 100,
+    "y": 300
+  },
+  {
+    "id": "discover1",
+    "type": "tafy-camera-discovery",
+    "outputFormat": "full",
+    "x": 250,
+    "y": 300
+  },
+  {
+    "id": "split1",
+    "type": "function",
+    "func": "// Create snapshot request for each camera\nconst cameras = msg.payload.cameras || [];\nreturn cameras.map(cam => ({\n    payload: 'snapshot',\n    camera: cam.device,\n    url: `http://${cam.device}:8080`\n}));",
+    "x": 400,
+    "y": 300
+  },
+  {
+    "id": "snapshot2",
+    "type": "tafy-camera-snapshot",
+    "cameraUrl": "{{msg.url}}",
+    "outputType": "base64",
+    "x": 550,
+    "y": 300
+  },
+  {
+    "id": "grid1",
+    "type": "ui_template",
+    "template": "<div class='camera-grid'>\n    <img src='data:image/jpeg;base64,{{msg.payload}}' />\n    <div>{{msg.camera}}</div>\n</div>",
+    "x": 700,
+    "y": 300
+  }
+]
 ```
 
-## Configuration
+## Integration with HAL
 
-### NATS Connection
+These nodes work with the Tafy HAL (Hardware Abstraction Layer) system:
 
-1. Add a `tafy-nats-config` node
-2. Set server URL (e.g., `nats://localhost:4222`)
-3. Add credentials if required
-4. Use this config in all NATS nodes
-
-### Device IDs
-
-Device IDs can be:
-
-- Static strings: `"esp32-robot"`
-- From message: `msg.deviceId`
-- From flow/global context
+- Camera nodes publish telemetry to `hal.v1.camera.*` topics
+- Control commands follow HAL message format
+- Discovery integrates with NATS-based service discovery
 
 ## Troubleshooting
 
-### NATS Connection Issues
+### Camera not found
 
-- Verify NATS server is running: `nats-server -V`
-- Check server URL format: `nats://host:port`
-- Ensure network connectivity
-- Check firewall rules for port 4222
+- Check camera driver is running: `curl http://camera:8080/health`
+- Verify network connectivity
+- Ensure discovery URL is correct
 
-### No Messages Received
+### No stream displayed
 
-- Verify subject patterns match
-- Check NATS server logs
-- Use NATS CLI to test: `nats sub "device.>"`
-- Enable Node-RED debug logging
+- Check browser console for errors
+- Verify CORS settings if accessing across origins
+- Try different stream types (MJPEG vs WebSocket)
 
-### HAL Message Validation
+### High latency
 
-- Use debug nodes to inspect message structure
-- Verify all required fields are present
-- Check timestamp format (ISO 8601)
-- Validate against schema
+- Use WebRTC for lowest latency
+- Check network bandwidth
+- Reduce resolution/FPS in camera settings
 
-## Development
+## Contributing
 
-### Adding New Nodes
-
-1. Create `.js` and `.html` files in `nodes/`
-2. Add to `package.json` node-red section
-3. Follow Node-RED node conventions
-4. Test with node-red-node-test-helper
-
-### Testing
-
-```bash
-npm test
-```
-
-### Publishing
-
-```bash
-npm version patch
-npm publish
-```
+1. Fork the repository
+2. Create your feature branch
+3. Add tests for new functionality
+4. Submit a pull request
 
 ## License
 
-Apache 2.0 - See LICENSE file
+Apache License 2.0

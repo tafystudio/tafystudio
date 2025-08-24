@@ -1,0 +1,113 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-camera-control', {
+        category: 'tafy',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: '' },
+            cameraUrl: { value: 'http://localhost:8080', required: true },
+            defaultCommand: { value: 'status' }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'cog.png',
+        label: function() {
+            return this.name || 'camera control';
+        },
+        paletteLabel: 'camera control'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-camera-control">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-cameraUrl"><i class="fa fa-globe"></i> Camera URL</label>
+        <input type="text" id="node-input-cameraUrl" placeholder="http://localhost:8080">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-defaultCommand"><i class="fa fa-terminal"></i> Default Command</label>
+        <select id="node-input-defaultCommand">
+            <option value="status">Get Status</option>
+            <option value="info">Get Info</option>
+            <option value="configure">Configure</option>
+            <option value="start">Start Camera</option>
+            <option value="stop">Stop Camera</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-camera-control">
+    <p>Controls and queries Tafy camera settings and status.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>Control command:
+            <ul>
+                <li><code>"status"</code> - Get current camera status</li>
+                <li><code>"info"</code> - Get camera information</li>
+                <li><code>"configure"</code> - Configure camera (future)</li>
+                <li><code>"start"</code> - Start camera (future)</li>
+                <li><code>"stop"</code> - Stop camera (future)</li>
+            </ul>
+            Or command object:
+            <pre>{
+    "command": "configure",
+    "parameters": {
+        "resolution": "1280x720",
+        "fps": 30
+    }
+}</pre>
+        </dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Command response data</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Message topic based on command (e.g., "camera/status")</dd>
+        <dt>command <span class="property-type">string</span></dt>
+        <dd>The command that was executed</dd>
+        <dt class="optional">error <span class="property-type">string</span></dt>
+        <dd>Error message if command failed</dd>
+    </dl>
+    
+    <h3>Status Response Example</h3>
+    <pre>{
+    "running": true,
+    "frame_count": 12345,
+    "error_count": 0,
+    "last_update": "2024-03-14T10:30:00Z",
+    "fps": 30,
+    "webrtc": {
+        "peer_count": 2,
+        "peers": [...]
+    }
+}</pre>
+    
+    <h3>Info Response Example</h3>
+    <pre>{
+    "device": "/dev/video0",
+    "resolution": "1920x1080",
+    "format": "MJPEG",
+    "fps": 30,
+    "stream_url": "http://camera:8080/stream",
+    "ws_url": "ws://camera:8080/ws",
+    "webrtc_url": "ws://camera:8080/webrtc"
+}</pre>
+    
+    <h3>Future Commands</h3>
+    <p>These commands are planned for future implementation:</p>
+    <ul>
+        <li><b>Configure:</b> Change resolution, FPS, format, etc.</li>
+        <li><b>Start/Stop:</b> Control camera capture state</li>
+        <li><b>Exposure:</b> Adjust exposure settings</li>
+        <li><b>White Balance:</b> Set white balance mode</li>
+        <li><b>Focus:</b> Control focus (if supported)</li>
+    </ul>
+</script>

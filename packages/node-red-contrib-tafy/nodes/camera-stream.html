@@ -1,0 +1,138 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-camera-stream', {
+        category: 'tafy',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: '' },
+            cameraUrl: { value: 'http://localhost:8080', required: true },
+            streamType: { value: 'mjpeg' },
+            autoConnect: { value: true },
+            autoReconnect: { value: true },
+            reconnectInterval: { value: 5000, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'camera.png',
+        label: function() {
+            return this.name || 'camera stream';
+        },
+        paletteLabel: 'camera stream',
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-camera-stream">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-cameraUrl"><i class="fa fa-globe"></i> Camera URL</label>
+        <input type="text" id="node-input-cameraUrl" placeholder="http://localhost:8080">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-streamType"><i class="fa fa-video-camera"></i> Stream Type</label>
+        <select id="node-input-streamType">
+            <option value="mjpeg">MJPEG (HTTP)</option>
+            <option value="websocket">WebSocket Frames</option>
+            <option value="webrtc">WebRTC</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-autoConnect"><i class="fa fa-plug"></i> Auto Connect</label>
+        <input type="checkbox" id="node-input-autoConnect" style="display:inline-block; width:auto; vertical-align:middle;">
+        <label for="node-input-autoConnect" style="width:auto;"> Connect on deploy</label>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-autoReconnect"><i class="fa fa-refresh"></i> Auto Reconnect</label>
+        <input type="checkbox" id="node-input-autoReconnect" style="display:inline-block; width:auto; vertical-align:middle;">
+        <label for="node-input-autoReconnect" style="width:auto;"> Reconnect on disconnect</label>
+    </div>
+    
+    <div class="form-row" id="reconnect-interval-row">
+        <label for="node-input-reconnectInterval"><i class="fa fa-clock-o"></i> Reconnect Interval</label>
+        <input type="number" id="node-input-reconnectInterval" placeholder="5000" style="width:100px;">
+        <span> ms</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-camera-stream">
+    <p>Connects to a Tafy camera stream and outputs frame data or stream URLs.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | boolean</span></dt>
+        <dd>
+            <ul>
+                <li><code>"connect"</code> or <code>true</code> - Connect to stream</li>
+                <li><code>"disconnect"</code> or <code>false</code> - Disconnect from stream</li>
+                <li><code>"reconnect"</code> - Reconnect to stream</li>
+            </ul>
+        </dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object | Buffer</span></dt>
+        <dd>Stream data depending on type:
+            <ul>
+                <li><b>MJPEG:</b> Object with stream URL</li>
+                <li><b>WebSocket:</b> Binary frame data</li>
+                <li><b>WebRTC:</b> Object with signaling URL</li>
+            </ul>
+        </dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Message topic: "camera/stream", "camera/frame", or "camera/webrtc"</dd>
+    </dl>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Camera URL:</b> Base URL of the camera driver (e.g., http://camera:8080)</li>
+        <li><b>Stream Type:</b>
+            <ul>
+                <li><b>MJPEG:</b> HTTP-based motion JPEG stream</li>
+                <li><b>WebSocket:</b> Individual frame delivery via WebSocket</li>
+                <li><b>WebRTC:</b> Peer-to-peer video stream</li>
+            </ul>
+        </li>
+        <li><b>Auto Connect:</b> Automatically connect when flow is deployed</li>
+        <li><b>Auto Reconnect:</b> Automatically reconnect on disconnect</li>
+        <li><b>Reconnect Interval:</b> Time to wait before reconnecting (ms)</li>
+    </ul>
+    
+    <h3>Example Flow</h3>
+    <p>Display MJPEG stream in dashboard:</p>
+    <pre>
+[tafy-camera-stream] → [template] → [ui_template]
+    </pre>
+    
+    <p>Process individual frames:</p>
+    <pre>
+[tafy-camera-stream] → [image processing] → [object detection]
+    </pre>
+</script>
+
+<style>
+    #reconnect-interval-row {
+        margin-left: 20px;
+    }
+</style>
+
+<script>
+    (function() {
+        // Show/hide reconnect interval based on auto-reconnect setting
+        $('#node-input-autoReconnect').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#reconnect-interval-row').show();
+            } else {
+                $('#reconnect-interval-row').hide();
+            }
+        });
+    })();
+</script>

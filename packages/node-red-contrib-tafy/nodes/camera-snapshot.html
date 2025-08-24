@@ -1,0 +1,105 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-camera-snapshot', {
+        category: 'tafy',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: '' },
+            cameraUrl: { value: 'http://localhost:8080', required: true },
+            outputType: { value: 'buffer' },
+            includeMetadata: { value: false }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'camera.png',
+        label: function() {
+            return this.name || 'camera snapshot';
+        },
+        paletteLabel: 'camera snapshot'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-camera-snapshot">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-cameraUrl"><i class="fa fa-globe"></i> Camera URL</label>
+        <input type="text" id="node-input-cameraUrl" placeholder="http://localhost:8080">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-outputType"><i class="fa fa-file-image-o"></i> Output Type</label>
+        <select id="node-input-outputType">
+            <option value="buffer">Buffer (Binary)</option>
+            <option value="base64">Base64 String</option>
+            <option value="url">URL Only</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-includeMetadata"><i class="fa fa-info-circle"></i> Metadata</label>
+        <input type="checkbox" id="node-input-includeMetadata" style="display:inline-block; width:auto; vertical-align:middle;">
+        <label for="node-input-includeMetadata" style="width:auto;"> Include metadata in message</label>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-camera-snapshot">
+    <p>Captures a snapshot from a Tafy camera.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | boolean | object</span></dt>
+        <dd>Trigger command:
+            <ul>
+                <li><code>"snapshot"</code> or <code>true</code> - Take a snapshot</li>
+                <li><code>"info"</code> - Get camera information</li>
+                <li><code>{ command: "snapshot" }</code> - Command object</li>
+            </ul>
+        </dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">Buffer | string | object</span></dt>
+        <dd>Snapshot data or camera info depending on command and output type</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Message topic: "camera/snapshot", "camera/info", or "camera/snapshot/error"</dd>
+        <dt class="optional">metadata <span class="property-type">object</span></dt>
+        <dd>Image metadata (if enabled):
+            <ul>
+                <li><code>timestamp</code> - Capture timestamp</li>
+                <li><code>camera</code> - Camera URL</li>
+                <li><code>type</code> - Output type</li>
+                <li><code>size</code> - Image size in bytes</li>
+                <li><code>contentType</code> - MIME type</li>
+            </ul>
+        </dd>
+        <dt class="optional">error <span class="property-type">string</span></dt>
+        <dd>Error message if capture failed</dd>
+    </dl>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Camera URL:</b> Base URL of the camera driver</li>
+        <li><b>Output Type:</b>
+            <ul>
+                <li><b>Buffer:</b> Binary image data (for image processing)</li>
+                <li><b>Base64:</b> Base64 encoded string (for embedding)</li>
+                <li><b>URL Only:</b> Just the snapshot URL (for external access)</li>
+            </ul>
+        </li>
+        <li><b>Include Metadata:</b> Add metadata object to output message</li>
+    </ul>
+    
+    <h3>Example Uses</h3>
+    <p>Periodic snapshots:</p>
+    <pre>[inject] → [tafy-camera-snapshot] → [file write]</pre>
+    
+    <p>Motion detection trigger:</p>
+    <pre>[motion sensor] → [tafy-camera-snapshot] → [image analysis]</pre>
+    
+    <p>Display in dashboard:</p>
+    <pre>[button] → [tafy-camera-snapshot] → [base64] → [ui_template]</pre>
+</script>

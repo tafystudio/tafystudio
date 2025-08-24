@@ -1,0 +1,149 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-camera-discovery', {
+        category: 'tafy',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: '' },
+            discoveryUrl: { value: 'http://localhost:8080', required: true },
+            autoDiscover: { value: false },
+            discoveryInterval: { value: 30000, validate: RED.validators.number() },
+            outputFormat: { value: 'full' }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'search.png',
+        label: function() {
+            return this.name || 'camera discovery';
+        },
+        paletteLabel: 'camera discovery'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-camera-discovery">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-discoveryUrl"><i class="fa fa-globe"></i> Discovery URL</label>
+        <input type="text" id="node-input-discoveryUrl" placeholder="http://localhost:8080">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-outputFormat"><i class="fa fa-list"></i> Output Format</label>
+        <select id="node-input-outputFormat">
+            <option value="full">Full Details</option>
+            <option value="simple">Simple List</option>
+            <option value="count">Count Only</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-autoDiscover"><i class="fa fa-clock-o"></i> Auto Discover</label>
+        <input type="checkbox" id="node-input-autoDiscover" style="display:inline-block; width:auto; vertical-align:middle;">
+        <label for="node-input-autoDiscover" style="width:auto;"> Enable periodic discovery</label>
+    </div>
+    
+    <div class="form-row" id="discovery-interval-row">
+        <label for="node-input-discoveryInterval"><i class="fa fa-repeat"></i> Discovery Interval</label>
+        <input type="number" id="node-input-discoveryInterval" placeholder="30000" style="width:100px;">
+        <span> ms</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-camera-discovery">
+    <p>Discovers available Tafy cameras on the network.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | boolean | object</span></dt>
+        <dd>Discovery command:
+            <ul>
+                <li><code>"discover"</code> or <code>true</code> - Run discovery</li>
+                <li><code>"best"</code> - Get best available camera</li>
+                <li><code>"start"</code> - Start auto-discovery</li>
+                <li><code>"stop"</code> - Stop auto-discovery</li>
+            </ul>
+        </dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array | object</span></dt>
+        <dd>Discovery results based on output format:
+            <ul>
+                <li><b>Full Details:</b> Complete discovery data with all camera properties</li>
+                <li><b>Simple List:</b> Array of camera devices with basic info</li>
+                <li><b>Count Only:</b> Object with camera count and device list</li>
+            </ul>
+        </dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Message topic: "camera/discovery", "camera/best", or "camera/discovery/error"</dd>
+        <dt class="optional">error <span class="property-type">string</span></dt>
+        <dd>Error message if discovery failed</dd>
+    </dl>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Discovery URL:</b> Base URL of camera driver or hub API</li>
+        <li><b>Output Format:</b>
+            <ul>
+                <li><b>Full Details:</b> All camera information including formats and resolutions</li>
+                <li><b>Simple List:</b> Basic camera list with device paths and names</li>
+                <li><b>Count Only:</b> Just the number of cameras found</li>
+            </ul>
+        </li>
+        <li><b>Auto Discover:</b> Enable periodic camera discovery</li>
+        <li><b>Discovery Interval:</b> Time between discovery scans (ms)</li>
+    </ul>
+    
+    <h3>Full Output Example</h3>
+    <pre>{
+    "camera_count": 2,
+    "cameras": [{
+        "device": "/dev/video0",
+        "name": "Logitech C920",
+        "driver": "uvcvideo",
+        "formats": [
+            { "name": "Motion-JPEG", "fourcc": "MJPG" },
+            { "name": "YUYV 4:2:2", "fourcc": "YUYV" }
+        ],
+        "resolutions": [
+            { "width": 1920, "height": 1080 },
+            { "width": 1280, "height": 720 }
+        ]
+    }],
+    "current": {
+        "device": "/dev/video0",
+        "name": "MJPEG"
+    }
+}</pre>
+    
+    <h3>Use Cases</h3>
+    <ul>
+        <li>Auto-select best available camera on startup</li>
+        <li>Monitor for camera connect/disconnect</li>
+        <li>Switch between multiple cameras</li>
+        <li>Display available cameras in dashboard</li>
+    </ul>
+</script>
+
+<style>
+    #discovery-interval-row {
+        margin-left: 20px;
+    }
+</style>
+
+<script>
+    (function() {
+        // Show/hide discovery interval based on auto-discover setting
+        $('#node-input-autoDiscover').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#discovery-interval-row').show();
+            } else {
+                $('#discovery-interval-row').hide();
+            }
+        });
+    })();
+</script>
