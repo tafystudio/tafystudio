@@ -1,0 +1,249 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-sensor-fusion', {
+        category: 'tafy',
+        color: '#87ceeb',
+        defaults: {
+            name: { value: '' },
+            sensors: { value: [] },
+            fusionMethod: { value: 'weighted' },
+            outputFormat: { value: 'unified' },
+            timeout: { value: 1000, validate: RED.validators.number() },
+            updateRate: { value: 100, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'merge.png',
+        label: function() {
+            return this.name || 'sensor fusion';
+        },
+        paletteLabel: 'sensor fusion',
+        oneditprepare: function() {
+            const node = this;
+            
+            // Sensor list editor
+            $("#node-input-sensor-container").css('min-height','150px').css('min-width','450px').editableList({
+                addItem: function(container, i, sensor) {
+                    sensor = sensor || {};
+                    
+                    const row = $('<div/>').appendTo(container);
+                    
+                    $('<input/>', {
+                        type: 'text',
+                        class: 'node-input-sensor-id',
+                        placeholder: 'Sensor ID',
+                        style: 'width:90px; margin-right:5px;'
+                    }).val(sensor.id || '').appendTo(row);
+                    
+                    $('<select/>', {
+                        class: 'node-input-sensor-position',
+                        style: 'width:80px; margin-right:5px;'
+                    }).append('<option value="front">Front</option>')
+                      .append('<option value="left">Left</option>')
+                      .append('<option value="right">Right</option>')
+                      .append('<option value="back">Back</option>')
+                      .val(sensor.position || 'front')
+                      .appendTo(row);
+                    
+                    $('<input/>', {
+                        type: 'number',
+                        class: 'node-input-sensor-weight',
+                        placeholder: 'Weight',
+                        style: 'width:60px; margin-right:5px;',
+                        min: 0,
+                        max: 10,
+                        step: 0.1
+                    }).val(sensor.weight || 1.0).appendTo(row);
+                    
+                    $('<input/>', {
+                        type: 'number',
+                        class: 'node-input-sensor-offset',
+                        placeholder: 'Offset',
+                        style: 'width:60px; margin-right:5px;',
+                        step: 0.1
+                    }).val(sensor.offset || 0).appendTo(row);
+                    
+                    $('<input/>', {
+                        type: 'number',
+                        class: 'node-input-sensor-scale',
+                        placeholder: 'Scale',
+                        style: 'width:60px;',
+                        min: 0.1,
+                        step: 0.1
+                    }).val(sensor.scale || 1.0).appendTo(row);
+                },
+                sortable: true,
+                removable: true
+            });
+            
+            // Load existing sensors
+            if (this.sensors) {
+                this.sensors.forEach(function(sensor) {
+                    $("#node-input-sensor-container").editableList('addItem', sensor);
+                });
+            }
+        },
+        oneditsave: function() {
+            const sensors = [];
+            $("#node-input-sensor-container").editableList('items').each(function(i) {
+                const sensor = {
+                    id: $(this).find('.node-input-sensor-id').val(),
+                    position: $(this).find('.node-input-sensor-position').val(),
+                    weight: parseFloat($(this).find('.node-input-sensor-weight').val()) || 1.0,
+                    offset: parseFloat($(this).find('.node-input-sensor-offset').val()) || 0,
+                    scale: parseFloat($(this).find('.node-input-sensor-scale').val()) || 1.0
+                };
+                if (sensor.id) {
+                    sensors.push(sensor);
+                }
+            });
+            this.sensors = sensors;
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-sensor-fusion">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-fusionMethod"><i class="fa fa-cog"></i> Fusion Method</label>
+        <select id="node-input-fusionMethod">
+            <option value="weighted">Weighted Average</option>
+            <option value="kalman">Kalman Filter</option>
+            <option value="minimum">Minimum Distance</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-outputFormat"><i class="fa fa-list"></i> Output Format</label>
+        <select id="node-input-outputFormat">
+            <option value="unified">Unified (fused values only)</option>
+            <option value="individual">Individual (raw sensors)</option>
+            <option value="both">Both</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-timeout"><i class="fa fa-clock-o"></i> Sensor Timeout</label>
+        <input type="text" id="node-input-timeout" placeholder="1000" style="width:70px"> ms
+        <span class="form-row-description">Consider sensor invalid after this time</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-updateRate"><i class="fa fa-refresh"></i> Update Rate</label>
+        <input type="text" id="node-input-updateRate" placeholder="100" style="width:70px"> ms
+        <span class="form-row-description">How often to output fused data</span>
+    </div>
+    
+    <div class="form-row">
+        <label><i class="fa fa-list"></i> Sensors</label>
+        <ol id="node-input-sensor-container"></ol>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-sensor-fusion">
+    <p>Combines data from multiple distance sensors using various fusion algorithms.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">number | object</span></dt>
+        <dd>Sensor reading:
+            <ul>
+                <li>Number: Direct distance value</li>
+                <li>Object: <code>{id, distance, timestamp}</code></li>
+            </ul>
+        </dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Should contain sensor ID (e.g., "sensor/front1")</dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Fused sensor data</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Always "sensor/fusion"</dd>
+    </dl>
+    
+    <h3>Output Formats</h3>
+    <h4>Unified Format</h4>
+    <pre>{
+    "timestamp": 1234567890,
+    "method": "weighted",
+    "distances": {
+        "front": 45.2,
+        "left": 89.1,
+        "right": 67.3,
+        "back": 120.5
+    },
+    "confidence": {
+        "front": 0.95,
+        "left": 0.87,
+        "right": 0.92,
+        "back": 0.66
+    },
+    "summary": {
+        "activeSensors": 8,
+        "totalSensors": 10,
+        "oldestReading": 245
+    }
+}</pre>
+    
+    <h4>Individual Format</h4>
+    <p>Includes raw sensor data for each configured sensor.</p>
+    
+    <h3>Fusion Methods</h3>
+    <h4>Weighted Average</h4>
+    <p>Combines sensors using configurable weights and age-based decay:</p>
+    <ul>
+        <li>Higher weight = more influence</li>
+        <li>Newer readings weighted more</li>
+        <li>Good for general use</li>
+    </ul>
+    
+    <h4>Kalman Filter</h4>
+    <p>Statistical fusion with noise reduction:</p>
+    <ul>
+        <li>Smooths noisy readings</li>
+        <li>Predicts between updates</li>
+        <li>Best for stable environments</li>
+    </ul>
+    
+    <h4>Minimum Distance</h4>
+    <p>Most conservative approach:</p>
+    <ul>
+        <li>Always uses closest reading</li>
+        <li>Safest for obstacle avoidance</li>
+        <li>May overreact to noise</li>
+    </ul>
+    
+    <h3>Sensor Configuration</h3>
+    <p>Each sensor can be configured with:</p>
+    <ul>
+        <li><b>ID:</b> Unique sensor identifier</li>
+        <li><b>Position:</b> Physical location (front/left/right/back)</li>
+        <li><b>Weight:</b> Importance factor (0.1-10)</li>
+        <li><b>Offset:</b> Calibration offset in cm</li>
+        <li><b>Scale:</b> Calibration scale factor</li>
+    </ul>
+    
+    <h3>Calibration</h3>
+    <p>Applied as: <code>calibrated = (raw * scale) + offset</code></p>
+    
+    <h3>Example Configuration</h3>
+    <pre>Sensor: tof_front_1
+Position: front
+Weight: 1.0
+Offset: -2.5  // Sensor reads 2.5cm high
+Scale: 1.0</pre>
+    
+    <h3>Tips</h3>
+    <ul>
+        <li>Use multiple sensors per position for redundancy</li>
+        <li>Weight more accurate sensors higher</li>
+        <li>Set appropriate timeout for sensor update rate</li>
+        <li>Monitor confidence values for reliability</li>
+    </ul>
+</script>

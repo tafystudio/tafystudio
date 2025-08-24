@@ -1,0 +1,196 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-obstacle-avoid', {
+        category: 'tafy',
+        color: '#ffd92e',
+        defaults: {
+            name: { value: '' },
+            mode: { value: 'simple' },
+            stopDistance: { value: 30, validate: RED.validators.number() },
+            slowDistance: { value: 60, validate: RED.validators.number() },
+            turnThreshold: { value: 40, validate: RED.validators.number() },
+            backupDistance: { value: 20, validate: RED.validators.number() },
+            turnDirection: { value: 'auto' },
+            maxSpeed: { value: 0.5, validate: RED.validators.number() },
+            turnSpeed: { value: 0.3, validate: RED.validators.number() },
+            sensorTimeout: { value: 500, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'shield.png',
+        label: function() {
+            return this.name || 'obstacle avoid';
+        },
+        paletteLabel: 'obstacle avoid'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-obstacle-avoid">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-mode"><i class="fa fa-cog"></i> Mode</label>
+        <select id="node-input-mode">
+            <option value="simple">Simple</option>
+            <option value="advanced">Advanced</option>
+            <option value="learning">Learning (Future)</option>
+        </select>
+    </div>
+    
+    <hr>
+    <h4>Distance Thresholds (cm)</h4>
+    
+    <div class="form-row">
+        <label for="node-input-stopDistance"><i class="fa fa-hand-stop-o"></i> Stop Distance</label>
+        <input type="text" id="node-input-stopDistance" placeholder="30" style="width:70px"> cm
+        <span class="form-row-description">Emergency stop when closer than this</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-slowDistance"><i class="fa fa-forward"></i> Slow Distance</label>
+        <input type="text" id="node-input-slowDistance" placeholder="60" style="width:70px"> cm
+        <span class="form-row-description">Start slowing down at this distance</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-turnThreshold"><i class="fa fa-undo"></i> Turn Threshold</label>
+        <input type="text" id="node-input-turnThreshold" placeholder="40" style="width:70px"> cm
+        <span class="form-row-description">Start turning to avoid at this distance</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-backupDistance"><i class="fa fa-backward"></i> Backup Distance</label>
+        <input type="text" id="node-input-backupDistance" placeholder="20" style="width:70px"> cm
+        <span class="form-row-description">Minimum clearance when backing up</span>
+    </div>
+    
+    <hr>
+    <h4>Behavior Settings</h4>
+    
+    <div class="form-row">
+        <label for="node-input-turnDirection"><i class="fa fa-arrows"></i> Turn Direction</label>
+        <select id="node-input-turnDirection">
+            <option value="auto">Auto (turn to clearer side)</option>
+            <option value="left">Always Left</option>
+            <option value="right">Always Right</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-maxSpeed"><i class="fa fa-tachometer"></i> Max Speed</label>
+        <input type="text" id="node-input-maxSpeed" placeholder="0.5" style="width:70px">
+        <span class="form-row-description">Maximum forward speed (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-turnSpeed"><i class="fa fa-undo"></i> Turn Speed</label>
+        <input type="text" id="node-input-turnSpeed" placeholder="0.3" style="width:70px">
+        <span class="form-row-description">Turning speed (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-sensorTimeout"><i class="fa fa-clock-o"></i> Sensor Timeout</label>
+        <input type="text" id="node-input-sensorTimeout" placeholder="500" style="width:70px"> ms
+        <span class="form-row-description">Ignore sensor data older than this</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-obstacle-avoid">
+    <p>Implements obstacle avoidance behavior for robots using distance sensor data.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Sensor data or control commands</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Message type:
+            <ul>
+                <li><code>sensor/*</code> - Distance sensor data</li>
+                <li><code>control/*</code> - Control commands (override)</li>
+            </ul>
+        </dd>
+    </dl>
+    
+    <h3>Sensor Input Format</h3>
+    <pre>{
+    "distance": 45.2,      // Distance in cm
+    "position": "front"    // Optional: front, left, right, back
+}</pre>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Avoidance command with motor speeds and metadata</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Always "obstacle/avoidance"</dd>
+    </dl>
+    
+    <h3>Output Format</h3>
+    <pre>{
+    "left": -0.3,          // Left motor speed
+    "right": 0.3,          // Right motor speed
+    "action": "turn_left", // Current action
+    "reason": "avoiding_obstacle",
+    "mode": "simple",
+    "state": "turning",
+    "sensors": {           // Current sensor readings
+        "front": 35,
+        "left": 78,
+        "right": 42,
+        "back": 120
+    }
+}</pre>
+    
+    <h3>Actions</h3>
+    <ul>
+        <li><b>stop</b> - Emergency stop, obstacle too close</li>
+        <li><b>slow</b> - Reduce speed, approaching obstacle</li>
+        <li><b>turn_left/right</b> - Turn to avoid obstacle</li>
+        <li><b>backup</b> - Reverse to create space</li>
+        <li><b>clear</b> - Path is clear, resume normal operation</li>
+        <li><b>stuck</b> - Cannot find clear path</li>
+    </ul>
+    
+    <h3>Modes</h3>
+    <h4>Simple Mode</h4>
+    <p>Basic avoidance using front sensor only:</p>
+    <ul>
+        <li>Stop if too close</li>
+        <li>Slow down when approaching</li>
+        <li>Turn when needed</li>
+    </ul>
+    
+    <h4>Advanced Mode</h4>
+    <p>State machine with multiple sensors:</p>
+    <ul>
+        <li>Uses all four sensors (front, left, right, back)</li>
+        <li>Can backup if needed</li>
+        <li>Smarter path planning</li>
+        <li>Detects stuck conditions</li>
+    </ul>
+    
+    <h3>Override Control</h3>
+    <p>Send control messages to override avoidance:</p>
+    <ul>
+        <li><code>msg.payload = "override_on"</code> - Disable avoidance</li>
+        <li><code>msg.payload = "override_off"</code> - Re-enable avoidance</li>
+    </ul>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Stop Distance:</b> Emergency stop threshold</li>
+        <li><b>Slow Distance:</b> Begin deceleration</li>
+        <li><b>Turn Threshold:</b> Begin avoidance maneuver</li>
+        <li><b>Backup Distance:</b> Minimum rear clearance</li>
+        <li><b>Turn Direction:</b> Preferred turn direction</li>
+        <li><b>Max Speed:</b> Speed limit during avoidance</li>
+        <li><b>Sensor Timeout:</b> Ignore stale sensor data</li>
+    </ul>
+    
+    <h3>Example Flow</h3>
+    <pre>[ToF Sensor] → [Obstacle Avoid] → [Motor Control]
+                          ↓
+                   [Status Display]</pre>
+</script>

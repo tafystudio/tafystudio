@@ -25,7 +25,9 @@
       "tafy-joystick-ui": "nodes/joystick-ui.js",
       "tafy-keyboard-input": "nodes/keyboard-input.js",
       "tafy-nats-config": "nodes/nats-config.js",
-      "tafy-nats-pub": "nodes/nats-pub.js"
+      "tafy-nats-pub": "nodes/nats-pub.js",
+      "tafy-obstacle-avoid": "nodes/obstacle-avoid.js",
+      "tafy-sensor-fusion": "nodes/sensor-fusion.js"
     }
   },
   "main": "index.js",
