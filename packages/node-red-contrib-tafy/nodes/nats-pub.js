@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-    const { connect, StringCodec } = require('nats');
+    const { StringCodec } = require('nats');
     
     function TafyNatsPublishNode(config) {
         RED.nodes.createNode(this, config);
@@ -8,17 +8,17 @@ module.exports = function(RED) {
         
         node.server = RED.nodes.getNode(config.server);
         node.subject = config.subject;
-        node.subjectType = config.subjectType || "str";
+        node.subjectType = config.subjectType || 'str';
         
         if (node.server) {
-            node.status({ fill: "yellow", shape: "ring", text: "connecting..." });
+            node.status({ fill: 'yellow', shape: 'ring', text: 'connecting...' });
             
             node.server.on('connected', () => {
-                node.status({ fill: "green", shape: "dot", text: "connected" });
+                node.status({ fill: 'green', shape: 'dot', text: 'connected' });
             });
             
             node.server.on('disconnected', () => {
-                node.status({ fill: "red", shape: "ring", text: "disconnected" });
+                node.status({ fill: 'red', shape: 'ring', text: 'disconnected' });
             });
             
             node.on('input', async (msg, send, done) => {
@@ -32,7 +32,7 @@ module.exports = function(RED) {
                     }
                     
                     if (!subject) {
-                        throw new Error("Subject is required");
+                        throw new Error('Subject is required');
                     }
                     
                     // Prepare payload
@@ -48,18 +48,22 @@ module.exports = function(RED) {
                         await node.server.nc.publish(subject, sc.encode(payload));
                         node.log(`Published to ${subject}`);
                         
-                        if (done) done();
+                        if (done) {
+                            done();
+                        }
                     } else {
-                        throw new Error("NATS not connected");
+                        throw new Error('NATS not connected');
                     }
                 } catch (err) {
                     node.error(err, msg);
-                    if (done) done(err);
+                    if (done) {
+                        done(err);
+                    }
                 }
             });
         } else {
-            node.status({ fill: "red", shape: "ring", text: "no server" });
-            node.error("NATS server not configured");
+            node.status({ fill: 'red', shape: 'ring', text: 'no server' });
+            node.error('NATS server not configured');
         }
         
         node.on('close', () => {
@@ -67,5 +71,5 @@ module.exports = function(RED) {
         });
     }
     
-    RED.nodes.registerType("tafy-nats-pub", TafyNatsPublishNode);
-}
+    RED.nodes.registerType('tafy-nats-pub', TafyNatsPublishNode);
+};

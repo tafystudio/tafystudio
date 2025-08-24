@@ -1,5 +1,4 @@
 module.exports = function(RED) {
-    const axios = require('axios');
     const WebSocket = require('ws');
     
     function TafyCameraStreamNode(config) {
@@ -20,18 +19,18 @@ module.exports = function(RED) {
         // Update node status
         function updateStatus(status, text) {
             switch (status) {
-                case 'connected':
-                    node.status({ fill: 'green', shape: 'dot', text: text || 'Connected' });
-                    break;
-                case 'connecting':
-                    node.status({ fill: 'yellow', shape: 'ring', text: text || 'Connecting...' });
-                    break;
-                case 'disconnected':
-                    node.status({ fill: 'red', shape: 'ring', text: text || 'Disconnected' });
-                    break;
-                case 'error':
-                    node.status({ fill: 'red', shape: 'dot', text: text || 'Error' });
-                    break;
+            case 'connected':
+                node.status({ fill: 'green', shape: 'dot', text: text || 'Connected' });
+                break;
+            case 'connecting':
+                node.status({ fill: 'yellow', shape: 'ring', text: text || 'Connecting...' });
+                break;
+            case 'disconnected':
+                node.status({ fill: 'red', shape: 'ring', text: text || 'Disconnected' });
+                break;
+            case 'error':
+                node.status({ fill: 'red', shape: 'dot', text: text || 'Error' });
+                break;
             }
         }
         
@@ -160,4 +159,4 @@ module.exports = function(RED) {
     }
     
     RED.nodes.registerType('tafy-camera-stream', TafyCameraStreamNode);
-}
+};

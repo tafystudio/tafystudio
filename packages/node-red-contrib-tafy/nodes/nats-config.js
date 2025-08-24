@@ -38,17 +38,17 @@ module.exports = function(RED) {
                 (async () => {
                     for await (const status of node.nc.status()) {
                         switch (status.type) {
-                            case 'disconnect':
-                                node.emit('disconnected');
-                                node.warn(`Disconnected from NATS: ${status.data}`);
-                                break;
-                            case 'reconnect':
-                                node.emit('connected');
-                                node.log('Reconnected to NATS');
-                                break;
-                            case 'error':
-                                node.error(`NATS error: ${status.data}`);
-                                break;
+                        case 'disconnect':
+                            node.emit('disconnected');
+                            node.warn(`Disconnected from NATS: ${status.data}`);
+                            break;
+                        case 'reconnect':
+                            node.emit('connected');
+                            node.log('Reconnected to NATS');
+                            break;
+                        case 'error':
+                            node.error(`NATS error: ${status.data}`);
+                            break;
                         }
                     }
                 })();
@@ -69,12 +69,14 @@ module.exports = function(RED) {
                     node.error(`Error closing NATS connection: ${err.message}`);
                 }
             }
-            if (done) done();
+            if (done) {
+                done();
+            }
         });
         
         // Start connection
         node.connect();
     }
     
-    RED.nodes.registerType("tafy-nats-config", TafyNatsConfigNode);
-}
+    RED.nodes.registerType('tafy-nats-config', TafyNatsConfigNode);
+};

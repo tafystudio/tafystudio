@@ -29,28 +29,28 @@ module.exports = function(RED) {
                 // Format output based on configuration
                 let output;
                 switch (node.outputFormat) {
-                    case 'simple':
-                        // Simple array of device paths
-                        output = (response.data.cameras || []).map(cam => ({
-                            device: cam.device,
-                            name: cam.name,
-                            formats: cam.formats ? cam.formats.map(f => f.name) : []
-                        }));
-                        break;
+                case 'simple':
+                    // Simple array of device paths
+                    output = (response.data.cameras || []).map(cam => ({
+                        device: cam.device,
+                        name: cam.name,
+                        formats: cam.formats ? cam.formats.map(f => f.name) : []
+                    }));
+                    break;
                         
-                    case 'count':
-                        // Just the count
-                        output = {
-                            count: response.data.camera_count || 0,
-                            devices: (response.data.cameras || []).map(cam => cam.device)
-                        };
-                        break;
+                case 'count':
+                    // Just the count
+                    output = {
+                        count: response.data.camera_count || 0,
+                        devices: (response.data.cameras || []).map(cam => cam.device)
+                    };
+                    break;
                         
-                    case 'full':
-                    default:
-                        // Full discovery data
-                        output = response.data;
-                        break;
+                case 'full':
+                default:
+                    // Full discovery data
+                    output = response.data;
+                    break;
                 }
                 
                 const msg = {
@@ -152,24 +152,24 @@ module.exports = function(RED) {
             } else if (typeof command === 'object' && command.command) {
                 // Handle command object
                 switch (command.command) {
-                    case 'discover':
-                        await discover();
-                        break;
-                    case 'best':
-                        const best = findBestCamera();
-                        node.send({
-                            payload: best,
-                            topic: 'camera/best',
-                            _msgid: RED.util.generateId()
-                        });
-                        break;
-                    case 'start':
-                        startAutoDiscovery();
-                        break;
-                    case 'stop':
-                        stopAutoDiscovery();
-                        node.status({});
-                        break;
+                case 'discover':
+                    await discover();
+                    break;
+                case 'best':
+                    const best = findBestCamera();
+                    node.send({
+                        payload: best,
+                        topic: 'camera/best',
+                        _msgid: RED.util.generateId()
+                    });
+                    break;
+                case 'start':
+                    startAutoDiscovery();
+                    break;
+                case 'stop':
+                    stopAutoDiscovery();
+                    node.status({});
+                    break;
                 }
             }
         });
@@ -189,4 +189,4 @@ module.exports = function(RED) {
     }
     
     RED.nodes.registerType('tafy-camera-discovery', TafyCameraDiscoveryNode);
-}
+};

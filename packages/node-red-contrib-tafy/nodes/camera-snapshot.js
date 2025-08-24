@@ -122,14 +122,14 @@ module.exports = function(RED) {
             } else if (typeof command === 'object' && command.command) {
                 // Handle command object
                 switch (command.command) {
-                    case 'snapshot':
-                        await takeSnapshot();
-                        break;
-                    case 'info':
-                        await getCameraInfo();
-                        break;
-                    default:
-                        node.warn(`Unknown command: ${command.command}`);
+                case 'snapshot':
+                    await takeSnapshot();
+                    break;
+                case 'info':
+                    await getCameraInfo();
+                    break;
+                default:
+                    node.warn(`Unknown command: ${command.command}`);
                 }
             }
         });
@@ -139,4 +139,4 @@ module.exports = function(RED) {
     }
     
     RED.nodes.registerType('tafy-camera-snapshot', TafyCameraSnapshotNode);
-}
+};

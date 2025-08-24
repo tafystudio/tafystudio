@@ -4,8 +4,8 @@ module.exports = function(RED) {
         const node = this;
         
         node.deviceId = config.deviceId;
-        node.deviceIdType = config.deviceIdType || "str";
-        node.driveType = config.driveType || "differential";
+        node.deviceIdType = config.deviceIdType || 'str';
+        node.driveType = config.driveType || 'differential';
         
         node.on('input', (msg, send, done) => {
             try {
@@ -18,12 +18,12 @@ module.exports = function(RED) {
                 }
                 
                 if (!deviceId) {
-                    throw new Error("Device ID is required");
+                    throw new Error('Device ID is required');
                 }
                 
                 // Build HAL message based on drive type
                 let halMessage;
-                if (node.driveType === "differential") {
+                if (node.driveType === 'differential') {
                     // Extract speeds from payload
                     let linear = 0;
                     let angular = 0;
@@ -40,14 +40,14 @@ module.exports = function(RED) {
                     halMessage = {
                         hal_major: 1,
                         hal_minor: 0,
-                        schema: "tafylabs/hal/motor/differential/1.0",
+                        schema: 'tafylabs/hal/motor/differential/1.0',
                         device_id: deviceId,
-                        caps: ["motor.differential:v1.0"],
+                        caps: ['motor.differential:v1.0'],
                         ts: new Date().toISOString(),
                         payload: {
                             linear_meters_per_sec: linear,
                             angular_rad_per_sec: angular,
-                            priority: msg.priority || "normal"
+                            priority: msg.priority || 'normal'
                         }
                     };
                     
@@ -62,15 +62,17 @@ module.exports = function(RED) {
                 
                 // Send the HAL message
                 msg.payload = halMessage;
-                msg.topic = `hal.v1.motor.cmd`;
+                msg.topic = 'hal.v1.motor.cmd';
                 
                 send(msg);
-                if (done) done();
+                if (done) {
+                    done();
+                }
                 
                 // Update node status
                 node.status({
-                    fill: "green",
-                    shape: "dot",
+                    fill: 'green',
+                    shape: 'dot',
                     text: `sent: ${linear.toFixed(2)}m/s, ${angular.toFixed(2)}rad/s`
                 });
                 
@@ -81,8 +83,10 @@ module.exports = function(RED) {
                 
             } catch (err) {
                 node.error(err, msg);
-                node.status({ fill: "red", shape: "ring", text: err.message });
-                if (done) done(err);
+                node.status({ fill: 'red', shape: 'ring', text: err.message });
+                if (done) {
+                    done(err);
+                }
             }
         });
         
@@ -91,5 +95,5 @@ module.exports = function(RED) {
         });
     }
     
-    RED.nodes.registerType("tafy-motor-control", TafyMotorControlNode);
-}
+    RED.nodes.registerType('tafy-motor-control', TafyMotorControlNode);
+};

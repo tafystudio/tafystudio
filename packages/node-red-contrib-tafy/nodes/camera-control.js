@@ -10,64 +10,64 @@ module.exports = function(RED) {
         this.defaultCommand = config.defaultCommand || 'status';
         
         // Send camera control command
-        async function sendCommand(command, parameters) {
+        async function sendCommand(command, _parameters) {
             try {
                 // For now, most commands will be future implementations
                 // This provides the structure for camera control
                 
                 switch (command) {
-                    case 'status':
-                        // Get camera status
-                        const statusResponse = await axios.get(`${node.cameraUrl}/api/v1/status`, {
-                            timeout: 5000
-                        });
+                case 'status':
+                    // Get camera status
+                    const statusResponse = await axios.get(`${node.cameraUrl}/api/v1/status`, {
+                        timeout: 5000
+                    });
                         
-                        node.send({
-                            payload: statusResponse.data,
-                            topic: 'camera/status',
-                            command: command,
-                            _msgid: RED.util.generateId()
-                        });
+                    node.send({
+                        payload: statusResponse.data,
+                        topic: 'camera/status',
+                        command: command,
+                        _msgid: RED.util.generateId()
+                    });
                         
-                        node.status({ 
-                            fill: 'green', 
-                            shape: 'dot', 
-                            text: `FPS: ${statusResponse.data.fps || 0}`
-                        });
-                        break;
+                    node.status({ 
+                        fill: 'green', 
+                        shape: 'dot', 
+                        text: `FPS: ${statusResponse.data.fps || 0}`
+                    });
+                    break;
                         
-                    case 'info':
-                        // Get camera info
-                        const infoResponse = await axios.get(`${node.cameraUrl}/api/v1/info`, {
-                            timeout: 5000
-                        });
+                case 'info':
+                    // Get camera info
+                    const infoResponse = await axios.get(`${node.cameraUrl}/api/v1/info`, {
+                        timeout: 5000
+                    });
                         
-                        node.send({
-                            payload: infoResponse.data,
-                            topic: 'camera/info',
-                            command: command,
-                            _msgid: RED.util.generateId()
-                        });
+                    node.send({
+                        payload: infoResponse.data,
+                        topic: 'camera/info',
+                        command: command,
+                        _msgid: RED.util.generateId()
+                    });
                         
-                        node.status({ fill: 'green', shape: 'dot', text: 'Info retrieved' });
-                        break;
+                    node.status({ fill: 'green', shape: 'dot', text: 'Info retrieved' });
+                    break;
                         
-                    case 'configure':
-                        // Future: Configure camera settings
-                        node.warn('Camera configuration not yet implemented');
-                        node.status({ fill: 'yellow', shape: 'dot', text: 'Not implemented' });
-                        break;
+                case 'configure':
+                    // Future: Configure camera settings
+                    node.warn('Camera configuration not yet implemented');
+                    node.status({ fill: 'yellow', shape: 'dot', text: 'Not implemented' });
+                    break;
                         
-                    case 'start':
-                    case 'stop':
-                        // Future: Start/stop camera
-                        node.warn(`Camera ${command} command not yet implemented`);
-                        node.status({ fill: 'yellow', shape: 'dot', text: 'Not implemented' });
-                        break;
+                case 'start':
+                case 'stop':
+                    // Future: Start/stop camera
+                    node.warn(`Camera ${command} command not yet implemented`);
+                    node.status({ fill: 'yellow', shape: 'dot', text: 'Not implemented' });
+                    break;
                         
-                    default:
-                        node.error(`Unknown command: ${command}`);
-                        node.status({ fill: 'red', shape: 'dot', text: 'Unknown command' });
+                default:
+                    node.error(`Unknown command: ${command}`);
+                    node.status({ fill: 'red', shape: 'dot', text: 'Unknown command' });
                 }
                 
             } catch (error) {
@@ -109,4 +109,4 @@ module.exports = function(RED) {
     }
     
     RED.nodes.registerType('tafy-camera-control', TafyCameraControlNode);
-}
+};
