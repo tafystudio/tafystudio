@@ -9,14 +9,23 @@
     "camera",
     "motor",
     "sensor",
-    "hal"
+    "hal",
+    "teleop",
+    "gamepad",
+    "joystick",
+    "keyboard"
   ],
   "node-red": {
     "nodes": {
       "tafy-camera-stream": "nodes/camera-stream.js",
       "tafy-camera-snapshot": "nodes/camera-snapshot.js",
       "tafy-camera-control": "nodes/camera-control.js",
-      "tafy-camera-discovery": "nodes/camera-discovery.js"
+      "tafy-camera-discovery": "nodes/camera-discovery.js",
+      "tafy-gamepad-input": "nodes/gamepad-input.js",
+      "tafy-joystick-ui": "nodes/joystick-ui.js",
+      "tafy-keyboard-input": "nodes/keyboard-input.js",
+      "tafy-nats-config": "nodes/nats-config.js",
+      "tafy-nats-pub": "nodes/nats-pub.js"
     }
   },
   "main": "index.js",
@@ -32,6 +41,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "axios": "^1.6.5",
+    "nats": "^2.29.3",
     "ws": "^8.16.0"
   },
   "devDependencies": {

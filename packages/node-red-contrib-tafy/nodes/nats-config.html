@@ -2,12 +2,15 @@
     RED.nodes.registerType('tafy-nats-config', {
         category: 'config',
         defaults: {
-            name: { value: "" },
-            url: { value: "nats://localhost:4222", required: true }
+            name: { value: '' },
+            url: { value: 'nats://localhost:4222', required: true },
+            maxReconnectAttempts: { value: -1, validate: RED.validators.number() },
+            reconnectTimeWait: { value: 2000, validate: RED.validators.number() }
         },
         credentials: {
-            username: { type: "text" },
-            password: { type: "password" }
+            user: { type: 'text' },
+            pass: { type: 'password' },
+            token: { type: 'password' }
         },
         label: function() {
             return this.name || this.url;
@@ -20,29 +23,81 @@
         <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-config-input-name" placeholder="Name">
     </div>
+    
     <div class="form-row">
-        <label for="node-config-input-url"><i class="fa fa-server"></i> Server URL</label>
+        <label for="node-config-input-url"><i class="fa fa-server"></i> URL</label>
         <input type="text" id="node-config-input-url" placeholder="nats://localhost:4222">
     </div>
+    
     <div class="form-row">
-        <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
-        <input type="text" id="node-config-input-username" placeholder="Leave blank for no auth">
+        <label><i class="fa fa-lock"></i> Authentication</label>
     </div>
+    
+    <div class="form-row" style="margin-left: 20px;">
+        <label for="node-config-input-token" style="width: 90px;"><i class="fa fa-key"></i> Token</label>
+        <input type="password" id="node-config-input-token" placeholder="Leave blank if not required" style="width: 60%;">
+    </div>
+    
+    <div class="form-row" style="margin-left: 20px;">
+        <label style="width: auto; margin-left: 20px; margin-right: 10px;">OR</label>
+    </div>
+    
+    <div class="form-row" style="margin-left: 20px;">
+        <label for="node-config-input-user" style="width: 90px;"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-user" style="width: 60%;">
+    </div>
+    
+    <div class="form-row" style="margin-left: 20px;">
+        <label for="node-config-input-pass" style="width: 90px;"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-config-input-pass" style="width: 60%;">
+    </div>
+    
     <div class="form-row">
-        <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
-        <input type="password" id="node-config-input-password">
+        <label><i class="fa fa-cog"></i> Connection Options</label>
+    </div>
+    
+    <div class="form-row" style="margin-left: 20px;">
+        <label for="node-config-input-maxReconnectAttempts" style="width: 200px;">Max Reconnect Attempts</label>
+        <input type="text" id="node-config-input-maxReconnectAttempts" style="width: 70px;" placeholder="-1">
+        <span class="form-row-description" style="margin-left: 10px;">-1 = unlimited</span>
+    </div>
+    
+    <div class="form-row" style="margin-left: 20px;">
+        <label for="node-config-input-reconnectTimeWait" style="width: 200px;">Reconnect Wait (ms)</label>
+        <input type="text" id="node-config-input-reconnectTimeWait" style="width: 70px;" placeholder="2000">
     </div>
 </script>
 
 <script type="text/html" data-help-name="tafy-nats-config">
-    <p>Configuration node for NATS connection.</p>
+    <p>NATS server connection configuration.</p>
+    
     <h3>Configuration</h3>
     <dl class="message-properties">
-        <dt>Server URL</dt>
+        <dt>URL <span class="property-type">string</span></dt>
         <dd>NATS server URL (e.g., nats://localhost:4222)</dd>
-        <dt>Username <span class="property-type">optional</span></dt>
-        <dd>Username for authentication</dd>
-        <dt>Password <span class="property-type">optional</span></dt>
-        <dd>Password for authentication</dd>
+        
+        <dt class="optional">Token <span class="property-type">string</span></dt>
+        <dd>Authentication token if required</dd>
+        
+        <dt class="optional">Username <span class="property-type">string</span></dt>
+        <dd>Username for basic authentication</dd>
+        
+        <dt class="optional">Password <span class="property-type">string</span></dt>
+        <dd>Password for basic authentication</dd>
+        
+        <dt>Max Reconnect Attempts <span class="property-type">number</span></dt>
+        <dd>Maximum reconnection attempts (-1 for unlimited)</dd>
+        
+        <dt>Reconnect Wait <span class="property-type">number</span></dt>
+        <dd>Time to wait between reconnection attempts in milliseconds</dd>
     </dl>
+    
+    <h3>Details</h3>
+    <p>This configuration node manages the connection to a NATS server.</p>
+    <p>Authentication priority:</p>
+    <ol>
+        <li>Token authentication (if provided)</li>
+        <li>Username/password authentication (if both provided)</li>
+        <li>No authentication</li>
+    </ol>
 </script>

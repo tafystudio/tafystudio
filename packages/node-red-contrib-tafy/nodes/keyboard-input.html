@@ -1,0 +1,168 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-keyboard-input', {
+        category: 'tafy',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: '' },
+            keyMap: { value: 'wasd' },
+            outputMode: { value: 'differential' },
+            speed: { value: 0.5, validate: RED.validators.number() },
+            turnSpeed: { value: 0.5, validate: RED.validators.number() },
+            acceleration: { value: 0.1, validate: RED.validators.number() },
+            customKeys: { value: {} }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'keyboard.png',
+        label: function() {
+            return this.name || 'keyboard';
+        },
+        paletteLabel: 'keyboard',
+        oneditprepare: function() {
+            // Show/hide custom key configuration
+            $('#node-input-keyMap').on('change', function() {
+                if ($(this).val() === 'custom') {
+                    $('#custom-keys-row').show();
+                } else {
+                    $('#custom-keys-row').hide();
+                }
+            }).trigger('change');
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-keyboard-input">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-keyMap"><i class="fa fa-keyboard-o"></i> Key Layout</label>
+        <select id="node-input-keyMap">
+            <option value="wasd">WASD</option>
+            <option value="arrows">Arrow Keys</option>
+            <option value="custom">Custom</option>
+        </select>
+    </div>
+    
+    <div class="form-row" id="custom-keys-row" style="display:none;">
+        <label><i class="fa fa-cog"></i> Custom Keys</label>
+        <div style="margin-left:100px;">
+            <p style="font-size:12px;">Define custom key mappings in JSON format</p>
+            <input type="text" id="node-input-customKeys" placeholder='{"forward":"w","backward":"s"...}'>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-outputMode"><i class="fa fa-cog"></i> Output Mode</label>
+        <select id="node-input-outputMode">
+            <option value="differential">Differential Drive</option>
+            <option value="simple">Simple (Forward/Turn)</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-speed"><i class="fa fa-tachometer"></i> Speed</label>
+        <input type="text" id="node-input-speed" placeholder="0.5" style="width:70px">
+        <span class="form-row-description">Forward/backward speed (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-turnSpeed"><i class="fa fa-undo"></i> Turn Speed</label>
+        <input type="text" id="node-input-turnSpeed" placeholder="0.5" style="width:70px">
+        <span class="form-row-description">Turning speed (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-acceleration"><i class="fa fa-line-chart"></i> Acceleration</label>
+        <input type="text" id="node-input-acceleration" placeholder="0.1" style="width:70px">
+        <span class="form-row-description">Speed ramping (0=instant)</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-keyboard-input">
+    <p>Captures keyboard input for robot control.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | boolean</span></dt>
+        <dd>Control commands:
+            <ul>
+                <li><code>"start"</code> or <code>true</code> - Start capturing keyboard</li>
+                <li><code>"stop"</code> or <code>false</code> - Stop capturing keyboard</li>
+            </ul>
+        </dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Movement commands based on output mode</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>"keyboard/input" or "keyboard/stop"</dd>
+        <dt>keys <span class="property-type">array</span></dt>
+        <dd>Currently pressed keys</dd>
+    </dl>
+    
+    <h3>Key Layouts</h3>
+    <h4>WASD</h4>
+    <ul>
+        <li>W - Forward</li>
+        <li>S - Backward</li>
+        <li>A - Turn left</li>
+        <li>D - Turn right</li>
+        <li>Shift - Boost (2x speed)</li>
+        <li>Space - Emergency stop</li>
+    </ul>
+    
+    <h4>Arrow Keys</h4>
+    <ul>
+        <li>↑ - Forward</li>
+        <li>↓ - Backward</li>
+        <li>← - Turn left</li>
+        <li>→ - Turn right</li>
+        <li>Shift - Boost</li>
+        <li>Space - Emergency stop</li>
+    </ul>
+    
+    <h4>Custom</h4>
+    <p>Define your own key mappings using a JSON object:</p>
+    <pre>{
+    "forward": "w",
+    "backward": "s",
+    "left": "a",
+    "right": "d",
+    "boost": "shift",
+    "stop": " "
+}</pre>
+    
+    <h3>Output Modes</h3>
+    <h4>Differential Drive</h4>
+    <pre>{
+    "left": -1.0 to 1.0,
+    "right": -1.0 to 1.0,
+    "forward": -1.0 to 1.0,
+    "turn": -1.0 to 1.0
+}</pre>
+    
+    <h4>Simple</h4>
+    <pre>{
+    "forward": -1.0 to 1.0,
+    "turn": -1.0 to 1.0,
+    "boost": true/false
+}</pre>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Speed:</b> Maximum forward/backward speed</li>
+        <li><b>Turn Speed:</b> Maximum turning speed</li>
+        <li><b>Acceleration:</b> Speed ramping (0 = instant)</li>
+    </ul>
+    
+    <h3>Browser Requirements</h3>
+    <p>This node requires browser context and should be used in a dashboard.</p>
+    
+    <h3>Example Flow</h3>
+    <pre>[Button "Enable"] -> [Keyboard] -> [Motor Control] -> [Robot]</pre>
+</script>

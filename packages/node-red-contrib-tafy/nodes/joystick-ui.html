@@ -1,0 +1,126 @@
+<script type="text/javascript">
+    // Global function for joystick to send data
+    window.tafyJoystickSend = function(nodeId, data) {
+        if (RED && RED.comms) {
+            RED.comms.send('joystick/' + nodeId, data);
+        }
+    };
+    
+    RED.nodes.registerType('tafy-joystick-ui', {
+        category: 'tafy',
+        color: '#3FADB5',
+        defaults: {
+            name: { value: '' },
+            size: { value: 200, validate: RED.validators.number() },
+            returnToCenter: { value: true },
+            outputMode: { value: 'differential' },
+            deadzone: { value: 0.1, validate: RED.validators.number() },
+            maxSpeed: { value: 1.0, validate: RED.validators.number() }
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: 'joystick.png',
+        label: function() {
+            return this.name || 'joystick';
+        },
+        paletteLabel: 'joystick',
+        align: 'right'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-joystick-ui">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-size"><i class="fa fa-arrows-alt"></i> Size</label>
+        <input type="text" id="node-input-size" placeholder="200" style="width:70px"> px
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-outputMode"><i class="fa fa-cog"></i> Output Mode</label>
+        <select id="node-input-outputMode">
+            <option value="differential">Differential Drive</option>
+            <option value="vector">Vector (X/Y)</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-returnToCenter"><i class="fa fa-bullseye"></i> Auto-center</label>
+        <input type="checkbox" id="node-input-returnToCenter" style="display:inline-block; width:auto; vertical-align:top;">
+        <label for="node-input-returnToCenter" style="width:70%;">Return to center when released</label>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-deadzone"><i class="fa fa-circle-o"></i> Deadzone</label>
+        <input type="text" id="node-input-deadzone" placeholder="0.1" style="width:70px">
+        <span class="form-row-description">Center deadzone (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-maxSpeed"><i class="fa fa-tachometer"></i> Max Speed</label>
+        <input type="text" id="node-input-maxSpeed" placeholder="1.0" style="width:70px">
+        <span class="form-row-description">Maximum output value (0-1)</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-joystick-ui">
+    <p>Virtual joystick UI widget for touch/mouse control of robots.</p>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Joystick position data based on output mode</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Always "joystick/input"</dd>
+    </dl>
+    
+    <h3>Output Modes</h3>
+    <h4>Differential Drive</h4>
+    <p>Outputs wheel speeds for differential drive robots:</p>
+    <pre>{
+    "left": -1.0 to 1.0,    // Left wheel speed
+    "right": -1.0 to 1.0,   // Right wheel speed
+    "forward": -1.0 to 1.0, // Forward component
+    "turn": -1.0 to 1.0     // Turn component
+}</pre>
+    
+    <h4>Vector (X/Y)</h4>
+    <p>Outputs normalized X/Y coordinates:</p>
+    <pre>{
+    "x": -1.0 to 1.0,       // Horizontal position
+    "y": -1.0 to 1.0,       // Vertical position
+    "magnitude": 0.0 to 1.0 // Distance from center
+}</pre>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Size:</b> Widget size in pixels</li>
+        <li><b>Auto-center:</b> Return to center when released</li>
+        <li><b>Deadzone:</b> Central area that outputs zero (0-1)</li>
+        <li><b>Max Speed:</b> Scale factor for output values</li>
+    </ul>
+    
+    <h3>Usage</h3>
+    <p>This is a UI widget that should be placed in a dashboard group.
+    It provides a visual joystick that can be controlled with mouse or touch.</p>
+    
+    <p>The joystick sends continuous output while being moved. When released:</p>
+    <ul>
+        <li>If auto-center is enabled, it returns to center and outputs zero</li>
+        <li>If auto-center is disabled, it stays at the last position</li>
+    </ul>
+    
+    <h3>Example Flow</h3>
+    <p>Direct robot control:</p>
+    <pre>[Joystick UI] -> [Scale/Limit] -> [HAL Motor Command] -> [NATS Publish]</pre>
+    
+    <h3>Styling</h3>
+    <p>The joystick appearance can be customized with CSS:</p>
+    <pre>.tafy-joystick-container canvas {
+    border-color: #2196F3 !important;
+    background: #ffffff !important;
+}</pre>
+</script>
