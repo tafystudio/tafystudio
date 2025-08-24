@@ -10,12 +10,13 @@ import (
 
 // Config represents the complete configuration for the camera driver
 type Config struct {
-	Device string       `mapstructure:"device"`
-	Node   NodeConfig   `mapstructure:"node"`
-	Camera CameraConfig `mapstructure:"camera"`
-	NATS   NATSConfig   `mapstructure:"nats"`
-	Server ServerConfig `mapstructure:"server"`
-	Log    LogConfig    `mapstructure:"log"`
+	Device string        `mapstructure:"device"`
+	Node   NodeConfig    `mapstructure:"node"`
+	Camera CameraConfig  `mapstructure:"camera"`
+	NATS   NATSConfig    `mapstructure:"nats"`
+	Server ServerConfig  `mapstructure:"server"`
+	Log    LogConfig     `mapstructure:"log"`
+	WebRTC WebRTCConfig  `mapstructure:"webrtc"`
 }
 
 // NodeConfig contains node identification settings
@@ -56,6 +57,20 @@ type LogConfig struct {
 	Pretty bool   `mapstructure:"pretty"`
 }
 
+// WebRTCConfig contains WebRTC settings
+type WebRTCConfig struct {
+	Enabled     bool         `mapstructure:"enabled"`
+	STUNServers []string     `mapstructure:"stun_servers"`
+	TURNServers []TURNServer `mapstructure:"turn_servers"`
+}
+
+// TURNServer represents a TURN server configuration
+type TURNServer struct {
+	URL        string `mapstructure:"url"`
+	Username   string `mapstructure:"username"`
+	Credential string `mapstructure:"credential"`
+}
+
 // Load reads configuration from file and environment
 func Load() (*Config, error) {
 	cfg := &Config{
@@ -87,6 +102,13 @@ func Load() (*Config, error) {
 		Log: LogConfig{
 			Level:  "info",
 			Pretty: false,
+		},
+		WebRTC: WebRTCConfig{
+			Enabled: true,
+			STUNServers: []string{
+				"stun:stun.l.google.com:19302",
+			},
+			TURNServers: []TURNServer{},
 		},
 	}
 	

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tafy Camera WebRTC Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        video {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .connect-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .connect-btn:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        .disconnect-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .disconnect-btn:hover:not(:disabled) {
+            background-color: #da190b;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .status.connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status.connecting {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .stats {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .stats h3 {
+            margin-top: 0;
+        }
+        .stats div {
+            margin: 5px 0;
+        }
+        .settings {
+            margin: 20px 0;
+        }
+        .settings label {
+            display: block;
+            margin: 10px 0;
+        }
+        .settings input {
+            margin-left: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tafy Camera WebRTC Viewer</h1>
+        
+        <div class="settings">
+            <label>
+                Camera URL:
+                <input type="text" id="cameraUrl" value="ws://localhost:8080/webrtc" style="width: 300px;">
+            </label>
+        </div>
+        
+        <div class="controls">
+            <button id="connectBtn" class="connect-btn">Connect</button>
+            <button id="disconnectBtn" class="disconnect-btn" disabled>Disconnect</button>
+        </div>
+        
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <div class="video-container">
+            <video id="remoteVideo" autoplay playsinline></video>
+        </div>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <h3>Connection Statistics</h3>
+            <div id="statsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // WebRTC configuration
+        const config = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
+        };
+
+        let ws = null;
+        let pc = null;
+        let statsInterval = null;
+
+        const remoteVideo = document.getElementById('remoteVideo');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const statusDiv = document.getElementById('status');
+        const statsDiv = document.getElementById('stats');
+        const statsContent = document.getElementById('statsContent');
+        const cameraUrlInput = document.getElementById('cameraUrl');
+
+        // Update status display
+        function updateStatus(status, message) {
+            statusDiv.className = `status ${status}`;
+            statusDiv.textContent = message;
+        }
+
+        // Connect to camera
+        async function connect() {
+            const url = cameraUrlInput.value;
+            if (!url) {
+                alert('Please enter a camera URL');
+                return;
+            }
+
+            connectBtn.disabled = true;
+            updateStatus('connecting', 'Connecting...');
+
+            try {
+                // Create WebSocket connection
+                ws = new WebSocket(url);
+
+                ws.onopen = async () => {
+                    console.log('WebSocket connected');
+                    updateStatus('connecting', 'WebSocket connected, initializing WebRTC...');
+                    
+                    // Create peer connection
+                    pc = new RTCPeerConnection(config);
+                    
+                    // Handle incoming video track
+                    pc.ontrack = (event) => {
+                        console.log('Received track:', event);
+                        if (event.streams && event.streams[0]) {
+                            remoteVideo.srcObject = event.streams[0];
+                        }
+                    };
+                    
+                    // Handle connection state changes
+                    pc.onconnectionstatechange = () => {
+                        console.log('Connection state:', pc.connectionState);
+                        switch (pc.connectionState) {
+                            case 'connected':
+                                updateStatus('connected', 'Connected');
+                                disconnectBtn.disabled = false;
+                                startStatsMonitoring();
+                                break;
+                            case 'disconnected':
+                            case 'failed':
+                                disconnect();
+                                break;
+                        }
+                    };
+                    
+                    // Handle ICE candidates
+                    pc.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            ws.send(JSON.stringify({
+                                type: 'candidate',
+                                candidate: event.candidate
+                            }));
+                        }
+                    };
+                    
+                    // Create offer
+                    const offer = await pc.createOffer({
+                        offerToReceiveVideo: true,
+                        offerToReceiveAudio: false
+                    });
+                    
+                    await pc.setLocalDescription(offer);
+                    
+                    // Send offer
+                    ws.send(JSON.stringify({
+                        type: 'offer',
+                        offer: offer
+                    }));
+                };
+
+                ws.onmessage = async (event) => {
+                    const data = JSON.parse(event.data);
+                    console.log('Received message:', data);
+                    
+                    switch (data.type) {
+                        case 'answer':
+                            await pc.setRemoteDescription(data.answer);
+                            break;
+                        case 'candidate':
+                            if (data.candidate) {
+                                await pc.addIceCandidate(data.candidate);
+                            }
+                            break;
+                    }
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    updateStatus('disconnected', 'Connection error');
+                    disconnect();
+                };
+
+                ws.onclose = () => {
+                    console.log('WebSocket closed');
+                    disconnect();
+                };
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                updateStatus('disconnected', `Error: ${error.message}`);
+                connectBtn.disabled = false;
+            }
+        }
+
+        // Disconnect from camera
+        function disconnect() {
+            console.log('Disconnecting...');
+            
+            stopStatsMonitoring();
+            
+            if (pc) {
+                pc.close();
+                pc = null;
+            }
+            
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+            
+            remoteVideo.srcObject = null;
+            
+            connectBtn.disabled = false;
+            disconnectBtn.disabled = true;
+            updateStatus('disconnected', 'Disconnected');
+        }
+
+        // Start monitoring connection stats
+        function startStatsMonitoring() {
+            statsDiv.style.display = 'block';
+            
+            statsInterval = setInterval(async () => {
+                if (pc) {
+                    const stats = await pc.getStats();
+                    let html = '';
+                    
+                    stats.forEach(report => {
+                        if (report.type === 'inbound-rtp' && report.mediaType === 'video') {
+                            html += `
+                                <div><strong>Video Stats:</strong></div>
+                                <div>Bitrate: ${Math.round(report.bytesReceived * 8 / 1000)} kbps</div>
+                                <div>Framerate: ${report.framesPerSecond || 0} fps</div>
+                                <div>Resolution: ${report.frameWidth}x${report.frameHeight}</div>
+                                <div>Packets Lost: ${report.packetsLost || 0}</div>
+                            `;
+                        } else if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                            html += `
+                                <div><strong>Connection:</strong></div>
+                                <div>RTT: ${report.currentRoundTripTime * 1000} ms</div>
+                                <div>Available Bandwidth: ${Math.round(report.availableOutgoingBitrate / 1000)} kbps</div>
+                            `;
+                        }
+                    });
+                    
+                    statsContent.innerHTML = html || '<div>No stats available</div>';
+                }
+            }, 1000);
+        }
+
+        // Stop monitoring stats
+        function stopStatsMonitoring() {
+            if (statsInterval) {
+                clearInterval(statsInterval);
+                statsInterval = null;
+            }
+            statsDiv.style.display = 'none';
+        }
+
+        // Event listeners
+        connectBtn.addEventListener('click', connect);
+        disconnectBtn.addEventListener('click', disconnect);
+        
+        // Connect on Enter key
+        cameraUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !connectBtn.disabled) {
+                connect();
+            }
+        });
+    </script>
+</body>
+</html>

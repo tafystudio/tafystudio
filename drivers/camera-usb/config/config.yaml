@@ -60,3 +60,20 @@ log:
   
   # Pretty print logs (for development)
   pretty: false
+
+# WebRTC configuration
+webrtc:
+  # Enable WebRTC streaming
+  enabled: true
+  
+  # STUN servers for NAT traversal
+  stun_servers:
+    - stun:stun.l.google.com:19302
+    - stun:stun1.l.google.com:19302
+  
+  # TURN servers (optional, for restricted networks)
+  turn_servers: []
+  # Example TURN config:
+  # - url: turn:turnserver.com:3478
+  #   username: user
+  #   credential: pass

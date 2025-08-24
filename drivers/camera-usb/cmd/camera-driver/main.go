@@ -134,7 +134,7 @@ func run(cmd *cobra.Command, args []string) {
 	defer nc.Close()
 	
 	// Start HTTP server for MJPEG streaming
-	httpServer := server.NewHTTP(cfg.Server, cam, nc)
+	httpServer := server.NewHTTP(cfg.Server, cfg.WebRTC, cam, nc)
 	go func() {
 		if err := httpServer.Start(); err != nil {
 			log.Error().Err(err).Msg("HTTP server error")

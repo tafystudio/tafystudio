@@ -1,5 +1,8 @@
 // Auto-generated types from JSON schemas
 
+export * from './camera/control';
+export * from './camera/frame';
+export * from './camera/status';
 export * from './common/envelope';
 export * from './motor/differential-telemetry';
 export * from './motor/differential';

@@ -18,15 +18,16 @@ import (
 
 // HTTP represents the HTTP server for camera streaming
 type HTTP struct {
-	config   config.ServerConfig
-	camera   *camera.Camera
-	nats     *nats.Client
-	server   *http.Server
-	upgrader websocket.Upgrader
+	config       config.ServerConfig
+	camera       *camera.Camera
+	nats         *nats.Client
+	server       *http.Server
+	upgrader     websocket.Upgrader
+	webrtcServer *WebRTCServer
 }
 
 // NewHTTP creates a new HTTP server
-func NewHTTP(cfg config.ServerConfig, cam *camera.Camera, nc *nats.Client) *HTTP {
+func NewHTTP(cfg config.ServerConfig, webrtcCfg config.WebRTCConfig, cam *camera.Camera, nc *nats.Client) *HTTP {
 	h := &HTTP{
 		config: cfg,
 		camera: cam,
@@ -46,6 +47,17 @@ func NewHTTP(cfg config.ServerConfig, cam *camera.Camera, nc *nats.Client) *HTTP
 				return false
 			},
 		},
+	}
+	
+	// Initialize WebRTC server if enabled
+	if webrtcCfg.Enabled {
+		webrtcServer, err := NewWebRTCServer(cam, webrtcCfg)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to create WebRTC server")
+			// Continue without WebRTC support
+		} else {
+			h.webrtcServer = webrtcServer
+		}
 	}
 	
 	// Set up routes
@@ -103,11 +115,16 @@ func (h *HTTP) handleStatus(w http.ResponseWriter, r *http.Request) {
 		"frame_count": frameCount,
 		"error_count": errorCount,
 		"last_update": lastUpdate,
-		"fps":         h.config.HTTPPort, // TODO: Calculate actual FPS
+		"fps":         h.camera.Config.FPS,
 	}
 	
 	if lastError != nil {
 		status["last_error"] = lastError.Error()
+	}
+	
+	// Add WebRTC stats if available
+	if h.webrtcServer != nil {
+		status["webrtc"] = h.webrtcServer.GetStats()
 	}
 	
 	w.Header().Set("Content-Type", "application/json")
@@ -123,6 +140,7 @@ func (h *HTTP) handleInfo(w http.ResponseWriter, r *http.Request) {
 		"fps":        h.camera.Config.FPS,
 		"stream_url": fmt.Sprintf("http://%s/stream", r.Host),
 		"ws_url":     fmt.Sprintf("ws://%s/ws", r.Host),
+		"webrtc_url": fmt.Sprintf("ws://%s/webrtc", r.Host),
 	}
 	
 	w.Header().Set("Content-Type", "application/json")
@@ -259,4 +277,25 @@ func (h *HTTP) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+// handleWebRTC handles WebRTC signaling connections
+func (h *HTTP) handleWebRTC(w http.ResponseWriter, r *http.Request) {
+	if h.webrtcServer == nil {
+		http.Error(w, "WebRTC not available", http.StatusServiceUnavailable)
+		return
+	}
+	
+	conn, err := h.upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to upgrade WebRTC WebSocket")
+		return
+	}
+	defer conn.Close()
+	
+	// Generate peer ID
+	peerID := fmt.Sprintf("peer-%d", time.Now().UnixNano())
+	
+	// Handle WebRTC signaling
+	h.webrtcServer.HandleWebRTCSignaling(conn, peerID)
 }

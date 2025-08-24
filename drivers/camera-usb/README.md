@@ -6,6 +6,7 @@ This driver provides V4L2-based USB camera access with MJPEG streaming and HAL i
 
 - V4L2 camera interface for Linux
 - MJPEG streaming over HTTP
+- WebRTC peer-to-peer video streaming
 - WebSocket frame streaming
 - HAL message integration via NATS
 - Prometheus metrics
@@ -88,9 +89,10 @@ Configuration can be provided via:
 - `GET /health` - Health check
 - `GET /metrics` - Prometheus metrics
 
-### WebSocket Endpoint
+### WebSocket Endpoints
 
-- `WS /ws` - WebSocket frame streaming
+- `WS /ws` - WebSocket frame streaming (MJPEG frames)
+- `WS /webrtc` - WebRTC signaling endpoint
 
 ## HAL Integration
 
@@ -130,6 +132,24 @@ The driver publishes camera data via NATS using the HAL protocol:
   }
 }
 ```
+
+## Streaming Options
+
+### MJPEG Streaming
+
+- Simple HTTP-based streaming
+- Universal browser support  
+- Higher latency (300-500ms)
+- Good for monitoring/recording
+
+### WebRTC Streaming
+
+- Peer-to-peer video transmission
+- Low latency (50-200ms)
+- Adaptive bitrate
+- Best for real-time control
+
+See [examples/webrtc](examples/webrtc) for WebRTC client example.
 
 ## Supported Cameras
 
