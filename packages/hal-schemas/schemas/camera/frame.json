@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafy.studio/schemas/hal/camera/frame/1.0",
+  "title": "Camera Frame Metadata",
+  "description": "Metadata about a camera frame for streaming",
+  "type": "object",
+  "required": ["camera_id", "resolution", "format", "timestamp"],
+  "properties": {
+    "camera_id": {
+      "type": "string",
+      "description": "Unique identifier for this camera on the device"
+    },
+    "resolution": {
+      "type": "string",
+      "pattern": "^[0-9]+x[0-9]+$",
+      "description": "Frame resolution (e.g., '640x480')"
+    },
+    "format": {
+      "type": "string",
+      "enum": ["MJPEG", "H264", "YUYV", "RGB", "BGR"],
+      "description": "Video format/encoding"
+    },
+    "fps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 240,
+      "description": "Frames per second"
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "Frame timestamp in milliseconds since epoch"
+    },
+    "frame_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total frames captured since start"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Frame size in bytes"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to access the video stream"
+    },
+    "exposure": {
+      "type": "number",
+      "description": "Camera exposure value"
+    },
+    "gain": {
+      "type": "number",
+      "description": "Camera gain value"
+    }
+  },
+  "additionalProperties": false
+}

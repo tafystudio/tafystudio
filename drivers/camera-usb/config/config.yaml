@@ -1,0 +1,62 @@
+# Camera USB Driver Configuration
+
+# V4L2 device path
+device: /dev/video0
+
+# Node configuration
+node:
+  # Node ID - auto-generated if empty
+  id: ""
+  type: "camera-usb"
+
+# Camera settings
+camera:
+  # Resolution
+  width: 640
+  height: 480
+  
+  # Frames per second
+  fps: 30
+  
+  # Video format (MJPEG, YUYV, H264)
+  format: "MJPEG"
+  
+  # V4L2 buffer count
+  buffer_count: 4
+  
+  # JPEG quality (1-100)
+  quality: 85
+
+# NATS configuration
+nats:
+  # NATS server URL
+  url: nats://localhost:4222
+  
+  # Client name
+  name: camera-driver
+  
+  # Reconnect interval in milliseconds
+  reconnect_ms: 5000
+
+# HTTP server configuration
+server:
+  # HTTP port for MJPEG streaming
+  http_port: 8080
+  
+  # Metrics port
+  metrics_port: 8081
+  
+  # Timeouts in seconds
+  read_timeout: 10
+  write_timeout: 10
+  
+  # CORS allowed origins
+  cors_origins: "*"
+
+# Logging configuration
+log:
+  # Log level: debug, info, warn, error
+  level: info
+  
+  # Pretty print logs (for development)
+  pretty: false

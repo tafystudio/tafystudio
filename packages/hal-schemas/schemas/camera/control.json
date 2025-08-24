@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tafy.studio/schemas/hal/camera/control/1.0",
+  "title": "Camera Control Commands",
+  "description": "Control commands for camera devices",
+  "type": "object",
+  "properties": {
+    "command": {
+      "type": "string",
+      "enum": ["start", "stop", "snapshot", "configure"],
+      "description": "Command to execute"
+    },
+    "resolution": {
+      "type": "string",
+      "pattern": "^[0-9]+x[0-9]+$",
+      "description": "Set camera resolution"
+    },
+    "fps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 240,
+      "description": "Set frames per second"
+    },
+    "format": {
+      "type": "string",
+      "enum": ["MJPEG", "H264", "YUYV", "RGB", "BGR"],
+      "description": "Set video format"
+    },
+    "exposure": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["auto", "manual"],
+          "description": "Exposure mode"
+        },
+        "value": {
+          "type": "number",
+          "description": "Manual exposure value"
+        }
+      }
+    },
+    "gain": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["auto", "manual"],
+          "description": "Gain mode"
+        },
+        "value": {
+          "type": "number",
+          "description": "Manual gain value"
+        }
+      }
+    },
+    "white_balance": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["auto", "manual", "daylight", "cloudy", "tungsten", "fluorescent"],
+          "description": "White balance mode"
+        },
+        "temperature": {
+          "type": "integer",
+          "minimum": 2000,
+          "maximum": 8000,
+          "description": "Manual color temperature in Kelvin"
+        }
+      }
+    }
+  },
+  "required": ["command"],
+  "additionalProperties": false
+}
