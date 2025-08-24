@@ -11,7 +11,7 @@ This driver provides V4L2-based USB camera access with MJPEG streaming and HAL i
 - HAL message integration via NATS
 - Prometheus metrics
 - Multiple resolution support
-- Automatic camera discovery
+- Automatic camera discovery and selection
 
 ## Quick Start
 
@@ -53,8 +53,14 @@ go mod download
 # Build
 go build -o camera-driver ./cmd/camera-driver
 
-# Run
+# Run with specific device
 ./camera-driver --device /dev/video0 --nats-url nats://localhost:4222
+
+# Run with auto-discovery
+./camera-driver --auto-select
+
+# List available cameras
+./camera-driver --discover
 ```
 
 ## Configuration
@@ -86,6 +92,7 @@ Configuration can be provided via:
 - `GET /snapshot` - Single JPEG frame
 - `GET /api/v1/status` - Camera status
 - `GET /api/v1/info` - Camera information
+- `GET /api/v1/discovery` - Discover available cameras
 - `GET /health` - Health check
 - `GET /metrics` - Prometheus metrics
 
@@ -150,6 +157,29 @@ The driver publishes camera data via NATS using the HAL protocol:
 - Best for real-time control
 
 See [examples/webrtc](examples/webrtc) for WebRTC client example.
+
+## Camera Discovery
+
+The driver supports automatic camera discovery:
+
+```bash
+# List all available cameras
+./camera-driver --discover
+
+# Auto-select best camera (prefers MJPEG support)
+./camera-driver --auto-select
+
+# Query via API
+curl http://localhost:8080/api/v1/discovery
+```
+
+Discovery information includes:
+
+- Device path and name
+- Supported formats (MJPEG, YUYV, etc.)
+- Available resolutions
+- Driver information
+- Bus information
 
 ## Supported Cameras
 

@@ -186,3 +186,13 @@ func (c *Client) SubscribeCommands(handler func(cmd interface{})) error {
 	log.Info().Str("subject", subject).Msg("Subscribed to camera commands")
 	return nil
 }
+
+// Publish publishes raw data to a subject
+func (c *Client) Publish(subject string, data []byte) error {
+	return c.conn.Publish(subject, data)
+}
+
+// Connected returns true if connected to NATS
+func (c *Client) Connected() bool {
+	return c.conn != nil && c.conn.IsConnected()
+}

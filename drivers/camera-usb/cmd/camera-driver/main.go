@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/camera"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/config"
+	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/discovery"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/nats"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/server"
 )
@@ -38,6 +39,8 @@ func init() {
 	rootCmd.PersistentFlags().Int("http-port", 8080, "HTTP server port for MJPEG streaming")
 	rootCmd.PersistentFlags().Int("metrics-port", 8081, "Metrics server port")
 	rootCmd.PersistentFlags().String("log-level", "info", "Log level (debug, info, warn, error)")
+	rootCmd.PersistentFlags().Bool("discover", false, "Run camera discovery and exit")
+	rootCmd.PersistentFlags().Bool("auto-select", false, "Automatically select best available camera")
 	
 	// Bind flags to viper
 	viper.BindPFlag("device", rootCmd.PersistentFlags().Lookup("device"))
@@ -100,6 +103,12 @@ func setupLogging() {
 }
 
 func run(cmd *cobra.Command, args []string) {
+	// Check if running discovery mode
+	if viper.GetBool("discover") {
+		runDiscovery()
+		return
+	}
+	
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	
@@ -107,6 +116,16 @@ func run(cmd *cobra.Command, args []string) {
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to load configuration")
+	}
+	
+	// Auto-select camera if requested
+	if viper.GetBool("auto-select") {
+		device, err := autoSelectCamera()
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to auto-select camera")
+		}
+		cfg.Device = device
+		log.Info().Str("device", device).Msg("Auto-selected camera")
 	}
 	
 	log.Info().
@@ -132,6 +151,14 @@ func run(cmd *cobra.Command, args []string) {
 		log.Fatal().Err(err).Msg("Failed to connect to NATS")
 	}
 	defer nc.Close()
+	
+	// Start discovery service
+	discoveryService := discovery.NewService(nc, cfg.Node.ID, 30*time.Second)
+	if err := discoveryService.Start(); err != nil {
+		log.Error().Err(err).Msg("Failed to start discovery service")
+		// Continue without discovery
+	}
+	defer discoveryService.Stop()
 	
 	// Start HTTP server for MJPEG streaming
 	httpServer := server.NewHTTP(cfg.Server, cfg.WebRTC, cam, nc)
@@ -181,4 +208,72 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+// runDiscovery runs camera discovery and exits
+func runDiscovery() {
+	log.Info().Msg("Running camera discovery")
+	
+	cameras, err := discovery.DiscoverCameras()
+	if err != nil {
+		log.Fatal().Err(err).Msg("Discovery failed")
+	}
+	
+	if len(cameras) == 0 {
+		log.Warn().Msg("No cameras found")
+		return
+	}
+	
+	// Print results
+	fmt.Printf("\nFound %d camera(s):\n\n", len(cameras))
+	
+	for i, cam := range cameras {
+		fmt.Printf("Camera %d:\n", i+1)
+		fmt.Printf("  Device:   %s\n", cam.Device)
+		fmt.Printf("  Name:     %s\n", cam.Name)
+		fmt.Printf("  Driver:   %s\n", cam.Driver)
+		fmt.Printf("  Bus Info: %s\n", cam.BusInfo)
+		fmt.Printf("  Version:  %s\n", cam.Version)
+		
+		if len(cam.Formats) > 0 {
+			fmt.Printf("  Formats:\n")
+			for _, f := range cam.Formats {
+				fmt.Printf("    - %s (%s)\n", f.Name, f.FourCC)
+			}
+		}
+		
+		if len(cam.Resolutions) > 0 {
+			fmt.Printf("  Resolutions:\n")
+			for _, r := range cam.Resolutions {
+				fmt.Printf("    - %dx%d\n", r.Width, r.Height)
+			}
+		}
+		
+		fmt.Println()
+	}
+	
+	// Find best camera
+	best := discovery.FindBestCamera(cameras)
+	if best != nil {
+		fmt.Printf("Recommended camera: %s (%s)\n", best.Device, best.Name)
+	}
+}
+
+// autoSelectCamera automatically selects the best available camera
+func autoSelectCamera() (string, error) {
+	cameras, err := discovery.DiscoverCameras()
+	if err != nil {
+		return "", fmt.Errorf("discovery failed: %w", err)
+	}
+	
+	if len(cameras) == 0 {
+		return "", fmt.Errorf("no cameras found")
+	}
+	
+	best := discovery.FindBestCamera(cameras)
+	if best == nil {
+		return cameras[0].Device, nil
+	}
+	
+	return best.Device, nil
 }

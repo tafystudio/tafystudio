@@ -13,17 +13,19 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/camera"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/config"
+	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/discovery"
 	"github.com/tafystudio/tafystudio/drivers/camera-usb/internal/nats"
 )
 
 // HTTP represents the HTTP server for camera streaming
 type HTTP struct {
-	config       config.ServerConfig
-	camera       *camera.Camera
-	nats         *nats.Client
-	server       *http.Server
-	upgrader     websocket.Upgrader
-	webrtcServer *WebRTCServer
+	config           config.ServerConfig
+	camera           *camera.Camera
+	nats             *nats.Client
+	server           *http.Server
+	upgrader         websocket.Upgrader
+	webrtcServer     *WebRTCServer
+	discoveryService interface{} // Will be set if discovery service is available
 }
 
 // NewHTTP creates a new HTTP server
@@ -67,6 +69,7 @@ func NewHTTP(cfg config.ServerConfig, webrtcCfg config.WebRTCConfig, cam *camera
 	api := router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/status", h.handleStatus).Methods("GET")
 	api.HandleFunc("/info", h.handleInfo).Methods("GET")
+	api.HandleFunc("/discovery", h.handleDiscovery).Methods("GET")
 	
 	// Streaming routes
 	router.HandleFunc("/stream", h.handleMJPEGStream).Methods("GET")
@@ -298,4 +301,28 @@ func (h *HTTP) handleWebRTC(w http.ResponseWriter, r *http.Request) {
 	
 	// Handle WebRTC signaling
 	h.webrtcServer.HandleWebRTCSignaling(conn, peerID)
+}
+
+// handleDiscovery handles camera discovery requests
+func (h *HTTP) handleDiscovery(w http.ResponseWriter, r *http.Request) {
+	// Run discovery
+	cameras, err := discovery.DiscoverCameras()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Discovery failed: %v", err), http.StatusInternalServerError)
+		return
+	}
+	
+	// Build response
+	response := map[string]interface{}{
+		"camera_count": len(cameras),
+		"cameras":      cameras,
+		"current": map[string]string{
+			"device": h.camera.Device,
+			"name":   h.camera.Config.Format,
+		},
+		"timestamp": time.Now(),
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
