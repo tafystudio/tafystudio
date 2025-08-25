@@ -27,7 +27,10 @@
       "tafy-nats-config": "nodes/nats-config.js",
       "tafy-nats-pub": "nodes/nats-pub.js",
       "tafy-obstacle-avoid": "nodes/obstacle-avoid.js",
-      "tafy-sensor-fusion": "nodes/sensor-fusion.js"
+      "tafy-sensor-fusion": "nodes/sensor-fusion.js",
+      "tafy-color-tracker": "nodes/color-tracker.js",
+      "tafy-pid-controller": "nodes/pid-controller.js",
+      "tafy-color-follow": "nodes/color-follow.js"
     }
   },
   "main": "index.js",

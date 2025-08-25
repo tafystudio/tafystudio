@@ -1,0 +1,169 @@
+{
+    "id": "color-following-pid-example",
+    "label": "Color Following with PID Control",
+    "nodes": [
+        {
+            "id": "camera-2",
+            "type": "tafy-camera-stream",
+            "name": "Robot Camera",
+            "cameraUrl": "http://192.168.1.100:8080/video",
+            "frameRate": 30,
+            "resolution": "640x480",
+            "format": "mjpeg",
+            "x": 100,
+            "y": 200
+        },
+        {
+            "id": "color-tracker-2",
+            "type": "tafy-color-tracker",
+            "name": "Track Red Object",
+            "colorSpace": "hsv",
+            "hue": 0,
+            "saturation": 90,
+            "value": 80,
+            "hueTolerance": 15,
+            "satTolerance": 20,
+            "valTolerance": 25,
+            "minBlobSize": 150,
+            "maxTargets": 1,
+            "smoothing": 0.6,
+            "lostTimeout": 800,
+            "x": 300,
+            "y": 200,
+            "wires": [["extract-x", "extract-size"]]
+        },
+        {
+            "id": "extract-x",
+            "type": "function",
+            "name": "Extract X Position",
+            "func": "if (msg.payload.tracking && msg.payload.targets.length > 0) {\n    const target = msg.payload.targets[0];\n    return {\n        payload: target.centered_x,  // -1 to 1\n        topic: 'position'\n    };\n}\nreturn null;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 500,
+            "y": 150,
+            "wires": [["pid-turn"]]
+        },
+        {
+            "id": "extract-size",
+            "type": "function",
+            "name": "Extract Size",
+            "func": "if (msg.payload.tracking && msg.payload.targets.length > 0) {\n    const target = msg.payload.targets[0];\n    return {\n        payload: target.width,  // 0 to 1\n        setpoint: 0.2,  // desired size\n        topic: 'size'\n    };\n}\nreturn null;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 500,
+            "y": 250,
+            "wires": [["pid-distance"]]
+        },
+        {
+            "id": "pid-turn",
+            "type": "tafy-pid-controller",
+            "name": "Turn PID",
+            "kp": 0.8,
+            "ki": 0.05,
+            "kd": 0.2,
+            "setpoint": 0,
+            "outputMin": -0.5,
+            "outputMax": 0.5,
+            "integralMax": 5.0,
+            "deadband": 0.02,
+            "sampleTime": 50,
+            "mode": "auto",
+            "direction": "direct",
+            "x": 700,
+            "y": 150,
+            "wires": [["combine-commands"]]
+        },
+        {
+            "id": "pid-distance",
+            "type": "tafy-pid-controller",
+            "name": "Distance PID",
+            "kp": 3.0,
+            "ki": 0.1,
+            "kd": 0.5,
+            "setpoint": 0.2,
+            "outputMin": -0.5,
+            "outputMax": 0.5,
+            "integralMax": 10.0,
+            "deadband": 0.01,
+            "sampleTime": 50,
+            "mode": "auto",
+            "direction": "direct",
+            "x": 700,
+            "y": 250,
+            "wires": [["combine-commands"]]
+        },
+        {
+            "id": "combine-commands",
+            "type": "function",
+            "name": "Combine PIDs",
+            "func": "// Store PID outputs\ncontext.turn = context.turn || 0;\ncontext.forward = context.forward || 0;\n\nif (msg.topic === 'pid/output') {\n    // From turn PID\n    if (msg.payload.input !== undefined && msg.payload.setpoint === 0) {\n        context.turn = msg.payload.output;\n    }\n    // From distance PID\n    else {\n        context.forward = msg.payload.output;\n    }\n}\n\n// Calculate differential drive\nconst left = context.forward - context.turn;\nconst right = context.forward + context.turn;\n\n// Output motor command\nreturn {\n    payload: {\n        left: Math.max(-0.5, Math.min(0.5, left)),\n        right: Math.max(-0.5, Math.min(0.5, right)),\n        action: 'pid_follow',\n        control: {\n            forward: context.forward,\n            turn: context.turn\n        },\n        timestamp: Date.now()\n    },\n    topic: 'motor/command'\n};",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 900,
+            "y": 200,
+            "wires": [["motor-hal-2", "debug-pid"]]
+        },
+        {
+            "id": "motor-hal-2",
+            "type": "tafy-nats-pub",
+            "name": "Motor Commands",
+            "topic": "hal.v1.motor.cmd",
+            "natsConfig": "nats-config-2",
+            "x": 1100,
+            "y": 200
+        },
+        {
+            "id": "debug-pid",
+            "type": "debug",
+            "name": "PID Debug",
+            "active": true,
+            "tosidebar": true,
+            "console": false,
+            "tostatus": false,
+            "complete": "payload",
+            "targetType": "msg",
+            "x": 1100,
+            "y": 300
+        },
+        {
+            "id": "reset-pids",
+            "type": "inject",
+            "name": "Reset PIDs",
+            "props": [
+                {
+                    "p": "payload",
+                    "v": "{\"reset\":true}",
+                    "vt": "json"
+                },
+                {
+                    "p": "topic",
+                    "v": "control",
+                    "vt": "str"
+                }
+            ],
+            "repeat": "",
+            "crontab": "",
+            "once": false,
+            "onceDelay": 0.1,
+            "x": 500,
+            "y": 350,
+            "wires": [["pid-turn", "pid-distance"]]
+        },
+        {
+            "id": "comment-2",
+            "type": "comment",
+            "name": "Advanced Color Following with PID",
+            "info": "This flow uses separate PID controllers for precise control:\n\n1. Turn PID: Keeps target centered (X position)\n   - Input: centered_x (-1 to 1)\n   - Setpoint: 0 (centered)\n   - Output: Turn rate\n\n2. Distance PID: Maintains optimal distance\n   - Input: Target width (0 to 1)\n   - Setpoint: 0.2 (20% of frame)\n   - Output: Forward speed\n\n3. Commands are combined for differential drive\n\nPID Tuning:\n- Start with P-only (Ki=0, Kd=0)\n- Add I to eliminate steady-state error\n- Add D to reduce overshoot\n- Use Reset PIDs inject to clear integral windup\n\nAdvantages over simple following:\n- Smoother control\n- Better disturbance rejection\n- Tunable response characteristics\n- No oscillation at setpoint",
+            "x": 100,
+            "y": 50
+        }
+    ],
+    "configs": [
+        {
+            "id": "nats-config-2",
+            "type": "tafy-nats-config",
+            "name": "Local NATS",
+            "server": "nats://localhost:4222"
+        }
+    ]
+}

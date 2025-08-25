@@ -1,0 +1,110 @@
+{
+    "id": "color-following-example",
+    "label": "Color Following Example",
+    "nodes": [
+        {
+            "id": "camera-1",
+            "type": "tafy-camera-stream",
+            "name": "Robot Camera",
+            "cameraUrl": "http://192.168.1.100:8080/video",
+            "frameRate": 30,
+            "resolution": "640x480",
+            "format": "mjpeg",
+            "x": 100,
+            "y": 200
+        },
+        {
+            "id": "color-tracker-1",
+            "type": "tafy-color-tracker",
+            "name": "Track Green Ball",
+            "colorSpace": "hsv",
+            "hue": 120,
+            "saturation": 80,
+            "value": 70,
+            "hueTolerance": 25,
+            "satTolerance": 30,
+            "valTolerance": 30,
+            "minBlobSize": 100,
+            "maxTargets": 1,
+            "smoothing": 0.7,
+            "lostTimeout": 1000,
+            "x": 300,
+            "y": 200,
+            "wires": [["color-follow-1", "debug-tracking"]]
+        },
+        {
+            "id": "color-follow-1",
+            "type": "tafy-color-follow",
+            "name": "Follow Target",
+            "followMode": "both",
+            "targetSize": 0.2,
+            "forwardGain": 2.0,
+            "turnGain": 0.5,
+            "maxSpeed": 0.5,
+            "minSpeed": 0.1,
+            "deadZone": 0.05,
+            "smoothing": 0.7,
+            "x": 500,
+            "y": 200,
+            "wires": [["motor-hal", "debug-motors"]]
+        },
+        {
+            "id": "motor-hal",
+            "type": "tafy-nats-pub",
+            "name": "Motor Commands",
+            "topic": "hal.v1.motor.cmd",
+            "natsConfig": "nats-config-1",
+            "x": 700,
+            "y": 200
+        },
+        {
+            "id": "debug-tracking",
+            "type": "debug",
+            "name": "Tracking Debug",
+            "active": true,
+            "tosidebar": true,
+            "console": false,
+            "tostatus": false,
+            "complete": "payload",
+            "targetType": "msg",
+            "x": 500,
+            "y": 100
+        },
+        {
+            "id": "debug-motors",
+            "type": "debug",
+            "name": "Motor Debug",
+            "active": true,
+            "tosidebar": true,
+            "console": false,
+            "tostatus": false,
+            "complete": "payload",
+            "targetType": "msg",
+            "x": 700,
+            "y": 300
+        },
+        {
+            "id": "comment-1",
+            "type": "comment",
+            "name": "Color Following Flow",
+            "info": "This flow demonstrates autonomous color following:\n\n1. Camera captures video frames\n2. Color Tracker identifies green objects (adjustable)\n3. Color Follow generates motor commands to:\n   - Keep the target centered (turning)\n   - Maintain optimal distance (forward/backward)\n4. Commands sent via NATS to motor driver\n\nAdjust the HSV values in Color Tracker for different colors:\n- Red: H=0°\n- Green: H=120°\n- Blue: H=240°\n- Yellow: H=60°\n\nTuning tips:\n- Increase turn gain for faster centering\n- Increase forward gain for more aggressive distance control\n- Adjust target size based on your environment\n- Use smoothing to reduce jerky movements",
+            "x": 100,
+            "y": 50
+        }
+    ],
+    "configs": [
+        {
+            "id": "nats-config-1",
+            "type": "tafy-nats-config",
+            "name": "Local NATS",
+            "server": "nats://localhost:4222"
+        }
+    ],
+    "wires": [
+        ["camera-1", "color-tracker-1"],
+        ["color-tracker-1", "color-follow-1"],
+        ["color-tracker-1", "debug-tracking"],
+        ["color-follow-1", "motor-hal"],
+        ["color-follow-1", "debug-motors"]
+    ]
+}

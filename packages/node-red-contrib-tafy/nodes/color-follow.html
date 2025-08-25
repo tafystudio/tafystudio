@@ -1,0 +1,183 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-color-follow', {
+        category: 'tafy',
+        color: '#ff6b6b',
+        defaults: {
+            name: { value: '' },
+            followMode: { value: 'position' },
+            targetSize: { value: 0.2, validate: RED.validators.number() },
+            forwardGain: { value: 2.0, validate: RED.validators.number() },
+            turnGain: { value: 0.5, validate: RED.validators.number() },
+            maxSpeed: { value: 0.5, validate: RED.validators.number() },
+            minSpeed: { value: 0.1, validate: RED.validators.number() },
+            deadZone: { value: 0.05, validate: RED.validators.number() },
+            smoothing: { value: 0.7, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'target.png',
+        label: function() {
+            return this.name || 'color follow';
+        },
+        paletteLabel: 'color follow'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-color-follow">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-followMode"><i class="fa fa-cog"></i> Follow Mode</label>
+        <select id="node-input-followMode">
+            <option value="position">Position Only (turning)</option>
+            <option value="size">Size Only (distance)</option>
+            <option value="both">Both (full tracking)</option>
+        </select>
+    </div>
+    
+    <hr>
+    <h4>Following Parameters</h4>
+    
+    <div class="form-row">
+        <label for="node-input-targetSize"><i class="fa fa-expand"></i> Target Size</label>
+        <input type="text" id="node-input-targetSize" placeholder="0.2" style="width:70px">
+        <span class="form-row-description">Desired target size (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-forwardGain"><i class="fa fa-arrow-up"></i> Forward Gain</label>
+        <input type="text" id="node-input-forwardGain" placeholder="2.0" style="width:70px">
+        <span class="form-row-description">Distance control responsiveness</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-turnGain"><i class="fa fa-rotate-right"></i> Turn Gain</label>
+        <input type="text" id="node-input-turnGain" placeholder="0.5" style="width:70px">
+        <span class="form-row-description">Turning responsiveness</span>
+    </div>
+    
+    <hr>
+    <h4>Speed Limits</h4>
+    
+    <div class="form-row">
+        <label for="node-input-maxSpeed"><i class="fa fa-tachometer"></i> Max Speed</label>
+        <input type="text" id="node-input-maxSpeed" placeholder="0.5" style="width:70px">
+        <span class="form-row-description">Maximum motor speed (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-minSpeed"><i class="fa fa-tachometer"></i> Min Speed</label>
+        <input type="text" id="node-input-minSpeed" placeholder="0.1" style="width:70px">
+        <span class="form-row-description">Minimum forward speed</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-deadZone"><i class="fa fa-ban"></i> Dead Zone</label>
+        <input type="text" id="node-input-deadZone" placeholder="0.05" style="width:70px">
+        <span class="form-row-description">Ignore small errors</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-smoothing"><i class="fa fa-filter"></i> Smoothing</label>
+        <input type="text" id="node-input-smoothing" placeholder="0.7" style="width:70px">
+        <span class="form-row-description">Command smoothing (0-1)</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-color-follow">
+    <p>Follows a colored target using camera input, generating motor commands.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Accepts color tracking results or PID output</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>"color/tracking" or "pid/output"</dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Motor command with left/right speeds</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Always "motor/command"</dd>
+    </dl>
+    
+    <h3>Output Format</h3>
+    <pre>{
+    "left": 0.3,            // Left motor speed (-1 to 1)
+    "right": 0.5,           // Right motor speed (-1 to 1)
+    "action": "follow",     // Current action
+    "target": {             // Target info (when available)
+        "id": "target_123",
+        "x": 0.65,
+        "y": 0.45,
+        "centered_x": 0.3,
+        "width": 0.15,
+        "confidence": 0.85
+    },
+    "control": {            // Control values
+        "forward": 0.4,     // Forward speed component
+        "turn": 0.1         // Turn speed component
+    },
+    "timestamp": 1234567890
+}</pre>
+    
+    <h3>Follow Modes</h3>
+    <ul>
+        <li><b>Position Only:</b> Keeps target centered by turning</li>
+        <li><b>Size Only:</b> Maintains distance using target size</li>
+        <li><b>Both:</b> Full tracking with turning and distance control</li>
+    </ul>
+    
+    <h3>Tuning Guide</h3>
+    
+    <h4>Target Size</h4>
+    <p>The desired size of the target in the camera view (0-1):</p>
+    <ul>
+        <li>0.1 = Far away (10% of frame width)</li>
+        <li>0.2 = Good following distance</li>
+        <li>0.3 = Close following</li>
+    </ul>
+    
+    <h4>Gains</h4>
+    <ul>
+        <li><b>Forward Gain:</b> How aggressively to maintain distance</li>
+        <li><b>Turn Gain:</b> How aggressively to center the target</li>
+    </ul>
+    
+    <h4>Example Configurations</h4>
+    
+    <h5>Gentle Following</h5>
+    <pre>Forward Gain: 1.0
+Turn Gain: 0.3
+Smoothing: 0.8</pre>
+    
+    <h5>Aggressive Tracking</h5>
+    <pre>Forward Gain: 3.0
+Turn Gain: 0.8
+Smoothing: 0.5</pre>
+    
+    <h5>Line Following (position only)</h5>
+    <pre>Mode: Position Only
+Turn Gain: 0.6
+Min Speed: 0.2</pre>
+    
+    <h3>Connection Example</h3>
+    <pre>Camera → Color Tracker → Color Follow → Motor Driver</pre>
+    
+    <h3>Alternative: Using PID</h3>
+    <pre>Camera → Color Tracker → PID Controller → Color Follow → Motor Driver</pre>
+    
+    <h3>Tips</h3>
+    <ul>
+        <li>Start with low gains and increase gradually</li>
+        <li>Use smoothing to reduce jerky movements</li>
+        <li>Adjust dead zone to ignore small movements</li>
+        <li>Test in your actual lighting conditions</li>
+        <li>Consider target size based on your environment</li>
+    </ul>
+</script>

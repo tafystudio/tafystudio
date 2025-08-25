@@ -1,0 +1,258 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-color-tracker', {
+        category: 'tafy',
+        color: '#ff6b6b',
+        defaults: {
+            name: { value: '' },
+            colorSpace: { value: 'hsv' },
+            hue: { value: 120, validate: RED.validators.number() },
+            saturation: { value: 50, validate: RED.validators.number() },
+            value: { value: 50, validate: RED.validators.number() },
+            hueTolerance: { value: 20, validate: RED.validators.number() },
+            satTolerance: { value: 30, validate: RED.validators.number() },
+            valTolerance: { value: 30, validate: RED.validators.number() },
+            minBlobSize: { value: 100, validate: RED.validators.number() },
+            maxTargets: { value: 1, validate: RED.validators.number() },
+            smoothing: { value: 0.7, validate: RED.validators.number() },
+            lostTimeout: { value: 1000, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'colorwheel.png',
+        label: function() {
+            return this.name || 'color tracker';
+        },
+        paletteLabel: 'color tracker',
+        oneditprepare: function() {
+            // Color picker preview
+            function updateColorPreview() {
+                const h = $('#node-input-hue').val() || 120;
+                const s = $('#node-input-saturation').val() || 50;
+                const v = $('#node-input-value').val() || 50;
+                
+                // Simple HSV to RGB conversion for preview
+                const c = (v/100) * (s/100);
+                const x = c * (1 - Math.abs(((h/60) % 2) - 1));
+                const m = (v/100) - c;
+                
+                let r = 0, g = 0, b = 0;
+                if (h >= 0 && h < 60) {
+                    r = c; g = x; b = 0;
+                } else if (h >= 60 && h < 120) {
+                    r = x; g = c; b = 0;
+                } else if (h >= 120 && h < 180) {
+                    r = 0; g = c; b = x;
+                } else if (h >= 180 && h < 240) {
+                    r = 0; g = x; b = c;
+                } else if (h >= 240 && h < 300) {
+                    r = x; g = 0; b = c;
+                } else {
+                    r = c; g = 0; b = x;
+                }
+                
+                r = Math.round((r + m) * 255);
+                g = Math.round((g + m) * 255);
+                b = Math.round((b + m) * 255);
+                
+                $('#color-preview').css('background-color', `rgb(${r},${g},${b})`);
+            }
+            
+            $('#node-input-hue, #node-input-saturation, #node-input-value').on('input', updateColorPreview);
+            updateColorPreview();
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-color-tracker">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-colorSpace"><i class="fa fa-palette"></i> Color Space</label>
+        <select id="node-input-colorSpace">
+            <option value="hsv">HSV (recommended)</option>
+            <option value="rgb">RGB</option>
+            <option value="lab">LAB (future)</option>
+        </select>
+    </div>
+    
+    <hr>
+    <h4>Target Color (HSV)</h4>
+    
+    <div class="form-row">
+        <label for="node-input-hue"><i class="fa fa-circle"></i> Hue</label>
+        <input type="range" id="node-input-hue" min="0" max="360" style="width:200px">
+        <input type="number" id="node-input-hue" min="0" max="360" style="width:60px; margin-left:10px">
+        <span style="margin-left:10px">degrees</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-saturation"><i class="fa fa-tint"></i> Saturation</label>
+        <input type="range" id="node-input-saturation" min="0" max="100" style="width:200px">
+        <input type="number" id="node-input-saturation" min="0" max="100" style="width:60px; margin-left:10px">
+        <span style="margin-left:10px">%</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-value"><i class="fa fa-sun-o"></i> Value</label>
+        <input type="range" id="node-input-value" min="0" max="100" style="width:200px">
+        <input type="number" id="node-input-value" min="0" max="100" style="width:60px; margin-left:10px">
+        <span style="margin-left:10px">%</span>
+    </div>
+    
+    <div class="form-row">
+        <label>Preview</label>
+        <div id="color-preview" style="width:50px; height:50px; border:1px solid #ccc; display:inline-block; vertical-align:middle;"></div>
+    </div>
+    
+    <hr>
+    <h4>Color Tolerance</h4>
+    
+    <div class="form-row">
+        <label for="node-input-hueTolerance"><i class="fa fa-plus-minus"></i> Hue Tolerance</label>
+        <input type="text" id="node-input-hueTolerance" placeholder="20" style="width:70px"> degrees
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-satTolerance"><i class="fa fa-plus-minus"></i> Sat Tolerance</label>
+        <input type="text" id="node-input-satTolerance" placeholder="30" style="width:70px"> %
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-valTolerance"><i class="fa fa-plus-minus"></i> Val Tolerance</label>
+        <input type="text" id="node-input-valTolerance" placeholder="30" style="width:70px"> %
+    </div>
+    
+    <hr>
+    <h4>Tracking Settings</h4>
+    
+    <div class="form-row">
+        <label for="node-input-minBlobSize"><i class="fa fa-expand"></i> Min Blob Size</label>
+        <input type="text" id="node-input-minBlobSize" placeholder="100" style="width:70px"> pixels
+        <span class="form-row-description">Minimum target size to track</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-maxTargets"><i class="fa fa-crosshairs"></i> Max Targets</label>
+        <input type="text" id="node-input-maxTargets" placeholder="1" style="width:70px">
+        <span class="form-row-description">Maximum simultaneous targets</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-smoothing"><i class="fa fa-filter"></i> Smoothing</label>
+        <input type="text" id="node-input-smoothing" placeholder="0.7" style="width:70px">
+        <span class="form-row-description">Position smoothing (0-1)</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-lostTimeout"><i class="fa fa-clock-o"></i> Lost Timeout</label>
+        <input type="text" id="node-input-lostTimeout" placeholder="1000" style="width:70px"> ms
+        <span class="form-row-description">Time before target is considered lost</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-color-tracker">
+    <p>Tracks colored objects in camera frames using HSV color matching.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Image frame data:
+            <ul>
+                <li><code>data</code> - Uint8Array or Array of RGBA pixels</li>
+                <li><code>width</code> - Frame width in pixels</li>
+                <li><code>height</code> - Frame height in pixels</li>
+            </ul>
+        </dd>
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>If "config", updates tracking parameters</dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Tracking results</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Always "color/tracking"</dd>
+    </dl>
+    
+    <h3>Output Format</h3>
+    <pre>{
+    "targets": [{
+        "id": "target_abc123",
+        "x": 0.65,           // 0-1 normalized
+        "y": 0.45,           // 0-1 normalized
+        "width": 0.15,       // 0-1 normalized
+        "height": 0.20,      // 0-1 normalized
+        "vx": 0.02,          // Velocity X
+        "vy": -0.01,         // Velocity Y
+        "confidence": 0.85,  // 0-1
+        "centered_x": 0.3,   // -1 to 1 (for control)
+        "centered_y": -0.1   // -1 to 1 (for control)
+    }],
+    "frameNumber": 1234,
+    "timestamp": 1234567890,
+    "tracking": true,
+    "lost": false           // True when target lost
+}</pre>
+    
+    <h3>Color Configuration</h3>
+    <h4>HSV Color Space</h4>
+    <ul>
+        <li><b>Hue:</b> 0-360° color wheel (0=red, 120=green, 240=blue)</li>
+        <li><b>Saturation:</b> 0-100% color purity</li>
+        <li><b>Value:</b> 0-100% brightness</li>
+    </ul>
+    
+    <h4>Common Colors (HSV)</h4>
+    <ul>
+        <li>Red: H=0°, S=100%, V=100%</li>
+        <li>Green: H=120°, S=100%, V=100%</li>
+        <li>Blue: H=240°, S=100%, V=100%</li>
+        <li>Yellow: H=60°, S=100%, V=100%</li>
+        <li>Orange: H=30°, S=100%, V=100%</li>
+        <li>Purple: H=270°, S=100%, V=100%</li>
+    </ul>
+    
+    <h3>Tolerance Settings</h3>
+    <p>Adjust tolerance to handle lighting variations:</p>
+    <ul>
+        <li><b>Hue:</b> ±20° typically good</li>
+        <li><b>Saturation:</b> ±30% for indoor lighting</li>
+        <li><b>Value:</b> ±30% for shadow handling</li>
+    </ul>
+    
+    <h3>Dynamic Configuration</h3>
+    <p>Send config messages to update tracking:</p>
+    <pre>{
+    "topic": "config",
+    "payload": {
+        "color": {
+            "h": 180,    // New hue
+            "s": 80,     // New saturation
+            "v": 70      // New value
+        },
+        "tolerance": {
+            "h": 25,
+            "s": 35,
+            "v": 40
+        }
+    }
+}</pre>
+    
+    <h3>Tips</h3>
+    <ul>
+        <li>Use consistent lighting for best results</li>
+        <li>Avoid reflective surfaces</li>
+        <li>Test tolerance in target environment</li>
+        <li>Higher smoothing = less jitter but more lag</li>
+        <li>Centered coordinates are ideal for control</li>
+    </ul>
+    
+    <h3>Example: Following Control</h3>
+    <p>Use centered_x for turning and target size for distance:</p>
+    <pre>turn_speed = target.centered_x * 0.5
+forward_speed = (0.2 - target.width) * 2</pre>
+</script>

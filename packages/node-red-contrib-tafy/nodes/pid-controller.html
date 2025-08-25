@@ -1,0 +1,232 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tafy-pid-controller', {
+        category: 'tafy',
+        color: '#4ecdc4',
+        defaults: {
+            name: { value: '' },
+            kp: { value: 1.0, validate: RED.validators.number() },
+            ki: { value: 0.0, validate: RED.validators.number() },
+            kd: { value: 0.0, validate: RED.validators.number() },
+            setpoint: { value: 0, validate: RED.validators.number() },
+            outputMin: { value: -1.0, validate: RED.validators.number() },
+            outputMax: { value: 1.0, validate: RED.validators.number() },
+            integralMax: { value: 10.0, validate: RED.validators.number() },
+            deadband: { value: 0.0, validate: RED.validators.number() },
+            sampleTime: { value: 100, validate: RED.validators.number() },
+            mode: { value: 'auto' },
+            direction: { value: 'direct' }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'settings.png',
+        label: function() {
+            return this.name || 'PID controller';
+        },
+        paletteLabel: 'PID'
+    });
+</script>
+
+<script type="text/html" data-template-name="tafy-pid-controller">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <hr>
+    <h4>PID Gains</h4>
+    
+    <div class="form-row">
+        <label for="node-input-kp"><i class="fa fa-tachometer"></i> Proportional (Kp)</label>
+        <input type="text" id="node-input-kp" placeholder="1.0" style="width:100px">
+        <span class="form-row-description">Response to current error</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-ki"><i class="fa fa-area-chart"></i> Integral (Ki)</label>
+        <input type="text" id="node-input-ki" placeholder="0.0" style="width:100px">
+        <span class="form-row-description">Eliminate steady-state error</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-kd"><i class="fa fa-line-chart"></i> Derivative (Kd)</label>
+        <input type="text" id="node-input-kd" placeholder="0.0" style="width:100px">
+        <span class="form-row-description">Reduce overshoot</span>
+    </div>
+    
+    <hr>
+    <h4>Configuration</h4>
+    
+    <div class="form-row">
+        <label for="node-input-setpoint"><i class="fa fa-bullseye"></i> Setpoint</label>
+        <input type="text" id="node-input-setpoint" placeholder="0" style="width:100px">
+        <span class="form-row-description">Target value</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-direction"><i class="fa fa-exchange"></i> Direction</label>
+        <select id="node-input-direction">
+            <option value="direct">Direct (increase output increases input)</option>
+            <option value="reverse">Reverse (increase output decreases input)</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-mode"><i class="fa fa-cog"></i> Initial Mode</label>
+        <select id="node-input-mode">
+            <option value="auto">Auto</option>
+            <option value="manual">Manual</option>
+        </select>
+    </div>
+    
+    <hr>
+    <h4>Output Limits</h4>
+    
+    <div class="form-row">
+        <label for="node-input-outputMin"><i class="fa fa-minus"></i> Output Min</label>
+        <input type="text" id="node-input-outputMin" placeholder="-1.0" style="width:100px">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-outputMax"><i class="fa fa-plus"></i> Output Max</label>
+        <input type="text" id="node-input-outputMax" placeholder="1.0" style="width:100px">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-integralMax"><i class="fa fa-ban"></i> Integral Max</label>
+        <input type="text" id="node-input-integralMax" placeholder="10.0" style="width:100px">
+        <span class="form-row-description">Anti-windup limit</span>
+    </div>
+    
+    <hr>
+    <h4>Advanced</h4>
+    
+    <div class="form-row">
+        <label for="node-input-deadband"><i class="fa fa-compress"></i> Deadband</label>
+        <input type="text" id="node-input-deadband" placeholder="0.0" style="width:100px">
+        <span class="form-row-description">Ignore errors smaller than this</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-sampleTime"><i class="fa fa-clock-o"></i> Sample Time</label>
+        <input type="text" id="node-input-sampleTime" placeholder="100" style="width:100px"> ms
+        <span class="form-row-description">Minimum time between calculations</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tafy-pid-controller">
+    <p>PID controller for smooth control of robot motors based on sensor feedback.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">number | object</span></dt>
+        <dd>Process variable (current value) or object with:
+            <ul>
+                <li><code>value</code> - Process variable</li>
+                <li><code>setpoint</code> - Override default setpoint</li>
+            </ul>
+        </dd>
+        <dt class="optional">setpoint <span class="property-type">number</span></dt>
+        <dd>Override default setpoint</dd>
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>If "control", accepts control commands</dd>
+    </dl>
+    
+    <h3>Control Commands</h3>
+    <pre>{
+    "topic": "control",
+    "payload": {
+        "mode": "manual",      // Switch to manual mode
+        "output": 0.5,        // Manual output value
+        "reset": true,        // Reset integral
+        "setpoint": 0,        // Update setpoint
+        "kp": 1.2,           // Update gains
+        "ki": 0.1,
+        "kd": 0.05
+    }
+}</pre>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>PID calculation results</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Always "pid/output"</dd>
+    </dl>
+    
+    <h3>Output Format</h3>
+    <pre>{
+    "output": 0.45,          // Controller output
+    "input": 0.32,          // Current input value
+    "setpoint": 0,          // Target value
+    "error": -0.32,         // Setpoint - input
+    "mode": "auto",         // Current mode
+    "pid": {
+        "p": 0.32,          // Proportional term
+        "i": 0.13,          // Integral term
+        "d": 0.0,           // Derivative term
+        "integral": 1.3     // Integral accumulator
+    },
+    "timestamp": 1234567890
+}</pre>
+    
+    <h3>PID Tuning Guide</h3>
+    
+    <h4>1. Start with P-only control:</h4>
+    <ul>
+        <li>Set Ki = 0, Kd = 0</li>
+        <li>Increase Kp until oscillation</li>
+        <li>Reduce Kp to 50-80% of oscillation point</li>
+    </ul>
+    
+    <h4>2. Add integral if needed:</h4>
+    <ul>
+        <li>Start with Ki = Kp / 10</li>
+        <li>Increase slowly to eliminate steady-state error</li>
+        <li>Watch for integral windup</li>
+    </ul>
+    
+    <h4>3. Add derivative for damping:</h4>
+    <ul>
+        <li>Start with Kd = Kp / 10</li>
+        <li>Increase to reduce overshoot</li>
+        <li>Too much causes noise amplification</li>
+    </ul>
+    
+    <h3>Common Applications</h3>
+    
+    <h4>Line Following</h4>
+    <pre>Input: Line position (-1 to 1)
+Setpoint: 0 (centered)
+Output: Turn rate
+Kp: 1.0, Ki: 0.1, Kd: 0.5</pre>
+    
+    <h4>Distance Maintaining</h4>
+    <pre>Input: Distance (cm)
+Setpoint: Target distance
+Output: Forward speed
+Kp: 0.01, Ki: 0.001, Kd: 0.005</pre>
+    
+    <h4>Color Tracking</h4>
+    <pre>Input: Target X position (-1 to 1)
+Setpoint: 0 (centered)
+Output: Turn rate
+Kp: 0.8, Ki: 0.05, Kd: 0.2</pre>
+    
+    <h3>Features</h3>
+    <ul>
+        <li><b>Anti-windup:</b> Prevents integral buildup</li>
+        <li><b>Derivative on measurement:</b> Reduces setpoint kick</li>
+        <li><b>Deadband:</b> Ignores small errors</li>
+        <li><b>Bumpless transfer:</b> Smooth auto/manual switching</li>
+        <li><b>Sample time:</b> Consistent timing</li>
+    </ul>
+    
+    <h3>Tips</h3>
+    <ul>
+        <li>Start with P-only control</li>
+        <li>Use low gains initially</li>
+        <li>Monitor integral accumulation</li>
+        <li>Consider feedforward for known disturbances</li>
+        <li>Log data for tuning analysis</li>
+    </ul>
+</script>
