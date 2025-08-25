@@ -2,6 +2,42 @@
 
 A collection of Node-RED nodes for the Tafy Robot Distributed Operation System (RDOS).
 
+## Quick Start
+
+Get your robot moving in 30 minutes! See our [Quick Start Guide](docs/QUICKSTART.md).
+
+## Documentation
+
+- [Quick Start Guide](docs/QUICKSTART.md) - Get up and running fast
+- [Flows Documentation](docs/FLOWS.md) - Detailed behavior documentation
+- [Examples](examples/) - Import ready-to-use flows
+
+## Available Nodes
+
+### Autonomous Behaviors
+
+- **obstacle-avoid** - Autonomous obstacle avoidance with simple/advanced modes
+- **color-tracker** - HSV-based color blob tracking
+- **color-follow** - Follow colored objects with camera
+- **sensor-fusion** - Combine multiple sensor readings
+
+### Control Components  
+
+- **pid-controller** - Generic PID controller with anti-windup
+- **motor-control** - Differential drive motor control
+- **gamepad-input** - Game controller input
+- **joystick-ui** - Web-based joystick
+- **keyboard-input** - Keyboard teleop control
+
+### Hardware Interface
+
+- **camera-stream** - MJPEG/WebRTC camera streaming
+- **camera-snapshot** - Capture still images
+- **camera-discovery** - Auto-discover cameras
+- **camera-control** - Camera settings control
+- **nats-pub** - Publish to NATS/HAL
+- **nats-config** - NATS connection config
+
 ## Installation
 
 ```bash
