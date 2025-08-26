@@ -33,7 +33,7 @@
     "jest": "^30.0.5",
     "json-schema-to-typescript": "^15.0.4",
     "ts-jest": "^29.4.1",
-    "tsx": "^4.20.4",
+    "tsx": "^4.20.5",
     "typescript": "^5.3.3"
   }
 }
