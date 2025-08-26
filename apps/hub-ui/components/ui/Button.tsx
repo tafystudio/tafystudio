@@ -1,14 +1,19 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
+import Spinner from './Spinner';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  loadingText?: string;
   children: ReactNode;
 }
 
 export default function Button({
   variant = 'primary',
   size = 'md',
+  loading = false,
+  loadingText,
   children,
   className = '',
   disabled,
@@ -31,15 +36,29 @@ export default function Button({
     lg: 'px-6 py-3 text-lg',
   };
 
-  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';
+  const disabledClasses =
+    disabled || loading ? 'opacity-50 cursor-not-allowed' : '';
+
+  const spinnerSizes = {
+    sm: 'sm' as const,
+    md: 'sm' as const,
+    lg: 'md' as const,
+  };
 
   return (
     <button
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`}
-      disabled={disabled}
+      disabled={disabled || loading}
       {...props}
     >
-      {children}
+      {loading ? (
+        <span className="inline-flex items-center">
+          <Spinner size={spinnerSizes[size]} className="mr-2" />
+          {loadingText || children}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 }

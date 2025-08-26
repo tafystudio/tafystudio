@@ -4,7 +4,7 @@ import { useState, useRef, useCallback } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import StatusBadge from '@/components/ui/StatusBadge';
-import Spinner from '@/components/ui/Spinner';
+import ErrorMessage from '@/components/ui/ErrorMessage';
 
 // WebSerial types
 interface SerialPort {
@@ -304,36 +304,50 @@ export default function WebSerialFlasher() {
       {/* Flash Progress */}
       <Card title="Flash Progress" icon="⚡">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <StatusBadge
-              status={
-                progress.state === 'complete'
-                  ? 'online'
-                  : progress.state === 'error'
-                    ? 'error'
-                    : progress.state === 'idle'
-                      ? 'offline'
-                      : 'warning'
-              }
-              label={progress.message}
+          {progress.state === 'error' ? (
+            <ErrorMessage
+              title="Flash Failed"
+              message={progress.message}
+              details={serialLog.slice(-5).join('\n')}
+              onRetry={() => {
+                setProgress({
+                  state: 'idle',
+                  progress: 0,
+                  message: 'Ready to flash',
+                });
+                setSerialLog([]);
+              }}
             />
-            <span className="text-sm font-medium text-gray-600">
-              {progress.progress}%
-            </span>
-          </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <StatusBadge
+                  status={
+                    progress.state === 'complete'
+                      ? 'online'
+                      : progress.state === 'idle'
+                        ? 'offline'
+                        : 'warning'
+                  }
+                  label={progress.message}
+                />
+                <span className="text-sm font-medium text-gray-600">
+                  {progress.progress}%
+                </span>
+              </div>
 
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className={`h-full rounded-full transition-all duration-300 ${
-                progress.state === 'error'
-                  ? 'bg-red-500'
-                  : progress.state === 'complete'
-                    ? 'bg-green-500'
-                    : 'bg-tafy-500'
-              }`}
-              style={{ width: `${progress.progress}%` }}
-            />
-          </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className={`h-full rounded-full transition-all duration-300 ${
+                    progress.state === 'complete'
+                      ? 'bg-green-500'
+                      : 'bg-tafy-500'
+                  }`}
+                  style={{ width: `${progress.progress}%` }}
+                />
+              </div>
+            </>
+          )}
 
           <div className="flex gap-2">
             <Button
@@ -345,12 +359,25 @@ export default function WebSerialFlasher() {
                   progress.state
                 )
               }
+              loading={[
+                'connecting',
+                'erasing',
+                'writing',
+                'verifying',
+              ].includes(progress.state)}
+              loadingText={
+                progress.state === 'connecting'
+                  ? 'Connecting...'
+                  : progress.state === 'erasing'
+                    ? 'Erasing...'
+                    : progress.state === 'writing'
+                      ? 'Writing...'
+                      : progress.state === 'verifying'
+                        ? 'Verifying...'
+                        : 'Flash Firmware'
+              }
             >
-              {progress.state === 'idle' ? (
-                'Flash Firmware'
-              ) : (
-                <Spinner size="sm" />
-              )}
+              Flash Firmware
             </Button>
             {portRef.current && (
               <Button variant="secondary" onClick={disconnect}>
