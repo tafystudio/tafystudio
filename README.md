@@ -39,9 +39,21 @@ Tafy Studio embraces the distributed nature of modern robotics—where multiple 
 
 ## Documentation
 
+### Getting Started
+
 - [Vision](docs/VISION.md) - Project philosophy and goals
-- [Architecture](docs/ARCHITECTURE.md) - Technical design and structure
 - [Concepts](docs/CONCEPTS.md) - Key terminology explained
+- [Architecture](docs/ARCHITECTURE.md) - Technical design and structure
+
+### Building Robots
+
+- [Hardware BOM](docs/HARDWARE_BOM.md) - Parts list for different robot types
+- [Wiring Diagrams](docs/WIRING_DIAGRAMS.md) - How to connect components
+- [Assembly Guide](docs/ASSEMBLY_GUIDE.md) - Step-by-step build instructions
+- [Node-RED Quick Start](packages/node-red-contrib-tafy/docs/QUICKSTART.md) - Program your robot in 30 minutes
+
+### Development
+
 - [Development Setup](docs/DEVELOPMENT_SETUP.md) - Get started contributing
 - [Testing Guide](docs/TESTING.md) - Testing strategy and practices
 - [Security Policy](docs/SECURITY.md) - Security practices and vulnerability reporting
