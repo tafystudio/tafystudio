@@ -55,6 +55,7 @@ Tafy Studio embraces the distributed nature of modern robotics—where multiple 
 ### Development
 
 - [Development Setup](docs/DEVELOPMENT_SETUP.md) - Get started contributing
+- [Driver Development](docs/DRIVER_DEVELOPMENT.md) - Create HAL-compliant hardware drivers
 - [Testing Guide](docs/TESTING.md) - Testing strategy and practices
 - [Security Policy](docs/SECURITY.md) - Security practices and vulnerability reporting
 

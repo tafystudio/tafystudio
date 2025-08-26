@@ -8,9 +8,17 @@ Get your robot moving in 30 minutes! See our [Quick Start Guide](docs/QUICKSTART
 
 ## Documentation
 
+### Software Guides
+
 - [Quick Start Guide](docs/QUICKSTART.md) - Get up and running fast
 - [Flows Documentation](docs/FLOWS.md) - Detailed behavior documentation
 - [Examples](examples/) - Import ready-to-use flows
+
+### Hardware Guides
+
+- [Hardware BOM](../../docs/HARDWARE_BOM.md) - Parts list for building robots
+- [Wiring Diagrams](../../docs/WIRING_DIAGRAMS.md) - How to connect components
+- [Assembly Guide](../../docs/ASSEMBLY_GUIDE.md) - Step-by-step build instructions
 
 ## Available Nodes
 
