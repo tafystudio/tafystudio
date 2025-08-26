@@ -4,6 +4,7 @@ interface ErrorMessageProps {
   details?: string;
   onRetry?: () => void;
   variant?: 'error' | 'warning';
+  className?: string;
 }
 
 export default function ErrorMessage({
@@ -12,6 +13,7 @@ export default function ErrorMessage({
   details,
   onRetry,
   variant = 'error',
+  className = '',
 }: ErrorMessageProps) {
   const variantClasses = {
     error: {
@@ -35,7 +37,7 @@ export default function ErrorMessage({
   const classes = variantClasses[variant];
 
   return (
-    <div className={`rounded-lg border p-4 ${classes.container}`}>
+    <div className={`rounded-lg border p-4 ${classes.container} ${className}`}>
       <div className="flex items-start">
         <span className="text-2xl mr-3" role="img" aria-label={variant}>
           {classes.icon}
