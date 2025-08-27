@@ -1,0 +1,35 @@
+hal:
+  version: "1.0"
+  capability: "sensor.ultrasonic"
+  
+device:
+  name: "ultrasonic Sensor"
+  manufacturer: "Generic"
+  model: "ULTRASONIC-01"
+  
+interfaces:
+  - type: "GPIO"
+    pins:
+      - name: "data"
+        number: 23
+        direction: "input"
+
+messages:
+  publish:
+    - topic: "hal.v1.sensor.ultrasonic.data"
+      schema: "ultrasonic_data.json"
+    - topic: "hal.v1.device.telemetry"
+      schema: "device_telemetry.json"
+      
+  subscribe:
+    - topic: "hal.v1.sensor.ultrasonic.cmd"
+      schema: "ultrasonic_command.json"
+
+configuration:
+  - name: "sample_rate"
+    type: "integer"
+    default: 10
+    min: 1
+    max: 100
+    unit: "Hz"
+    description: "Data sampling rate"

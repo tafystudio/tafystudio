@@ -1,0 +1,10 @@
+device_id: "ultrasonic-01"
+sample_rate: 10
+
+nats:
+  url: "nats://localhost:4222"
+  reconnect_delay: 5
+  max_reconnects: -1
+
+hardware:
+  # TODO: Add hardware-specific configuration

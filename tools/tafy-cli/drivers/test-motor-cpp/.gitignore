@@ -1,0 +1,35 @@
+# Build
+build/
+cmake-build-*/
+.cmake/
+
+# Binaries
+motor_driver
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+*.dSYM/
+*.pdb
+
+# Dependencies
+lib/
+vendor/
+
+# Local config
+config/local.yaml
+.env
