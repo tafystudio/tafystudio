@@ -8,13 +8,13 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const router = useRouter();
   return (
-    <div className="bg-gradient-to-b from-tafy-50 to-white">
+    <div className="bg-gradient-to-b from-tafy-50 to-white dark:from-gray-900 dark:to-gray-900">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-tafy-900 mb-4">
+          <h1 className="text-5xl font-bold text-tafy-900 dark:text-tafy-100 mb-4">
             Welcome to Tafy Studio
           </h1>
-          <p className="text-xl text-tafy-700">
+          <p className="text-xl text-tafy-700 dark:text-tafy-300">
             Go from blank hardware to moving robot in 30 minutes
           </p>
         </div>
@@ -24,8 +24,8 @@ export default function Home() {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">Active Devices</p>
-                <p className="text-2xl font-bold text-tafy-800">0</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Active Devices</p>
+                <p className="text-2xl font-bold text-tafy-800 dark:text-tafy-200">0</p>
               </div>
               <StatusBadge status="offline" label="No devices" />
             </div>
@@ -34,8 +34,8 @@ export default function Home() {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">Running Flows</p>
-                <p className="text-2xl font-bold text-tafy-800">0</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Running Flows</p>
+                <p className="text-2xl font-bold text-tafy-800 dark:text-tafy-200">0</p>
               </div>
               <StatusBadge status="warning" label="None active" />
             </div>
