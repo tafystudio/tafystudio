@@ -39,7 +39,10 @@ export function trapFocus(container: HTMLElement) {
 /**
  * Announce text to screen readers
  */
-export function announceToScreenReader(text: string, priority: 'polite' | 'assertive' = 'polite') {
+export function announceToScreenReader(
+  text: string,
+  priority: 'polite' | 'assertive' = 'polite'
+) {
   const announcement = document.createElement('div');
   announcement.setAttribute('aria-live', priority);
   announcement.setAttribute('aria-atomic', 'true');
@@ -68,7 +71,10 @@ export class FocusManager {
   }
 
   restore() {
-    if (this.previousActiveElement && this.previousActiveElement instanceof HTMLElement) {
+    if (
+      this.previousActiveElement &&
+      this.previousActiveElement instanceof HTMLElement
+    ) {
       this.previousActiveElement.focus();
     }
   }

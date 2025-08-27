@@ -29,12 +29,12 @@ export default function FeedbackWidget() {
 
     try {
       // TODO: Implement actual feedback submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setShowToast(true);
       setIsOpen(false);
       setFormData({ type: 'general', message: '', email: '' });
-      
+
       setTimeout(() => setShowToast(false), 5000);
     } catch (error) {
       console.error('Failed to submit feedback:', error);
@@ -44,9 +44,21 @@ export default function FeedbackWidget() {
   };
 
   const feedbackTypes = [
-    { value: 'bug', label: '🐛 Bug Report', description: 'Something isn\'t working' },
-    { value: 'feature', label: '✨ Feature Request', description: 'Suggest an improvement' },
-    { value: 'general', label: '💬 General Feedback', description: 'Share your thoughts' },
+    {
+      value: 'bug',
+      label: '🐛 Bug Report',
+      description: "Something isn't working",
+    },
+    {
+      value: 'feature',
+      label: '✨ Feature Request',
+      description: 'Suggest an improvement',
+    },
+    {
+      value: 'general',
+      label: '💬 General Feedback',
+      description: 'Share your thoughts',
+    },
   ];
 
   return (
@@ -57,8 +69,18 @@ export default function FeedbackWidget() {
         className="fixed bottom-4 right-4 p-3 bg-tafy-600 dark:bg-tafy-500 text-white rounded-full shadow-lg hover:bg-tafy-700 dark:hover:bg-tafy-600 transition-colors focus:outline-none focus:ring-2 focus:ring-tafy-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
         aria-label="Send feedback"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
         </svg>
       </button>
 
@@ -108,12 +130,21 @@ export default function FeedbackWidget() {
                     name="type"
                     value={type.value}
                     checked={formData.type === type.value}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value as FeedbackType })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        type: e.target.value as FeedbackType,
+                      })
+                    }
                     className="sr-only"
                   />
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-gray-100">{type.label}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">{type.description}</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">
+                      {type.label}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      {type.description}
+                    </div>
                   </div>
                 </label>
               ))}
@@ -122,30 +153,40 @@ export default function FeedbackWidget() {
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Your Message
             </label>
             <textarea
               id="message"
               rows={4}
               value={formData.message}
-              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-tafy-500 dark:bg-gray-700 dark:text-gray-100"
-              placeholder="Tell us what&apos;s on your mind..."
+              placeholder="Tell us what's on your mind..."
               required
             />
           </div>
 
           {/* Email (optional) */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Email (optional)
             </label>
             <input
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-tafy-500 dark:bg-gray-700 dark:text-gray-100"
               placeholder="your@email.com"
             />

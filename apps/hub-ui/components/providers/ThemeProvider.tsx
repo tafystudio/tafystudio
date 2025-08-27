@@ -27,7 +27,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (!mounted) return;
 
     const root = document.documentElement;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+      .matches
       ? 'dark'
       : 'light';
 

@@ -33,7 +33,9 @@ export default function Input({
         className={`${baseClasses} ${errorClasses} ${className}`}
         {...props}
       />
-      {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && (
+        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
     </div>
   );
 }

@@ -24,8 +24,12 @@ export default function Home() {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Active Devices</p>
-                <p className="text-2xl font-bold text-tafy-800 dark:text-tafy-200">0</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Active Devices
+                </p>
+                <p className="text-2xl font-bold text-tafy-800 dark:text-tafy-200">
+                  0
+                </p>
               </div>
               <StatusBadge status="offline" label="No devices" />
             </div>
@@ -34,8 +38,12 @@ export default function Home() {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Running Flows</p>
-                <p className="text-2xl font-bold text-tafy-800 dark:text-tafy-200">0</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Running Flows
+                </p>
+                <p className="text-2xl font-bold text-tafy-800 dark:text-tafy-200">
+                  0
+                </p>
               </div>
               <StatusBadge status="warning" label="None active" />
             </div>

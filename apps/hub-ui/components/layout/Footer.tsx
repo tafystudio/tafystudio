@@ -26,7 +26,9 @@ export default function Footer() {
             </a>
             <span className="text-sm text-gray-500 dark:text-gray-500">
               Time to First Motion:{' '}
-              <span className="font-bold text-tafy-600 dark:text-tafy-400">{'<'} 30 min</span>
+              <span className="font-bold text-tafy-600 dark:text-tafy-400">
+                {'<'} 30 min
+              </span>
             </span>
           </div>
         </div>

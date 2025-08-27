@@ -34,13 +34,13 @@ export default function Modal({
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       focusManager.current.save();
-      
+
       // Focus the modal after a short delay to ensure it's rendered
       setTimeout(() => {
         if (modalRef.current) {
           const firstButton = modalRef.current.querySelector('button');
           firstButton?.focus();
-          
+
           // Set up focus trap
           const removeTrap = trapFocus(modalRef.current);
           return () => removeTrap();
@@ -85,7 +85,12 @@ export default function Modal({
         aria-labelledby="modal-title"
       >
         <div className="flex items-center justify-between p-6 border-b dark:border-gray-700">
-          <h2 id="modal-title" className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
+          <h2
+            id="modal-title"
+            className="text-xl font-semibold text-gray-900 dark:text-gray-100"
+          >
+            {title}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"

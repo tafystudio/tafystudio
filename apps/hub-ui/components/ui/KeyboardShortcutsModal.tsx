@@ -22,7 +22,10 @@ const shortcuts: Shortcut[] = [
   { keys: ['Esc'], description: 'Close modal/dialog' },
 ];
 
-export default function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsModalProps) {
+export default function KeyboardShortcutsModal({
+  isOpen,
+  onClose,
+}: KeyboardShortcutsModalProps) {
   return (
     <Modal
       isOpen={isOpen}

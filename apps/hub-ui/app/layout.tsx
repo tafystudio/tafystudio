@@ -31,7 +31,9 @@ export default function RootLayout({
           </a>
           <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <Navigation />
-            <main id="main-content" className="flex-grow">{children}</main>
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
             <Footer />
           </div>
           <FeedbackWidget />
