@@ -2,14 +2,16 @@
 System schemas for API validation
 """
 
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class LogLevel(str, Enum):
     """Log level enumeration"""
+
     debug = "debug"
     info = "info"
     warning = "warning"
@@ -19,6 +21,7 @@ class LogLevel(str, Enum):
 
 class SystemInfo(BaseModel):
     """System information schema"""
+
     version: str
     hostname: str
     platform: str
@@ -33,14 +36,18 @@ class SystemInfo(BaseModel):
 
 class HealthCheck(BaseModel):
     """Health check response schema"""
+
     status: str = Field(..., description="healthy, degraded, or unhealthy")
     version: str
-    checks: Dict[str, bool] = Field(..., description="Individual component health checks")
+    checks: Dict[str, bool] = Field(
+        ..., description="Individual component health checks"
+    )
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 
 class LogEntry(BaseModel):
     """Log entry schema"""
+
     timestamp: datetime
     level: LogLevel
     message: str
@@ -50,6 +57,7 @@ class LogEntry(BaseModel):
 
 class LogQuery(BaseModel):
     """Log query parameters"""
+
     level: Optional[LogLevel] = None
     module: Optional[str] = None
     start_time: Optional[datetime] = None

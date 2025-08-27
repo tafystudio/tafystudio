@@ -3,6 +3,7 @@ API v1 router aggregation
 """
 
 from fastapi import APIRouter
+
 from app.api.v1.endpoints import devices, flows, system, websocket
 
 api_router = APIRouter()

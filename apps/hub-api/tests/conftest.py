@@ -1,10 +1,12 @@
 """
 Pytest configuration and fixtures for hub-api tests
 """
-import pytest
-from unittest.mock import AsyncMock, MagicMock, PropertyMock
-import sys
+
 import os
+import sys
+from unittest.mock import AsyncMock, MagicMock, PropertyMock
+
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
@@ -13,11 +15,11 @@ from sqlalchemy.pool import StaticPool
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app.main import app
 from app.core.config import settings
 from app.core.nats import NATSClient
 from app.db.base import Base
 from app.db.session import get_db
+from app.main import app
 
 # Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -39,21 +41,24 @@ def mock_nats_client(monkeypatch):
     mock_client.close = AsyncMock()
     mock_client.publish = AsyncMock()
     mock_client.subscribe = AsyncMock()
-    
+
     # Mock the is_connected property to always return True
     type(mock_client).is_connected = PropertyMock(return_value=True)
-    
+
     # Import and patch the global nats_client instance
     import app.core.nats
+
     monkeypatch.setattr(app.core.nats, "nats_client", mock_client)
-    
+
     # Also patch any direct imports
     import app.services.device_service
+
     monkeypatch.setattr(app.services.device_service, "nats_client", mock_client)
-    
-    import app.services.flow_service  
+
+    import app.services.flow_service
+
     monkeypatch.setattr(app.services.flow_service, "nats_client", mock_client)
-    
+
     return mock_client
 
 
@@ -78,17 +83,18 @@ def db():
 @pytest.fixture
 def client(db: Session):
     """Create a test client with database override."""
+
     def override_get_db():
         try:
             yield db
         finally:
             pass
-    
+
     app.dependency_overrides[get_db] = override_get_db
-    
+
     with TestClient(app) as test_client:
         yield test_client
-    
+
     app.dependency_overrides.clear()
 
 
@@ -108,10 +114,7 @@ def sample_device_data():
         "node_id": "node-001",
         "device_type": "esp32",
         "capabilities": ["motor.differential:v1.0", "sensor.range:v1.0"],
-        "device_metadata": {
-            "firmware_version": "1.0.0",
-            "hardware_version": "rev-a"
-        }
+        "device_metadata": {"firmware_version": "1.0.0", "hardware_version": "rev-a"},
     }
 
 
@@ -126,20 +129,15 @@ def sample_flow_data():
                 {
                     "id": "sensor-1",
                     "type": "sensor.range",
-                    "config": {"topic": "hal.v1.sensor.range.data"}
+                    "config": {"topic": "hal.v1.sensor.range.data"},
                 },
                 {
                     "id": "motor-1",
                     "type": "motor.differential",
-                    "config": {"topic": "hal.v1.motor.cmd"}
-                }
+                    "config": {"topic": "hal.v1.motor.cmd"},
+                },
             ],
-            "connections": [
-                {"from": "sensor-1", "to": "motor-1"}
-            ]
+            "connections": [{"from": "sensor-1", "to": "motor-1"}],
         },
-        "flow_metadata": {
-            "created_by": "test-user",
-            "version": "1.0"
-        }
+        "flow_metadata": {"created_by": "test-user", "version": "1.0"},
     }

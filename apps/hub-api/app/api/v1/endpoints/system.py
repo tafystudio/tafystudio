@@ -2,17 +2,18 @@
 System management endpoints
 """
 
-from fastapi import APIRouter, Query
-from typing import Optional, List
-from datetime import datetime
-import structlog
 import platform
-import psutil
 import time
+from datetime import datetime
+from typing import List, Optional
 
-from app.schemas.system import SystemInfo, HealthCheck, LogEntry, LogLevel
+import psutil
+import structlog
+from fastapi import APIRouter, Query
+
 from app.core.config import settings
 from app.core.nats import nats_client
+from app.schemas.system import HealthCheck, LogEntry, LogLevel, SystemInfo
 
 router = APIRouter()
 logger = structlog.get_logger()
@@ -26,7 +27,7 @@ async def get_system_info():
     """Get system information"""
     memory = psutil.virtual_memory()
     cpu_percent = psutil.cpu_percent(interval=0.1)
-    
+
     return SystemInfo(
         version=settings.VERSION,
         hostname=platform.node(),
@@ -50,7 +51,7 @@ async def get_system_health():
         "redis": False,  # TODO: Implement Redis health check
         "database": False,  # TODO: Implement database health check
     }
-    
+
     # Determine overall status
     if all(checks.values()):
         status = "healthy"
@@ -58,7 +59,7 @@ async def get_system_health():
         status = "degraded"
     else:
         status = "unhealthy"
-    
+
     return HealthCheck(
         status=status,
         version=settings.VERSION,
@@ -70,7 +71,9 @@ async def get_system_health():
 async def get_system_logs(
     level: Optional[LogLevel] = Query(None, description="Filter by log level"),
     module: Optional[str] = Query(None, description="Filter by module"),
-    limit: int = Query(100, ge=1, le=1000, description="Maximum number of logs to return")
+    limit: int = Query(
+        100, ge=1, le=1000, description="Maximum number of logs to return"
+    ),
 ):
     """Get recent system logs"""
     # TODO: Implement actual log retrieval from structured logging
@@ -81,23 +84,23 @@ async def get_system_logs(
             level=LogLevel.info,
             message="System started successfully",
             module="main",
-            metadata={"version": settings.VERSION}
+            metadata={"version": settings.VERSION},
         ),
         LogEntry(
             timestamp=datetime.utcnow(),
             level=LogLevel.info,
             message="NATS connection established",
             module="nats",
-            metadata={"url": settings.NATS_URL}
+            metadata={"url": settings.NATS_URL},
         ),
     ]
-    
+
     # Apply filters
     if level:
         sample_logs = [log for log in sample_logs if log.level == level]
     if module:
         sample_logs = [log for log in sample_logs if log.module == module]
-    
+
     return sample_logs[:limit]
 
 
@@ -107,9 +110,9 @@ async def create_backup():
     logger.info("Creating system backup")
     # TODO: Implement backup functionality with Velero or similar
     backup_id = f"backup-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}"
-    
+
     return {
         "status": "initiated",
         "backup_id": backup_id,
-        "message": "Backup functionality will be implemented with Velero integration"
+        "message": "Backup functionality will be implemented with Velero integration",
     }

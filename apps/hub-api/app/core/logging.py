@@ -2,20 +2,22 @@
 Structured logging configuration
 """
 
-import structlog
 import logging
+
+import structlog
+
 from app.core.config import settings
 
 
 def configure_logging():
     """Configure structured logging for the application"""
-    
+
     # Set base log level
     logging.basicConfig(
         level=getattr(logging, settings.LOG_LEVEL.upper()),
         format="%(message)s",
     )
-    
+
     # Configure structlog
     structlog.configure(
         processors=[
@@ -27,8 +29,11 @@ def configure_logging():
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
             structlog.processors.UnicodeDecoder(),
-            structlog.processors.JSONRenderer() if settings.LOG_FORMAT == "json" 
-            else structlog.dev.ConsoleRenderer(),
+            (
+                structlog.processors.JSONRenderer()
+                if settings.LOG_FORMAT == "json"
+                else structlog.dev.ConsoleRenderer()
+            ),
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),

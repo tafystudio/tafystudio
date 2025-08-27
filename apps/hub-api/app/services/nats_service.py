@@ -2,8 +2,9 @@
 NATS messaging service for pub/sub operations
 """
 
-from typing import Dict, Any, Callable, Optional
 import json
+from typing import Any, Callable, Dict, Optional
+
 import structlog
 from nats.aio.msg import Msg
 
@@ -15,19 +16,19 @@ logger = structlog.get_logger()
 
 class NATSService:
     """Service for NATS messaging operations"""
-    
+
     def __init__(self):
         self._subscriptions: Dict[str, Any] = {}
         self._handlers: Dict[str, Callable] = {}
-    
+
     async def subscribe(self, subject: str, handler: Callable) -> str:
         """Subscribe to a NATS subject"""
         sub_id = f"{subject}_{id(handler)}"
-        
+
         if sub_id in self._subscriptions:
             logger.warning("Subscription already exists", subject=subject)
             return sub_id
-        
+
         async def wrapped_handler(msg: Msg):
             try:
                 data = json.loads(msg.data.decode())
@@ -36,14 +37,14 @@ class NATSService:
                 logger.error("Invalid JSON in message", subject=subject)
             except Exception as e:
                 logger.error("Handler error", subject=subject, error=str(e))
-        
+
         sub = await nats_client.nc.subscribe(subject, cb=wrapped_handler)
         self._subscriptions[sub_id] = sub
         self._handlers[sub_id] = handler
-        
+
         logger.info("Subscribed to subject", subject=subject)
         return sub_id
-    
+
     async def unsubscribe(self, sub_id: str):
         """Unsubscribe from a subject"""
         sub = self._subscriptions.get(sub_id)
@@ -52,57 +53,59 @@ class NATSService:
             del self._subscriptions[sub_id]
             del self._handlers[sub_id]
             logger.info("Unsubscribed", sub_id=sub_id)
-    
-    async def publish(self, subject: str, data: Dict[str, Any], reply: Optional[str] = None):
+
+    async def publish(
+        self, subject: str, data: Dict[str, Any], reply: Optional[str] = None
+    ):
         """Publish message to a subject"""
         await nats_client.publish(subject, data, reply)
-    
-    async def request(self, subject: str, data: Dict[str, Any], timeout: float = 5.0) -> Optional[Dict[str, Any]]:
+
+    async def request(
+        self, subject: str, data: Dict[str, Any], timeout: float = 5.0
+    ) -> Optional[Dict[str, Any]]:
         """Send request and wait for response"""
         try:
             msg = await nats_client.nc.request(
-                subject,
-                json.dumps(data).encode(),
-                timeout=timeout
+                subject, json.dumps(data).encode(), timeout=timeout
             )
             return json.loads(msg.data.decode())
         except Exception as e:
             logger.error("Request failed", subject=subject, error=str(e))
             return None
-    
+
     async def setup_standard_subscriptions(self):
         """Set up standard Hub subscriptions"""
         # Device discovery
         await self.subscribe("device.discovered", self._handle_device_discovered)
-        
+
         # Device events
         await self.subscribe("device.*.status", self._handle_device_status)
         await self.subscribe("device.*.telemetry", self._handle_device_telemetry)
-        
+
         # HAL messages
         await self.subscribe("hal.v1.*.data", self._handle_hal_data)
-        
+
         # Node events
         await self.subscribe("node.*.heartbeat", self._handle_node_heartbeat)
-        
+
         logger.info("Standard subscriptions set up")
-    
+
     async def _handle_device_discovered(self, data: Dict[str, Any], msg: Msg):
         """Handle newly discovered devices from mDNS"""
         from app.services.device_service import device_service
-        
+
         # Extract device info from mDNS data
         device_id = data.get("Instance", "")
         if not device_id:
             logger.error("Invalid device discovery data", data=data)
             return
-        
+
         # Check if device already exists
         existing = await device_service.get_device(device_id)
         if existing:
             logger.info("Device already registered", device_id=device_id)
             return
-        
+
         # Parse capabilities from text records
         capabilities = []
         device_metadata = {}
@@ -112,7 +115,7 @@ class NATSService:
             elif "=" in txt:
                 key, value = txt.split("=", 1)
                 device_metadata[key] = value
-        
+
         # Create device
         device_create = DeviceCreate(
             id=device_id,
@@ -120,32 +123,36 @@ class NATSService:
             type=device_metadata.get("type", "unknown"),
             capabilities=capabilities,
             device_metadata=device_metadata,
-            ip_address=data.get("AddrIPv4", [None])[0] if data.get("AddrIPv4") else None,
-            mac_address=None  # mDNS doesn't provide MAC
+            ip_address=(
+                data.get("AddrIPv4", [None])[0] if data.get("AddrIPv4") else None
+            ),
+            mac_address=None,  # mDNS doesn't provide MAC
         )
-        
+
         await device_service.create_device(device_create)
         logger.info("Device registered from discovery", device_id=device_id)
-    
+
     async def _handle_device_status(self, data: Dict[str, Any], msg: Msg):
         """Handle device status updates"""
         device_id = msg.subject.split(".")[1]
-        logger.info("Device status update", device_id=device_id, status=data.get("status"))
+        logger.info(
+            "Device status update", device_id=device_id, status=data.get("status")
+        )
         # TODO: Update device service with status
-    
+
     async def _handle_device_telemetry(self, data: Dict[str, Any], msg: Msg):
         """Handle device telemetry"""
         device_id = msg.subject.split(".")[1]
         logger.debug("Device telemetry", device_id=device_id)
         # TODO: Store telemetry data
-    
+
     async def _handle_hal_data(self, data: Dict[str, Any], msg: Msg):
         """Handle HAL data messages"""
         device_id = data.get("device_id")
         schema = data.get("schema")
         logger.debug("HAL data received", device_id=device_id, schema=schema)
         # TODO: Process HAL data
-    
+
     async def _handle_node_heartbeat(self, data: Dict[str, Any], msg: Msg):
         """Handle node heartbeats"""
         node_id = msg.subject.split(".")[1]

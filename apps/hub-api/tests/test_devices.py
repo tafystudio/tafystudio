@@ -2,11 +2,10 @@
 Test device endpoints
 """
 
-import pytest
+# import pytest
 from fastapi.testclient import TestClient
 
 from app.schemas.device import DeviceStatus
-
 
 
 def test_create_device(client: TestClient):
@@ -15,23 +14,19 @@ def test_create_device(client: TestClient):
         "id": "test-device-001",
         "name": "Test Device",
         "type": "esp32",
-        "capabilities": {
-            "motor": ["differential"],
-            "sensor": ["range", "imu"]
-        },
+        "capabilities": {"motor": ["differential"], "sensor": ["range", "imu"]},
         "ip_address": "192.168.1.100",
-        "mac_address": "AA:BB:CC:DD:EE:FF"
+        "mac_address": "AA:BB:CC:DD:EE:FF",
     }
-    
+
     response = client.post("/api/v1/devices/", json=device_data)
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["id"] == device_data["id"]
     assert data["name"] == device_data["name"]
     assert data["status"] == DeviceStatus.discovered
     assert data["claimed"] is False
-
 
 
 def test_list_devices(client: TestClient):
@@ -41,19 +36,18 @@ def test_list_devices(client: TestClient):
         "id": "test-device-002",
         "name": "Test Device 2",
         "type": "pi",
-        "capabilities": {}
+        "capabilities": {},
     }
     client.post("/api/v1/devices/", json=device_data)
-    
+
     # List all devices
     response = client.get("/api/v1/devices/")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert "devices" in data
     assert "total" in data
     assert data["total"] >= 1
-
 
 
 def test_get_device(client: TestClient):
@@ -64,25 +58,23 @@ def test_get_device(client: TestClient):
         "id": device_id,
         "name": "Test Device 3",
         "type": "jetson",
-        "capabilities": {}
+        "capabilities": {},
     }
     client.post("/api/v1/devices/", json=device_data)
-    
+
     # Get the device
     response = client.get(f"/api/v1/devices/{device_id}")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["id"] == device_id
     assert data["name"] == device_data["name"]
-
 
 
 def test_get_nonexistent_device(client: TestClient):
     """Test getting device that doesn't exist"""
     response = client.get("/api/v1/devices/nonexistent")
     assert response.status_code == 404
-
 
 
 def test_claim_device(client: TestClient):
@@ -93,18 +85,17 @@ def test_claim_device(client: TestClient):
         "id": device_id,
         "name": "Test Device 4",
         "type": "esp32",
-        "capabilities": {}
+        "capabilities": {},
     }
     client.post("/api/v1/devices/", json=device_data)
-    
+
     # Claim the device
     response = client.post(f"/api/v1/devices/{device_id}/claim")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["claimed"] is True
     assert data["status"] == DeviceStatus.claimed
-
 
 
 def test_update_device(client: TestClient):
@@ -115,22 +106,18 @@ def test_update_device(client: TestClient):
         "id": device_id,
         "name": "Original Name",
         "type": "esp32",
-        "capabilities": {}
+        "capabilities": {},
     }
     client.post("/api/v1/devices/", json=device_data)
-    
+
     # Update device
-    update_data = {
-        "name": "Updated Name",
-        "status": DeviceStatus.online
-    }
+    update_data = {"name": "Updated Name", "status": DeviceStatus.online}
     response = client.patch(f"/api/v1/devices/{device_id}", json=update_data)
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["name"] == "Updated Name"
     assert data["status"] == DeviceStatus.online
-
 
 
 def test_send_command(client: TestClient):
@@ -141,21 +128,15 @@ def test_send_command(client: TestClient):
         "id": device_id,
         "name": "Test Device 6",
         "type": "esp32",
-        "capabilities": {"motor": ["differential"]}
+        "capabilities": {"motor": ["differential"]},
     }
     client.post("/api/v1/devices/", json=device_data)
-    
+
     # Send command
-    command = {
-        "type": "move",
-        "data": {
-            "linear": 0.5,
-            "angular": 0.0
-        }
-    }
+    command = {"type": "move", "data": {"linear": 0.5, "angular": 0.0}}
     response = client.post(f"/api/v1/devices/{device_id}/command", json=command)
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["status"] == "sent"
     assert data["device_id"] == device_id

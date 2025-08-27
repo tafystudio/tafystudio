@@ -2,9 +2,10 @@
 Database session configuration
 """
 
+from typing import Generator
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from typing import Generator
 
 from app.core.config import settings
 
@@ -27,7 +28,7 @@ def get_db() -> Generator:
     """
     if SessionLocal is None:
         raise RuntimeError("Database not configured. Set DATABASE_URL in environment.")
-    
+
     db = SessionLocal()
     try:
         yield db

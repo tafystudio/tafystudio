@@ -2,11 +2,18 @@
 Device management endpoints
 """
 
-from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, HTTPException, Query, Body
-import structlog
+from typing import Any, Dict
 
-from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceResponse, DeviceList, DeviceStatus
+import structlog
+from fastapi import APIRouter, Body, HTTPException, Query
+
+from app.schemas.device import (
+    DeviceCreate,
+    DeviceList,
+    DeviceResponse,
+    DeviceStatus,
+    DeviceUpdate,
+)
 from app.services.device_service import device_service
 
 router = APIRouter()

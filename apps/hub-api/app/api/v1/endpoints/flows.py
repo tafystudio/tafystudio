@@ -2,11 +2,12 @@
 Flow management endpoints for Node-RED integration
 """
 
-from typing import List, Optional
-from fastapi import APIRouter, HTTPException, Query, Body
-import structlog
+from typing import List
 
-from app.schemas.flow import FlowCreate, FlowUpdate, FlowResponse, FlowDeploy
+import structlog
+from fastapi import APIRouter, Body, HTTPException, Query
+
+from app.schemas.flow import FlowCreate, FlowDeploy, FlowResponse, FlowUpdate
 from app.services.flow_service import flow_service
 
 router = APIRouter()
@@ -46,7 +47,9 @@ async def update_flow(flow_id: str, update_data: FlowUpdate):
 
 
 @router.post("/{flow_id}/deploy", response_model=FlowResponse)
-async def deploy_flow(flow_id: str, deploy_data: FlowDeploy = Body(default=FlowDeploy())):
+async def deploy_flow(
+    flow_id: str, deploy_data: FlowDeploy = Body(default=FlowDeploy())
+):
     """Deploy flow to devices"""
     flow = await flow_service.deploy_flow(flow_id, deploy_data.target_nodes)
     if not flow:

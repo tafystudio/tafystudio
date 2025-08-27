@@ -2,8 +2,8 @@
 Database initialization
 """
 
-from sqlalchemy import inspect
 import structlog
+from sqlalchemy import inspect
 
 from app.db.session import engine
 from app.models.base import Base
@@ -20,11 +20,11 @@ def init_db():
     if engine is None:
         logger.warning("Database not configured, skipping initialization")
         return
-    
+
     # Create all tables
     inspector = inspect(engine)
     existing_tables = inspector.get_table_names()
-    
+
     if not existing_tables:
         logger.info("Creating database tables")
         Base.metadata.create_all(bind=engine)
@@ -40,7 +40,7 @@ def drop_db():
     if engine is None:
         logger.warning("Database not configured, nothing to drop")
         return
-    
+
     logger.warning("Dropping all database tables")
     Base.metadata.drop_all(bind=engine)
     logger.info("Database tables dropped")
