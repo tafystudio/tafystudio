@@ -59,6 +59,7 @@ INSTALL_MODE="host"
 JOIN_CODE=""
 SKIP_PREFLIGHT=false
 OFFLINE=false
+DRY_RUN=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -73,6 +74,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --offline)
             OFFLINE=true
+            shift
+            ;;
+        --dry-run)
+            DRY_RUN=true
             shift
             ;;
         --version)
@@ -90,6 +95,7 @@ Options:
     --join <CODE>      Join existing cluster as agent node
     --skip-preflight   Skip preflight checks
     --offline          Use offline installation bundle
+    --dry-run          Show what would be installed without doing it
     --version <VER>    Install specific version (default: latest)
     --help             Show this help message
 
@@ -99,6 +105,9 @@ Examples:
 
     # Join existing cluster
     curl -fsSL get.tafy.sh | bash -s -- --join ABC123
+
+    # Test installation without making changes
+    curl -fsSL get.tafy.sh | bash -s -- --dry-run
 
 EOF
             exit 0
@@ -119,6 +128,9 @@ detect_os() {
     elif [ -f /etc/debian_version ]; then
         OS="debian"
         OS_VERSION=$(cat /etc/debian_version)
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        OS="macos"
+        OS_VERSION=$(sw_vers -productVersion)
     else
         log_error "Cannot detect operating system"
         exit 1
@@ -130,6 +142,13 @@ detect_os() {
             ;;
         fedora|centos|rhel|rocky|almalinux)
             PKG_MANAGER="yum"
+            ;;
+        macos)
+            PKG_MANAGER="brew"
+            if [ "$DRY_RUN" != true ]; then
+                log_warn "macOS is not fully supported yet. Some features may not work."
+                log_warn "Consider using a Linux VM or Docker for full functionality."
+            fi
             ;;
         *)
             log_error "Unsupported operating system: $OS"
@@ -208,6 +227,11 @@ preflight_checks() {
 install_dependencies() {
     log_step "Installing system dependencies"
 
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY RUN] Would install: curl wget avahi-daemon ca-certificates gnupg iptables jq"
+        return
+    fi
+
     case "$PKG_MANAGER" in
         apt-get)
             apt-get update -qq
@@ -243,6 +267,17 @@ install_dependencies() {
 # Install k3s
 install_k3s() {
     log_step "Installing k3s"
+
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY RUN] Would install k3s version: $K3S_VERSION"
+        log_info "[DRY RUN] Installation mode: $INSTALL_MODE"
+        if [ "$INSTALL_MODE" = "host" ]; then
+            log_info "[DRY RUN] Would generate node token and configure as primary host"
+        else
+            log_info "[DRY RUN] Would join cluster with code: $JOIN_CODE"
+        fi
+        return
+    fi
 
     local k3s_args=""
     
@@ -296,6 +331,13 @@ install_nats() {
 
     log_step "Installing NATS"
 
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY RUN] Would install NATS chart version: $NATS_CHART_VERSION"
+        log_info "[DRY RUN] Would create nats-system namespace"
+        log_info "[DRY RUN] Would configure NATS with 1 replica and monitoring enabled"
+        return
+    fi
+
     # Add NATS Helm repository
     helm repo add nats https://nats-io.github.io/k8s/helm/charts/
     helm repo update
@@ -347,6 +389,13 @@ install_tafy_services() {
 
     log_step "Installing Tafy services"
 
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY RUN] Would create tafy-system namespace"
+        log_info "[DRY RUN] Would deploy Hub UI and Hub API"
+        log_info "[DRY RUN] Would generate cluster join code"
+        return
+    fi
+
     # Create tafy namespace
     kubectl create namespace tafy-system --dry-run=client -o yaml | kubectl apply -f -
 
@@ -365,6 +414,17 @@ install_tafy_services() {
 # Configure firewall
 configure_firewall() {
     log_step "Configuring firewall"
+
+    if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY RUN] Would configure firewall ports:"
+        log_info "[DRY RUN]   - 6443/tcp (k3s API)"
+        log_info "[DRY RUN]   - 10250/tcp (kubelet)"
+        log_info "[DRY RUN]   - 4222/tcp (NATS client)"
+        log_info "[DRY RUN]   - 8222/tcp (NATS monitoring)"
+        log_info "[DRY RUN]   - 443/tcp (Hub UI HTTPS)"
+        log_info "[DRY RUN]   - 5353/udp (mDNS)"
+        return
+    fi
 
     # Required ports
     # 6443: k3s API
@@ -436,6 +496,10 @@ main() {
     log_info "Starting Tafy Studio installation"
     log_info "Version: $TAFY_VERSION"
     log_info "Mode: $INSTALL_MODE"
+    
+    if [ "$DRY_RUN" = true ]; then
+        log_info "Running in DRY RUN mode - no changes will be made"
+    fi
 
     # Create log file
     exec > >(tee -a /tmp/tafy-install.log)
@@ -453,7 +517,20 @@ main() {
     install_nats
     install_tafy_services
     configure_firewall
-    install_complete
+    
+    if [ "$DRY_RUN" = true ]; then
+        log_step "Dry run complete!"
+        log_info "The installer would have:"
+        log_info "  - Installed system dependencies"
+        log_info "  - Installed k3s v$K3S_VERSION"
+        log_info "  - Installed NATS messaging server"
+        log_info "  - Created Tafy services"
+        log_info "  - Configured firewall rules"
+        log_info ""
+        log_info "Run without --dry-run to perform the actual installation."
+    else
+        install_complete
+    fi
 }
 
 # Run main function
