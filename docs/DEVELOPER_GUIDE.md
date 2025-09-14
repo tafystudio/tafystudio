@@ -39,7 +39,9 @@ Welcome to the Tafy Studio developer guide! This guide will help you contribute 
 
    ```bash
    # Install pnpm if not already installed
-   npm install -g pnpm
+   curl -fsSL https://get.pnpm.io/install.sh | sh -
+   # Or via npm:
+   # npm install -g pnpm
    
    # Install all dependencies
    pnpm install

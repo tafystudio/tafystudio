@@ -84,7 +84,7 @@ Keyboard input provides quick control using standard key layouts.
 
    ```bash
    cd ~/.node-red
-   npm install @tafystudio/node-red-contrib-tafy
+   pnpm add @tafystudio/node-red-contrib-tafy
    # Import examples/teleop-control.json
    ```
 

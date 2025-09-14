@@ -50,7 +50,7 @@ Get your robot moving in 30 minutes! See our [Quick Start Guide](docs/QUICKSTART
 
 ```bash
 cd ~/.node-red
-npm install @tafystudio/node-red-contrib-tafy
+pnpm add @tafystudio/node-red-contrib-tafy
 ```
 
 Or install directly from the Node-RED palette manager.

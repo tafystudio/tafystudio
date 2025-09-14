@@ -20,7 +20,7 @@ Or via command line:
 
 ```bash
 cd ~/.node-red
-npm install @tafystudio/node-red-contrib-tafy
+pnpm add @tafystudio/node-red-contrib-tafy
 ```
 
 ## Step 2: Basic Motor Test (5 minutes)

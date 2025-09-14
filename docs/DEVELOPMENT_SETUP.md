@@ -30,7 +30,9 @@ make install-tools
 
 # Or manually:
 # Install pnpm
-npm install -g pnpm
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+# Or via npm:
+# npm install -g pnpm
 
 # Install uv (Python)
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -86,7 +88,9 @@ sudo snap install kubectl --classic
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
 # Install pnpm
-npm install -g pnpm
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+# Or via npm:
+# npm install -g pnpm
 
 # Install uv for Python
 curl -LsSf https://astral.sh/uv/install.sh | sh
