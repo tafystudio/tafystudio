@@ -8,7 +8,7 @@ require (
 	github.com/nats-io/nats.go v1.44.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.28.0
 )
 
 require (
